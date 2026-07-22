@@ -1,8 +1,8 @@
 /** @type {import('next').NextConfig} */
-const isVercelProduction = process.env.VERCEL_ENV === 'production';
+
 
 const nextConfig = {
-    basePath: isVercelProduction ? '' : '/admin',
+    basePath: '/admin',
     images: {
     remotePatterns: [
       {
