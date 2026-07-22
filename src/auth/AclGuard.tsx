@@ -13,7 +13,6 @@ import useAuthStore from '@stores/auth'
 
 // ** Others
 import { usePathname, useRouter } from 'next/navigation'
-import { admin } from '@/lib/navigation'
 
 interface AclGuardProps {
   children: ReactNode
@@ -51,7 +50,7 @@ const AclGuard = ({ aclAbilities, children }: AclGuardProps) => {
 
   // User doesn't have permission
   if (typeof window !== 'undefined') {
-    router.push(admin.forbidden())
+    router.push('/403')
   }
   
   return <div>Access Denied. Redirecting...</div>

@@ -6,7 +6,6 @@ import { Home, LogOut, Loader2 } from "lucide-react";
 import { useRouter } from 'next/navigation';
 import { postApiV10AuthLogout } from '@/api/endpoints/authentication';
 import { clearAuthPresenceCookie } from '@/lib/auth-cookie';
-import { admin } from '@/lib/navigation';
 
 export default function NotFound() {
   const router = useRouter();
@@ -23,7 +22,7 @@ export default function NotFound() {
         localStorage.removeItem('auth-token');
         clearAuthPresenceCookie();
       }
-      router.push(admin.login());
+      router.push('/login');
     }
   };
   return (
@@ -51,7 +50,7 @@ export default function NotFound() {
 
             <div className="mt-8 flex flex-wrap items-center gap-3">
               <Link
-                href={admin.home()}
+                href="/"
                 className="inline-flex items-center gap-2 rounded-md bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
               >
                 <Home className="h-4 w-4" />

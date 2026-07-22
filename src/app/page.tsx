@@ -4,7 +4,6 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import useAuthStore from '@stores/auth';
 import { FallbackSpinner } from "@/components/shared/fallbackspinner";
-import { admin } from '@/lib/navigation';
 export default function HomePage() {
   const router = useRouter();
   const auth = useAuthStore();
@@ -17,9 +16,9 @@ export default function HomePage() {
 
 
     if (auth.username && token) {
-      router.replace(admin.dashboard());
+      router.replace('/dashboard');
     } else {
-      router.replace(admin.login());
+      router.replace('/login');
     }
   }, [hasHydrated, auth.username, router]);
   return (

@@ -20,7 +20,6 @@ import { Eye, EyeOff } from "lucide-react";
 // import Image from 'next/image';
 import useSignInHandler from "@/hooks/use-sign-handler";
 import { extractErrorMessage } from "@/utils/error";
-import { admin } from "@/lib/navigation";
 import Vector from "@/assets/images/Vector.png";
 import CryptoJS from "crypto-js";
 const loginSchema = z.object({
@@ -50,7 +49,7 @@ export default function LoginPage() {
     try {
       const encryptedPassword = CryptoJS.SHA256(data.password).toString()
       await signInHandler({ email: data.email, password: encryptedPassword});
-      router.push(admin.dashboard());
+      router.push("/dashboard");
     } catch (error) {
       const message = extractErrorMessage(error);
       form.setError("root", {

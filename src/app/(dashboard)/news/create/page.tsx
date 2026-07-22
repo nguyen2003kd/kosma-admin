@@ -29,7 +29,6 @@ import {
 // import { HierarchicalCategorySelector } from '@/components/shared/hierarchical-category-selector';
 import { RichTextEditor } from "@/components/shared/rich-text-editor";
 import baseConfig from "@configs/base";
-import { adminPath } from "@/lib/navigation";
 export default function CreateNewsPage() {
   const ability = useAbility();
   const [title, setTitle] = useState("");
@@ -140,7 +139,7 @@ export default function CreateNewsPage() {
           title: "Thành công",
           content: "Tạo bài viết thành công!",
         });
-        router.push(adminPath("/news"));
+        router.push("/news");
       } else {
         throw new Error(result.message || "Có lỗi xảy ra");
       }
@@ -157,7 +156,7 @@ export default function CreateNewsPage() {
       <main className="container mx-auto p-4 md:p-6">
         <div className="max-w-full mx-auto">
           <div className="mb-6">
-            <Link href={adminPath('/news')}>
+            <Link href="/news">
               <Button variant="outline">
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Quay lại
@@ -327,7 +326,7 @@ export default function CreateNewsPage() {
                       : "Tạo bài viết"}
                   </Button>
 
-                  <Link href={adminPath('/news')}>
+                  <Link href="/news">
                     <Button type="button" variant="outline">
                       Hủy
                     </Button>

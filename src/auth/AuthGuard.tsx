@@ -9,7 +9,6 @@ import { toast } from '@/components/ui/toaster'
 import useAuthStore from '@stores/auth';
 import { useRouter, usePathname } from 'next/navigation';
 import { clearAuthPresenceCookie, setAuthPresenceCookie } from '@/lib/auth-cookie';
-import { adminPath } from '@/lib/navigation';
 
 interface AuthGuardProps {
   children: ReactNode;
@@ -44,7 +43,7 @@ const AuthGuard = ({ children, fallback }: AuthGuardProps) => {
       clearAuthPresenceCookie();
       if (pathname !== '/login') {
         router.replace(
-          `${adminPath('/login')}?returnUrl=${encodeURIComponent(pathname)}`
+          `/login?returnUrl=${encodeURIComponent(pathname)}`
         );
       }
       return;

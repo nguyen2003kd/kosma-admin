@@ -12,7 +12,6 @@ import { Building2, Globe, Link2, Loader2, MapPin, Plus, Trash2 } from "lucide-r
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useFooterForm, useFooterMutations } from "../hooks";
-import { adminPath } from "@/lib/navigation";
 
 export default function CreateFooterPage() {
   const router = useRouter();
@@ -48,7 +47,7 @@ export default function CreateFooterPage() {
       });
 
       invalidateFooters();
-      router.push(adminPath("/footer"));
+      router.push("/footer");
     } catch (error) {
       const msg = extractErrorMessage(error);
       toast.error({ title: "Tạo thất bại", content: msg });
@@ -504,7 +503,7 @@ export default function CreateFooterPage() {
       <div className="sticky bottom-0 left-0 right-0 z-10 bg-background border-t shadow-lg">
         <div className="p-6">
           <div className="flex justify-end gap-3">
-            <Link href={adminPath('/footer')}>
+            <Link href="/footer">
               <Button type="button" variant="outline">
                 Hủy
               </Button>
