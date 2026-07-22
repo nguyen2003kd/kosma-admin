@@ -4,6 +4,7 @@
 // ** React Imports
 import useAuthStore from "@stores/auth";
 import { useRouter } from "next/navigation";
+import { admin } from '@/lib/navigation';
 import { ReactElement, ReactNode, useEffect } from "react";
 interface GuestGuardProps {
   children: ReactNode;
@@ -19,7 +20,7 @@ const GuestGuard = (props: GuestGuardProps) => {
     if (!hasHydrated) return;
     const token = localStorage.getItem("auth-token");
     if (auth.email) {
-      router.push("/dashboard");
+      router.push(admin.dashboard());
     }
   }, [router, auth.email, hasHydrated]);
   if ( auth.username) {
