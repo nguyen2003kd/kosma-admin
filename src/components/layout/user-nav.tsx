@@ -15,6 +15,7 @@ import { useRouter } from 'next/navigation';
 import { postApiV10AuthLogout } from '@/api/endpoints/authentication';
 import useAuthStore from '@/stores/auth';
 import { clearAuthPresenceCookie } from '@/lib/auth-cookie';
+import { admin } from '@/lib/navigation';
 interface UserNavProps {
   user?: {
     name: string;
@@ -37,7 +38,7 @@ export function UserNav({ user }: UserNavProps) {
         localStorage.removeItem('auth-token');
         clearAuthPresenceCookie();
       }
-      router.push('/login');
+      router.push(admin.login());
     }
   };
 

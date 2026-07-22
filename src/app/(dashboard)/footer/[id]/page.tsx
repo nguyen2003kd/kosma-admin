@@ -37,6 +37,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useAbility } from "@/hooks/use-ability";
 import Can from "@/acl/Can";
+import { adminPath } from "@/lib/navigation";
 
 export default function FooterDetailPage({
   params,
@@ -69,7 +70,7 @@ export default function FooterDetailPage({
         title: "Thành công",
         content: "Đã xóa footer",
       });
-      router.push("/footer");
+      router.push(adminPath("/footer"));
     } catch (error) {
       const msg = extractErrorMessage(error);
       toast.error({ title: "Xóa thất bại", content: msg });
@@ -95,7 +96,7 @@ export default function FooterDetailPage({
             <p className="text-muted-foreground mb-4">
               Footer này không tồn tại hoặc đã bị xóa
             </p>
-            <Link href="/footer">
+            <Link href={adminPath('/footer')}>
               <Button>Quay lại danh sách</Button>
             </Link>
           </div>
@@ -129,14 +130,14 @@ export default function FooterDetailPage({
               </p>
             </div>
             <div className="flex items-center gap-3">
-              <Link href="/footer">
+              <Link href={adminPath('/footer')}>
                 <Button variant="outline">
                   <ArrowLeft className="h-4 w-4 mr-2" />
                   Quay lại
                 </Button>
               </Link>
               {canEditFooter && (
-                <Link href={`/footer/edit/${id}`}>
+                <Link href={adminPath(`/footer/edit/${id}`)}>
                   <Button variant="outline">
                     <Edit className="h-4 w-4 mr-2" />
                     Chỉnh sửa

@@ -25,6 +25,7 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useFooterForm, useFooterMutations } from "../../hooks";
 import { useAbility } from "@/hooks/use-ability";
+import { adminPath } from "@/lib/navigation";
 
 export default function EditFooterPage({ params }: { params: { id: string } }) {
   const ability = useAbility();
@@ -163,7 +164,7 @@ export default function EditFooterPage({ params }: { params: { id: string } }) {
       });
 
       invalidateFooters();
-      router.push("/footer");
+      router.push(adminPath("/footer"));
     } catch (error) {
       const msg = extractErrorMessage(error);
       toast.error({ title: "Cập nhật thất bại", content: msg });
@@ -189,7 +190,7 @@ export default function EditFooterPage({ params }: { params: { id: string } }) {
             <p className="text-muted-foreground mb-4">
               Footer này không tồn tại hoặc đã bị xóa
             </p>
-            <Link href="/footer">
+            <Link href={adminPath('/footer')}>
               <Button>
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Quay lại danh sách
@@ -637,7 +638,7 @@ export default function EditFooterPage({ params }: { params: { id: string } }) {
       <div className="sticky bottom-0 left-0 right-0 z-10 bg-background border-t shadow-lg">
         <div className="p-6">
           <div className="flex justify-end gap-3">
-            <Link href="/footer">
+            <Link href={adminPath('/footer')}>
               <Button type="button" variant="outline">
                 Hủy
               </Button>

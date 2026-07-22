@@ -31,6 +31,7 @@ import {
 // import { HierarchicalCategorySelector } from "@/components/shared/hierarchical-category-selector";
 import { RichTextEditor } from "@/components/shared/rich-text-editor";
 import baseConfig from "@configs/base";
+import { adminPath } from "@/lib/navigation";
 export default function EditNewsPage() {
   const ability = useAbility();
   const params = useParams();
@@ -253,7 +254,7 @@ export default function EditNewsPage() {
           title: "Thành công",
           content: "Cập nhật bài viết thành công!",
         });
-        router.push(`/news/${encodeURIComponent(newsId)}`);
+        router.push(adminPath(`/news/${encodeURIComponent(newsId)}`));
       } else {
         throw new Error(result.message || "Có lỗi xảy ra");
       }
@@ -296,7 +297,7 @@ export default function EditNewsPage() {
                 ? "Có lỗi xảy ra khi tải dữ liệu."
                 : "Tin tức bạn muốn chỉnh sửa không tồn tại."}
             </p>
-            <Link href="/news">
+            <Link href={adminPath('/news')}>
               <Button>
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Quay lại
@@ -314,7 +315,7 @@ export default function EditNewsPage() {
       <main className="container mx-auto p-4 md:p-6">
         <div className="max-w-full mx-auto">
           <div className="mb-6">
-            <Link href={`/news/${encodeURIComponent(newsId)}`}>
+            <Link href={adminPath(`/news/${encodeURIComponent(newsId)}`)}>
               <Button variant="outline">
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Quay lại
@@ -493,7 +494,7 @@ export default function EditNewsPage() {
                       : "Cập nhật bài viết"}
                   </Button>
 
-                  <Link href={`/news/${encodeURIComponent(newsId)}`}>
+                  <Link href={adminPath(`/news/${encodeURIComponent(newsId)}`)}>
                     <Button type="button" variant="outline">
                       Hủy
                     </Button>
