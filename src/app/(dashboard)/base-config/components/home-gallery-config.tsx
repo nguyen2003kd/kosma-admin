@@ -19,6 +19,7 @@ interface BannerSlide {
   image: string;
   alt: string;
   configId?: string;
+  language?: string;
   key: string;
 }
 
@@ -27,6 +28,8 @@ interface ContentData {
   description: string;
   titleId?: string;
   descriptionId?: string;
+  titleLanguage?: string;
+  descriptionLanguage?: string;
 }
 
 export function HomeGalleryConfig() {
@@ -77,6 +80,7 @@ export function HomeGalleryConfig() {
             ...slide,
             image: config.value,
             configId: config.id,
+            language: config.language,
           };
         }
         return slide;
@@ -92,6 +96,8 @@ export function HomeGalleryConfig() {
         description: subTitleConfig?.value || "",
         titleId: titleConfig?.id,
         descriptionId: subTitleConfig?.id,
+        titleLanguage: titleConfig?.language,
+        descriptionLanguage: subTitleConfig?.language,
       };
 
       setContentData(loadedData);
@@ -102,7 +108,7 @@ export function HomeGalleryConfig() {
 
   const getImageUrl = (file: ImagePickerFile | undefined) => {
     if (!file) return "";
-    
+
     let imagePath = "";
     if (file.compress_info) {
       imagePath = file.compress_info.desktop || file.compress_info.tablet || file.path || "";
@@ -117,12 +123,12 @@ export function HomeGalleryConfig() {
 
   const handleImageSelect = (file: ImagePickerFile) => {
     const imageUrl = getImageUrl(file);
-    
+
     if (!imageUrl) {
       toast.error({ title: "Lỗi", content: "Không thể lấy URL ảnh!" });
       return;
     }
-    
+
     setSelectedImageForCrop(imageUrl);
     setImagePickerOpen(false);
     setCropModalOpen(true);
@@ -136,11 +142,11 @@ export function HomeGalleryConfig() {
         image: croppedImageUrl,
       };
       setBannerSlides(updatedSlides);
-      
+
       const newBlobs = new Map(croppedBlobs);
       newBlobs.set(editingSlideIndex, croppedBlob);
       setCroppedBlobs(newBlobs);
-      
+
       setEditingSlideIndex(null);
       setHasChanges(true);
     }
@@ -203,6 +209,7 @@ export function HomeGalleryConfig() {
               data: {
                 key: slide.key,
                 value: result.uploadedUrl,
+                language: (slide.language as "vi" | "en") || "vi",
               },
             });
           }
@@ -216,6 +223,7 @@ export function HomeGalleryConfig() {
           data: {
             key: "title",
             value: tempContentData.title.replace(/\n/g, "<br>"),
+            language: (contentData.titleLanguage as "vi" | "en") || "vi",
           },
         });
       }
@@ -226,6 +234,7 @@ export function HomeGalleryConfig() {
           data: {
             key: "sub_title",
             value: tempContentData.description,
+            language: (contentData.descriptionLanguage as "vi" | "en") || "vi",
           },
         });
       }
@@ -506,8 +515,8 @@ export function HomeGalleryConfig() {
           editingSlideIndex === 0 || editingSlideIndex === 3
             ? 16 / 9
             : editingSlideIndex === 1
-            ? 3 / 7
-            : 7 / 10
+              ? 3 / 7
+              : 7 / 10
         }
         onClose={() => {
           setCropModalOpen(false);

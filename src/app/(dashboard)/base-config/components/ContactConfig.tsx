@@ -68,6 +68,7 @@ export function ContactConfig({
   const [editPageContactConfig, setEditPageContactConfig] =
     useState<PageContactConfig>(initialPageContactConfig);
   const [configId, setConfigId] = useState<string>("");
+  const [configLanguage, setConfigLanguage] = useState<"vi" | "en">("vi");
 
   // Fetch pageConfig with CONTACT key filter
   const {
@@ -88,11 +89,16 @@ export function ContactConfig({
     ) {
       const contactConfig = pageConfigData.responseData.rows[0] as {
         id?: string;
+        language?: "vi" | "en";
         value?: string | null;
       };
 
       if (contactConfig.id) {
         setConfigId(contactConfig.id);
+      }
+
+      if (contactConfig.language) {
+        setConfigLanguage(contactConfig.language);
       }
 
       if (contactConfig.value) {
@@ -171,12 +177,13 @@ export function ContactConfig({
         data: {
           key: "CONTACT",
           value: JSON.stringify(editPageContactConfig),
+          language: configLanguage,
           is_active: true,
         },
       });
 
-        setPageContactConfig(editPageContactConfig);
-        setNewLocationIds(new Set());
+      setPageContactConfig(editPageContactConfig);
+      setNewLocationIds(new Set());
       setIsEditing(false);
       toast.success("Cập nhật thông tin liên hệ thành công");
       refetch();

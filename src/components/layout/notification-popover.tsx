@@ -1,16 +1,22 @@
 "use client";
 
 import React, { useState, useCallback, useRef } from "react";
-import { useQueryClient } from "@tanstack/react-query";
+import {
+  useInfiniteQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
+import type { InfiniteData } from "@tanstack/react-query";
 import { Bell, Check, CheckCheck, Loader2, BellOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import {
-  useGetApiV10NotificationsInfinite,
+  getApiV10Notifications,
   usePutApiV10NotificationsMarkAsRead,
   usePutApiV10NotificationsMarkAsReadId,
 } from "@/api/endpoints/notification";
 import type { Notification } from "@/api/models/notification";
+import type { GetApiV10Notifications200 } from "@/api/models/getApiV10Notifications200";
+import type { GetApiV10NotificationsParams } from "@/api/models/getApiV10NotificationsParams";
 
 type FilterTab = "all" | "read" | "unread";
 
@@ -44,7 +50,7 @@ function buildParams(tab: FilterTab) {
 
 function flattenPages(data: unknown): Notification[] {
   if (!data) return [];
-  const d = data as { pages?: unknown[]; responseData?: unknown };
+  const d = data as { pages?: unknown[] };
   if (Array.isArray(d?.pages)) {
     return d.pages.flatMap((page) => {
       const rd = (page as { responseData?: unknown })?.responseData;
@@ -55,16 +61,29 @@ function flattenPages(data: unknown): Notification[] {
       return [];
     });
   }
-  if (Array.isArray(d?.responseData)) return d.responseData as Notification[];
-  if (
-    d?.responseData &&
-    typeof d?.responseData === "object" &&
-    "rows" in d.responseData
-  ) {
-    return ((d.responseData as { rows?: Notification[] }).rows ??
-      []) as Notification[];
-  }
   return [];
+}
+
+function extractList(page: GetApiV10Notifications200) {
+  return (page?.responseData ?? {}) as {
+    rows?: Notification[];
+    count?: number;
+    page?: number;
+    pageSize?: number;
+  };
+}
+
+function buildGetNextPageParam(params: GetApiV10NotificationsParams | undefined) {
+  return (lastPage: GetApiV10Notifications200): number | undefined => {
+    const list = extractList(lastPage);
+    const rows = list.rows ?? [];
+    const currentPage = list.page ?? 1;
+    const pageSize = list.pageSize ?? params?.pageSize ?? 20;
+    const total = typeof list.count === "number" ? list.count : rows.length;
+    if (pageSize <= 0) return undefined;
+    const totalPages = Math.ceil(total / pageSize);
+    return currentPage < totalPages ? currentPage + 1 : undefined;
+  };
 }
 
 function formatTime(iso: string | null | undefined): string {
@@ -93,6 +112,7 @@ export function NotificationPopover() {
   const markOneMutation = usePutApiV10NotificationsMarkAsReadId();
 
   // Infinite scroll query — only when popover is open
+  const tabParams = buildParams(tab);
   const {
     data,
     isLoading,
@@ -100,39 +120,67 @@ export function NotificationPopover() {
     hasNextPage,
     isFetchingNextPage,
     isFetching,
-  } = useGetApiV10NotificationsInfinite(buildParams(tab), {
-    query: {
-      enabled: open,
-      staleTime: 30_000,
-    },
+  } = useInfiniteQuery<
+    GetApiV10Notifications200,
+    Error,
+    InfiniteData<GetApiV10Notifications200>,
+    readonly unknown[],
+    number
+  >({
+    queryKey: ["notifications", "infinite", tabParams],
+    queryFn: async ({ pageParam = 1, signal }) =>
+      getApiV10Notifications({ ...tabParams, page: pageParam }, signal),
+    initialPageParam: 1,
+    getNextPageParam: buildGetNextPageParam(tabParams),
+    enabled: open,
+    staleTime: 30_000,
   });
 
   const notifications = flattenPages(data);
 
   // Keep all/unread queries for the badge count
-  const { data: allData } = useGetApiV10NotificationsInfinite(
-    { pageSize: 50, sortOrder: "desc" as const, sortField: "created_at" as const },
-    {
-      query: {
-        staleTime: 30_000,
-        refetchInterval: 60_000,
-      },
-    },
-  );
-  const { data: unreadData } = useGetApiV10NotificationsInfinite(
-    {
-      filters: "has_user_read==false",
-      pageSize: 50,
-      sortOrder: "desc" as const,
-      sortField: "created_at" as const,
-    },
-    {
-      query: {
-        staleTime: 30_000,
-        refetchInterval: 60_000,
-      },
-    },
-  );
+  const allParams: GetApiV10NotificationsParams = {
+    pageSize: 50,
+    sortOrder: "desc" as const,
+    sortField: "created_at" as const,
+  };
+  const { data: allData } = useInfiniteQuery<
+    GetApiV10Notifications200,
+    Error,
+    InfiniteData<GetApiV10Notifications200>,
+    readonly unknown[],
+    number
+  >({
+    queryKey: ["notifications", "infinite", allParams],
+    queryFn: async ({ pageParam = 1, signal }) =>
+      getApiV10Notifications({ ...allParams, page: pageParam }, signal),
+    initialPageParam: 1,
+    getNextPageParam: buildGetNextPageParam(allParams),
+    staleTime: 30_000,
+    refetchInterval: 60_000,
+  });
+
+  const unreadParams: GetApiV10NotificationsParams = {
+    filters: "has_user_read==false",
+    pageSize: 50,
+    sortOrder: "desc" as const,
+    sortField: "created_at" as const,
+  };
+  const { data: unreadData } = useInfiniteQuery<
+    GetApiV10Notifications200,
+    Error,
+    InfiniteData<GetApiV10Notifications200>,
+    readonly unknown[],
+    number
+  >({
+    queryKey: ["notifications", "infinite", unreadParams],
+    queryFn: async ({ pageParam = 1, signal }) =>
+      getApiV10Notifications({ ...unreadParams, page: pageParam }, signal),
+    initialPageParam: 1,
+    getNextPageParam: buildGetNextPageParam(unreadParams),
+    staleTime: 30_000,
+    refetchInterval: 60_000,
+  });
 
   const hasUnread =
     flattenPages(unreadData).length > 0 ||
@@ -162,7 +210,7 @@ export function NotificationPopover() {
     try {
       await markAllMutation.mutateAsync({});
       await queryClient.invalidateQueries({
-        queryKey: ["getApiV10NotificationsInfinite"],
+        queryKey: ["notifications", "infinite"],
       });
     } catch {
       // silently fail
@@ -174,7 +222,7 @@ export function NotificationPopover() {
       try {
         await markOneMutation.mutateAsync({ id });
         await queryClient.invalidateQueries({
-          queryKey: ["getApiV10NotificationsInfinite"],
+          queryKey: ["notifications", "infinite"],
         });
       } catch {
         // silently fail

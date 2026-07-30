@@ -26,7 +26,7 @@ export const CategoryBulkCreate: React.FC = () => {
   const postBulk = usePostApiV10CategoryBulk();
   const [open, setOpen] = React.useState(false);
   // Draft UI state: array of top-level categories with optional nested children
-  type Draft = Partial<CategoryBulkItem> & {
+  type Draft = Partial<Omit<CategoryBulkItem, "categories">> & {
     is_service?: boolean | null;
     categories?: Draft[];
   };
@@ -79,25 +79,23 @@ export const CategoryBulkCreate: React.FC = () => {
   };
 
   const addChild = (idx: number) => {
+    const newChild: Draft = {
+      name: "",
+      code: "",
+      position: 0,
+      note: "",
+      description: "",
+      link: "",
+      is_service: false,
+      categories: [],
+    };
     setItems((s) =>
       s.map((it, i) =>
         i === idx
           ? {
-              ...it,
-              categories: [
-                ...(it.categories || []),
-                {
-                  name: "",
-                  code: "",
-                  position: 0,
-                  note: "",
-                  description: "",
-                  link: "",
-                  is_service: false,
-                  categories: [],
-                },
-              ],
-            }
+            ...it,
+            categories: [...(it.categories || []), newChild],
+          }
           : it,
       ),
     );
@@ -130,9 +128,9 @@ export const CategoryBulkCreate: React.FC = () => {
       s.map((it, i) =>
         i === idx
           ? {
-              ...it,
-              categories: (it.categories || []).filter((_, j) => j !== cidx),
-            }
+            ...it,
+            categories: (it.categories || []).filter((_, j) => j !== cidx),
+          }
           : it,
       ),
     );
@@ -176,6 +174,7 @@ export const CategoryBulkCreate: React.FC = () => {
     return {
       name: String(d.name || ""),
       code: String(d.code ?? ""),
+      language: d.language ?? "vi",
       position:
         typeof d.position === "number" ? d.position : Number(d.position || 0),
       note: d.note ?? null,
@@ -189,7 +188,7 @@ export const CategoryBulkCreate: React.FC = () => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-          {/* <Can I="create" a="category">
+        {/* <Can I="create" a="category">
         <Button variant="outline" className="ml-2">
           <UploadCloud className="mr-2 h-4 w-4" /> Thêm nhiều
         </Button>

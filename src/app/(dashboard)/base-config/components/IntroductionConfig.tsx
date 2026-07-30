@@ -79,7 +79,7 @@ type PageBlock =
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 const generateId = () => Date.now().toString(36) + Math.random().toString(36).substring(2);
 const PAGE_CONFIG_KEY = "introduction-page";
-interface PageConfigRow { id: string; key: string; value: string; }
+interface PageConfigRow { id: string; key: string; value: string; language?: string; }
 
 // ─── Block library definition ─────────────────────────────────────────────────
 interface BlockTemplate {
@@ -175,9 +175,9 @@ const BLOCK_LIBRARY: BlockTemplate[] = [
 
 const GROUPS: { key: BlockTemplate["group"]; label: string }[] = [
   { key: "composite", label: "Tổng hợp" },
-  { key: "text",      label: "Văn bản" },
-  { key: "atomic",    label: "Phần tử" },
-  { key: "layout",    label: "Bố cục" },
+  { key: "text", label: "Văn bản" },
+  { key: "atomic", label: "Phần tử" },
+  { key: "layout", label: "Bố cục" },
 ];
 
 // ─── ICON MAP for info-row ────────────────────────────────────────────────────
@@ -188,24 +188,24 @@ function getIcon(name: string, cls = "w-4 h-4") {
 
 // ─── BADGE COLOR MAP ──────────────────────────────────────────────────────────
 const BADGE_COLORS: Record<string, string> = {
-  cyan:   "bg-cyan-300/20 text-cyan-300 border-cyan-400/30",
-  white:  "bg-white/10 text-white border-white/20",
+  cyan: "bg-cyan-300/20 text-cyan-300 border-cyan-400/30",
+  white: "bg-white/10 text-white border-white/20",
   yellow: "bg-yellow-300/20 text-yellow-300 border-yellow-400/30",
-  green:  "bg-green-300/20 text-green-300 border-green-400/30",
+  green: "bg-green-300/20 text-green-300 border-green-400/30",
 };
 
 // ─── BLOCK META (for canvas card header) ─────────────────────────────────────
 const BLOCK_META: Record<BlockType, { label: string; color: string; icon: React.ReactNode }> = {
-  "org-header": { label: "Thông tin tổ chức",    color: "bg-blue-50 border-blue-200",    icon: <Building2 className="w-4 h-4 text-blue-600" /> },
-  branches:     { label: "Chi nhánh / Văn phòng", color: "bg-green-50 border-green-200",  icon: <LayoutGrid className="w-4 h-4 text-green-600" /> },
-  heading:      { label: "Tiêu đề",              color: "bg-indigo-50 border-indigo-200", icon: <Heading className="w-4 h-4 text-indigo-600" /> },
-  "text-input": { label: "Văn bản ngắn",         color: "bg-sky-50 border-sky-200",       icon: <Type className="w-4 h-4 text-sky-600" /> },
-  "rich-text":  { label: "Văn bản phong phú",    color: "bg-purple-50 border-purple-200", icon: <AlignLeft className="w-4 h-4 text-purple-600" /> },
-  "info-row":   { label: "Hàng thông tin",       color: "bg-teal-50 border-teal-200",     icon: <DynamicIcon name="Hash" className="w-4 h-4 text-teal-600" /> },
-  "card-item":  { label: "Thẻ (Card)",           color: "bg-orange-50 border-orange-200", icon: <CreditCard className="w-4 h-4 text-orange-600" /> },
-  badge:        { label: "Nhãn (Badge)",         color: "bg-yellow-50 border-yellow-200", icon: <Tag className="w-4 h-4 text-yellow-600" /> },
-  image:        { label: "Hình ảnh",             color: "bg-rose-50 border-rose-200",     icon: <ImageIcon className="w-4 h-4 text-rose-500" /> },
-  divider:      { label: "Ngăn cách",            color: "bg-gray-50 border-gray-200",     icon: <Minus className="w-4 h-4 text-gray-400" /> },
+  "org-header": { label: "Thông tin tổ chức", color: "bg-blue-50 border-blue-200", icon: <Building2 className="w-4 h-4 text-blue-600" /> },
+  branches: { label: "Chi nhánh / Văn phòng", color: "bg-green-50 border-green-200", icon: <LayoutGrid className="w-4 h-4 text-green-600" /> },
+  heading: { label: "Tiêu đề", color: "bg-indigo-50 border-indigo-200", icon: <Heading className="w-4 h-4 text-indigo-600" /> },
+  "text-input": { label: "Văn bản ngắn", color: "bg-sky-50 border-sky-200", icon: <Type className="w-4 h-4 text-sky-600" /> },
+  "rich-text": { label: "Văn bản phong phú", color: "bg-purple-50 border-purple-200", icon: <AlignLeft className="w-4 h-4 text-purple-600" /> },
+  "info-row": { label: "Hàng thông tin", color: "bg-teal-50 border-teal-200", icon: <DynamicIcon name="Hash" className="w-4 h-4 text-teal-600" /> },
+  "card-item": { label: "Thẻ (Card)", color: "bg-orange-50 border-orange-200", icon: <CreditCard className="w-4 h-4 text-orange-600" /> },
+  badge: { label: "Nhãn (Badge)", color: "bg-yellow-50 border-yellow-200", icon: <Tag className="w-4 h-4 text-yellow-600" /> },
+  image: { label: "Hình ảnh", color: "bg-rose-50 border-rose-200", icon: <ImageIcon className="w-4 h-4 text-rose-500" /> },
+  divider: { label: "Ngăn cách", color: "bg-gray-50 border-gray-200", icon: <Minus className="w-4 h-4 text-gray-400" /> },
 };
 
 // ─── PREVIEW ──────────────────────────────────────────────────────────────────
@@ -491,15 +491,15 @@ function BlockCard({ block, index, total, onChange, onRemove, onMoveUp, onMoveDo
 
       {expanded && hasEditor && (
         <div className="px-4 pb-4 pt-2 border-t border-inherit bg-white/60">
-          {block.type === "org-header"  && <OrgHeaderEditor  block={block as OrgHeaderBlock}  onChange={onChange as (b: OrgHeaderBlock) => void} />}
-          {block.type === "branches"    && <BranchesEditor   block={block as BranchesBlock}   onChange={onChange as (b: BranchesBlock) => void} />}
-          {block.type === "heading"     && <HeadingEditor     block={block as HeadingBlock}     onChange={onChange as (b: HeadingBlock) => void} />}
-          {block.type === "text-input"  && <TextInputEditor   block={block as TextInputBlock}   onChange={onChange as (b: TextInputBlock) => void} />}
-          {block.type === "rich-text"   && <RichTextEditor_   block={block as RichTextBlock}    onChange={onChange as (b: RichTextBlock) => void} />}
-          {block.type === "info-row"    && <InfoRowEditor     block={block as InfoRowBlock}     onChange={onChange as (b: InfoRowBlock) => void} />}
-          {block.type === "card-item"   && <CardItemEditor    block={block as CardItemBlock}    onChange={onChange as (b: CardItemBlock) => void} />}
-          {block.type === "badge"       && <BadgeEditor       block={block as BadgeBlock}       onChange={onChange as (b: BadgeBlock) => void} />}
-          {block.type === "image"       && <ImageEditor       block={block as ImageBlock}       onChange={onChange as (b: ImageBlock) => void} />}
+          {block.type === "org-header" && <OrgHeaderEditor block={block as OrgHeaderBlock} onChange={onChange as (b: OrgHeaderBlock) => void} />}
+          {block.type === "branches" && <BranchesEditor block={block as BranchesBlock} onChange={onChange as (b: BranchesBlock) => void} />}
+          {block.type === "heading" && <HeadingEditor block={block as HeadingBlock} onChange={onChange as (b: HeadingBlock) => void} />}
+          {block.type === "text-input" && <TextInputEditor block={block as TextInputBlock} onChange={onChange as (b: TextInputBlock) => void} />}
+          {block.type === "rich-text" && <RichTextEditor_ block={block as RichTextBlock} onChange={onChange as (b: RichTextBlock) => void} />}
+          {block.type === "info-row" && <InfoRowEditor block={block as InfoRowBlock} onChange={onChange as (b: InfoRowBlock) => void} />}
+          {block.type === "card-item" && <CardItemEditor block={block as CardItemBlock} onChange={onChange as (b: CardItemBlock) => void} />}
+          {block.type === "badge" && <BadgeEditor block={block as BadgeBlock} onChange={onChange as (b: BadgeBlock) => void} />}
+          {block.type === "image" && <ImageEditor block={block as ImageBlock} onChange={onChange as (b: ImageBlock) => void} />}
         </div>
       )}
     </div>
@@ -523,6 +523,7 @@ export function IntroductionConfig({
   const [blocks, setBlocks] = useState<PageBlock[]>([]);
   const [configId, setConfigId] = useState("");
   const [configKey, setConfigKey] = useState(PAGE_CONFIG_KEY);
+  const [configLanguage, setConfigLanguage] = useState("vi");
   const [showPreview, setShowPreview] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
@@ -534,6 +535,7 @@ export function IntroductionConfig({
     if (data?.responseData?.rows && data.responseData.rows.length > 0) {
       const row = data.responseData.rows[0] as unknown as PageConfigRow;
       setConfigId(row.id); setConfigKey(row.key);
+      if (row.language) setConfigLanguage(row.language);
       try {
         const parsed = JSON.parse(row.value);
         if (Array.isArray(parsed)) { setBlocks(parsed as PageBlock[]); return; }
@@ -545,7 +547,7 @@ export function IntroductionConfig({
   const updateBlock = useCallback((id: string, b: PageBlock) => { setBlocks((p) => p.map((x) => x.id === id ? b : x)); setHasChanges(true); }, []);
   const removeBlock = useCallback((id: string) => { setBlocks((p) => p.filter((x) => x.id !== id)); setHasChanges(true); }, []);
   const moveBlock = useCallback((idx: number, dir: -1 | 1) => {
-    setBlocks((p) => { const n = [...p]; const s = idx + dir; if (s < 0 || s >= n.length) return p; [n[idx], n[s]] = [n[s], n[idx]]; return n; });
+    setBlocks((p) => { const n = [...p]; const s = idx + dir; if (s < 0 || s >= n.length) return p;[n[idx], n[s]] = [n[s], n[idx]]; return n; });
     setHasChanges(true);
   }, []);
   const addBlock = useCallback((tpl: BlockTemplate) => { setBlocks((p) => [...p, tpl.create()]); setHasChanges(true); }, []);
@@ -554,7 +556,7 @@ export function IntroductionConfig({
     if (!configId) { toast.error("Không tìm thấy cấu hình trang giới thiệu"); return; }
     setIsSaving(true);
     try {
-      await updateMutation.mutateAsync({ id: configId, data: { key: configKey, value: JSON.stringify(blocks), is_active: true } });
+      await updateMutation.mutateAsync({ id: configId, data: { key: configKey, value: JSON.stringify(blocks), is_active: true, language: configLanguage as "vi" | "en" } });
       setHasChanges(false); toast.success("Đã lưu trang giới thiệu"); refetch();
     } catch (err) { console.error(err); toast.error("Lỗi khi lưu cấu hình"); }
     finally { setIsSaving(false); }

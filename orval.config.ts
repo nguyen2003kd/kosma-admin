@@ -1,57 +1,49 @@
-import axios from 'axios'
-import { defineConfig } from 'orval'
+import 'dotenv/config'
+
 import baseConfig from './src/configs/base'
+import { defineConfig } from 'orval'
 
-const orvalConfig = async () => {
-  const { backendDomain, frontendDomain } = baseConfig
+const orvalConfig = defineConfig({
+  'kosmo-admin-fe': {
+    output: {
+      mode: 'tags',
+      target: 'src/api/endpoints',
+      schemas: 'src/api/models',
+      client: 'react-query',
+      clean: true,
+      override: {
+        query: {
+          version: 5,
+          useInfinite: true,
+          usePrefetch: true,
+          options: {
+            retry: 3,
+            retryDelay: 1000,
+          }
+        },
+        mutator: {
+          path: 'src/api/mutator/custom-instance.ts',
+          name: 'mainInstance'
+        },
 
-  const [caseSmeqBESwagger] = await Promise.all([
-    axios.get(`${backendDomain}/swagger-output.json`, {
-      headers: { Origin: frontendDomain }
-    })
-  ])
-
-  return defineConfig({
-    'case-smeq-be': {
-      output: {
-        mode: 'tags',
-        target: 'src/api/endpoints',
-        schemas: 'src/api/models',
-        client: 'react-query',
-        override: {
-          query: {
-            useQuery: true,
-            useInfinite: false 
-          },
-          mutator: {
-            path: 'src/api/mutator/custom-instance.ts',
-            name: 'mainInstance'
-          },
-          header: () => '/* eslint-disable */\r\n',
-          operations: {
-            getPosts: {
-              query: {
-                useInfinite: true,
-                useInfiniteQueryParam: 'page'
-              }
-            },
-            postSystemBackup: {
-              mutator: {
-                path: 'src/api/mutator/fetch-instance.ts',
-                name: 'fetchInstance'
-              }
+        header: () => '/* eslint-disable */\r\n',
+        operations: {
+          postSystemBackup: {
+            mutator: {
+              path: 'src/api/mutator/fetch-instance.ts',
+              name: 'fetchInstance'
             }
           }
         }
-      },
-      input: {
-        target: caseSmeqBESwagger.data,
-        filters: {
-          tags: ['Authentication', /(((Library)|(Module)) - )?/]
-        }
+      }
+    },
+    input: {
+      target: `${baseConfig.backendDomain}/swagger-output.json`,
+      filters: {
+        tags: undefined
       }
     }
-  })
-}
+  }
+})
 
 export default orvalConfig

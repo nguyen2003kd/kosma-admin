@@ -30,6 +30,7 @@ import {
   useGetApiV10PageConfig,
   usePutApiV10PageConfigId,
 } from "@/api/endpoints/page-config";
+import type { PageConfigMutateLanguage } from "@/api/models/pageConfigMutateLanguage";
 import { ImagePicker, type ImagePickerFile } from "@/components/shared/image-picker";
 import baseConfig from "@/configs/base";
 import { toast } from "sonner";
@@ -251,6 +252,7 @@ const CertificationItemCard = forwardRef<
 // ─── Main Page Component ─────────────────────────────────────────────────────
 export default function CertificationConfigPage() {
   const [configId, setConfigId] = useState("");
+  const [configLanguage, setConfigLanguage] = useState<PageConfigMutateLanguage>("vi");
   const [configKey] = useState(PAGE_CONFIG_KEY);
   const [title, setTitle] = useState("");
   const [describe, setDescribe] = useState("");
@@ -272,6 +274,7 @@ export default function CertificationConfigPage() {
     if (fetchedData?.responseData?.rows && fetchedData.responseData.rows.length > 0) {
       const row = fetchedData.responseData.rows[0] as unknown as Record<string, unknown>;
       setConfigId(String(row.id || ""));
+      setConfigLanguage((row.language as PageConfigMutateLanguage) || "vi");
       try {
         const parsed = JSON.parse(String(row.value || "{}")) as CertificationConfig;
         setTitle(parsed.title ?? "");
@@ -353,6 +356,7 @@ export default function CertificationConfigPage() {
           key: configKey,
           value: JSON.stringify(payload),
           is_active: true,
+          language: configLanguage,
         },
       });
       setHasChanges(false);

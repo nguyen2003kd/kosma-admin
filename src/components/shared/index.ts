@@ -18,3 +18,5 @@ export { ImageCropModal } from './image-crop-modal'
 // Form components
 export { HierarchicalCategorySelector } from './hierarchical-category-selector'
 export { RichTextEditor } from './rich-text-editor'
+export { TagInput } from './tag-input'
+export type { TagItem } from './tag-input'
