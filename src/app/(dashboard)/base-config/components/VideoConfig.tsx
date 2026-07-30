@@ -28,6 +28,7 @@ interface VideoConfigData {
   key: string;
   value: string;
   description?: string;
+  language?: string;
 }
 
 const EMPTY_VIDEO: VideoItem = { title: "", url: "", thumbnail: "", description: "" };
@@ -65,6 +66,7 @@ export function VideoConfig() {
 
   const [configId, setConfigId] = useState<string | null>(null);
   const [configKey, setConfigKey] = useState<string>("");
+  const [configLanguage, setConfigLanguage] = useState<string>("vi");
 
   const { data, isLoading, refetch } = useGetApiV10PageConfig({
     filters: `key==list_video`,
@@ -102,6 +104,7 @@ export function VideoConfig() {
       const row = data.responseData.rows[0] as unknown as VideoConfigData;
       setConfigId(row.id);
       setConfigKey(row.key);
+      setConfigLanguage(row.language || "vi");
       setVideos(parseVideos(row.value));
     }
   }, [data]);
@@ -186,6 +189,7 @@ export function VideoConfig() {
           value,
           description: "Quản lý video",
           is_active: true,
+          language: configLanguage as "vi" | "en",
         },
       });
       toast.success({ title: "Thành công", content: "Đã lưu cấu hình video!" });

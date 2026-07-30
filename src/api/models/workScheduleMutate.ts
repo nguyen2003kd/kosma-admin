@@ -17,9 +17,15 @@ export interface WorkScheduleMutate {
    * @nullable
    */
   tasks?: string | null;
-  /** Free-text name of the host */
+  /**
+   * Free-text name of the host
+   * @nullable
+   */
   host?: string | null;
-  /** Free-text list of participants */
+  /**
+   * Free-text list of participants
+   * @nullable
+   */
   participants?: string | null;
   /** Work schedule date-time */
   schedule_time: string;

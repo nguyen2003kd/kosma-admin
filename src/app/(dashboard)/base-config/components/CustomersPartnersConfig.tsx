@@ -45,6 +45,7 @@ interface PageConfigRow {
   id: string;
   key: string;
   value: string;
+  language?: "vi" | "en";
 }
 
 const generateId = () => Date.now().toString(36) + Math.random().toString(36).substring(2);
@@ -52,6 +53,7 @@ const generateId = () => Date.now().toString(36) + Math.random().toString(36).su
 export function CustomersPartnersConfig({ canUpdate = true }: { canUpdate?: boolean }) {
   const [partners, setPartners] = useState<Partner[]>([]);
   const [configId, setConfigId] = useState("");
+  const [configLanguage, setConfigLanguage] = useState<"vi" | "en">("vi");
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [hasChanges, setHasChanges] = useState(false);
@@ -79,6 +81,9 @@ export function CustomersPartnersConfig({ canUpdate = true }: { canUpdate?: bool
     if (data?.responseData?.rows && data.responseData.rows.length > 0) {
       const row = data.responseData.rows[0] as unknown as PageConfigRow;
       setConfigId(row.id);
+      if (row.language) {
+        setConfigLanguage(row.language);
+      }
       try {
         const parsed = JSON.parse(row.value || "[]");
         if (Array.isArray(parsed)) {
@@ -183,6 +188,7 @@ export function CustomersPartnersConfig({ canUpdate = true }: { canUpdate?: bool
         data: {
           key: CUSTOMERS_PARTNERS_CONFIG_KEY,
           value: JSON.stringify(partners),
+          language: configLanguage,
           is_active: true,
         },
       });
@@ -304,13 +310,11 @@ export function CustomersPartnersConfig({ canUpdate = true }: { canUpdate?: bool
                   (partner: Partner, index: number) => (
                     <div
                       key={partner.id}
-                      className={`w-48 h-32 border-2 rounded-lg overflow-hidden cursor-pointer flex items-center justify-center transition-all ${
-                        index === currentSlide
+                      className={`w-48 h-32 border-2 rounded-lg overflow-hidden cursor-pointer flex items-center justify-center transition-all ${index === currentSlide
                           ? "border-green-400"
                           : "border-gray-200"
-                      } ${
-                        partner.is_active ? "" : "opacity-50"
-                      }`}
+                        } ${partner.is_active ? "" : "opacity-50"
+                        }`}
                       onClick={() => setCurrentSlide(index)}
                     >
                       {partner.logo ? (
@@ -356,11 +360,10 @@ export function CustomersPartnersConfig({ canUpdate = true }: { canUpdate?: bool
                   </div>
                   <div className="flex items-center gap-2">
                     <span
-                      className={`text-xs px-2 py-1 rounded ${
-                        filteredPartners[currentSlide]?.is_active
+                      className={`text-xs px-2 py-1 rounded ${filteredPartners[currentSlide]?.is_active
                           ? "bg-green-100 text-green-700"
                           : "bg-gray-200 text-gray-600"
-                      }`}
+                        }`}
                     >
                       {filteredPartners[currentSlide]?.is_active
                         ? "Hiển thị"

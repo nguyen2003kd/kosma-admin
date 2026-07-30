@@ -1,9 +1,6 @@
-/** @type {import('next').NextConfig} */
-
-
 const nextConfig = {
-    basePath: '/admin',
-    images: {
+  basePath: '/admin',
+  images: {
     remotePatterns: [
       {
         protocol: 'https',
@@ -18,6 +15,11 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: 'ui-avatars.com',
+        pathname: '/api/**',
+      },
+      {
+        protocol: 'http',
+        hostname: 'localhost',
         pathname: '/api/**',
       },
     ],
