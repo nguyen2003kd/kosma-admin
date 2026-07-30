@@ -5,7 +5,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-// import { Textarea } from '@/components/ui/textarea';
 import { Switch } from "@/components/ui/switch";
 import { Header } from "@/components/layout/header";
 import { usePostApiV10Post } from "@/api/endpoints/post";
@@ -18,17 +17,12 @@ import { useAbility } from "@/hooks/use-ability";
 import { ArrowLeft, Save, Upload, X } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
-import {
-  ImagePicker,
-  type ImagePickerFile,
-} from "@/components/shared/image-picker";
-import {
-  PostContentEditor,
-  type PostContentSection,
-} from "@/components/features/news/PostContentEditor";
-// import { HierarchicalCategorySelector } from '@/components/shared/hierarchical-category-selector';
-import { RichTextEditor } from "@/components/shared/rich-text-editor";
+import { ImagePicker, type ImagePickerFile } from "@/components/shared/image-picker";
+import { PostContentEditor, type PostContentSection } from "@/components/features/news/PostContentEditor";
+import { RichTextEditor, TagInput, type TagItem } from "@/components/shared";
+import { postApiV10Tags } from "@/api/endpoints/tag";
 import baseConfig from "@configs/base";
+
 export default function CreateNewsPage() {
   const ability = useAbility();
   const [title, setTitle] = useState("");
@@ -40,10 +34,9 @@ export default function CreateNewsPage() {
   const [isService, setIsService] = useState(false);
   const [expiredAt, setExpiredAt] = useState("");
   const [publishedAt, setPublishedAt] = useState("");
-  const [selectedThumbnail, setSelectedThumbnail] =
-    useState<ImagePickerFile | null>(null);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [selectedThumbnail, setSelectedThumbnail] = useState<ImagePickerFile | null>(null);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [selectedTags, setSelectedTags] = useState<TagItem[]>([]);
   const [showImagePicker, setShowImagePicker] = useState(false);
 
   const router = useRouter();
@@ -91,11 +84,22 @@ export default function CreateNewsPage() {
         post_content_images:
           section.type === "image"
             ? (section.post_content_images || []).map((img) => ({
-                position: img.position,
-                file_id: img.file_id,
-              }))
+              position: img.position,
+              file_id: img.file_id,
+            }))
             : [],
       }));
+
+      const tagIds: string[] = [];
+      for (const tag of selectedTags) {
+        if (tag.isNew) {
+          const created = await postApiV10Tags({ name: tag.name });
+          const newId = (created.responseData as any)?.id;
+          if (newId) tagIds.push(newId);
+        } else {
+          tagIds.push(tag.id);
+        }
+      }
 
       const postData: PostMutate = {
         title: title.trim(),
@@ -117,19 +121,20 @@ export default function CreateNewsPage() {
         expired_at: expiredAt ? new Date(expiredAt).toISOString() : undefined,
         published_at: publishedAt ? new Date(publishedAt).toISOString() : undefined,
         category_ids: selectedCategories,
+        tag_ids: tagIds.length > 0 ? tagIds : undefined,
         thumbnail_file_id: selectedThumbnail?.id,
         post_content:
           apiPostContent.length > 0
             ? apiPostContent
             : [
-                {
-                  content: "",
-                  position: 1,
-                  image_columns: 2,
-                  image_rows: 2,
-                  post_content_images: [],
-                },
-              ],
+              {
+                content: "",
+                position: 1,
+                image_columns: 2,
+                image_rows: 2,
+                post_content_images: [],
+              },
+            ],
       };
 
       const result = await createPostMutation.mutateAsync({ data: postData });
@@ -198,11 +203,8 @@ export default function CreateNewsPage() {
                       <div className="relative inline-block">
                         <div className="w-32 h-32 rounded-lg overflow-hidden border-2 border-gray-200 relative">
                           <Image
-                            src={`${baseConfig.imgEndpointDomain}${
-                              selectedThumbnail.path ||
-                              selectedThumbnail.compress_info?.desktop ||
-                              ""
-                            }`}
+                            src={`${baseConfig.imgEndpointDomain}${selectedThumbnail.path ||
+                              selectedThumbnail.compress_info?.desktop || ""}`}
                             alt={
                               selectedThumbnail.title ||
                               selectedThumbnail.name ||
@@ -253,6 +255,12 @@ export default function CreateNewsPage() {
                   />
                 </div>
 
+                <TagInput
+                  value={selectedTags}
+                  onChange={setSelectedTags}
+                  label="Tags"
+                />
+
                 {/* Post Content Editor */}
                 <PostContentEditor
                   sections={postSections}
@@ -283,7 +291,7 @@ export default function CreateNewsPage() {
                       onChange={(e) => setExpiredAt(e.target.value)}
                     />
                   </div>
-                                    <div className="space-y-2">
+                  <div className="space-y-2">
                     <Label htmlFor="publishedAt">Ngày xuất bản</Label>
                     <Input
                       id="publishedAt"

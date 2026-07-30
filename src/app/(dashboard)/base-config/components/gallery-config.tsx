@@ -19,6 +19,7 @@ interface BannerSlide {
   image: string;
   alt: string;
   configId?: string;
+  language?: string;
   key: string;
 }
 
@@ -27,6 +28,8 @@ interface ContentData {
   description: string;
   titleId?: string;
   descriptionId?: string;
+  titleLanguage?: string;
+  descriptionLanguage?: string;
 }
 
 export function GalleryConfig() {
@@ -73,6 +76,7 @@ export function GalleryConfig() {
             ...slide,
             image: config.value,
             configId: config.id,
+            language: config.language,
           };
         }
         return slide;
@@ -88,19 +92,23 @@ export function GalleryConfig() {
         description: subTitleConfig?.value || "",
         titleId: titleConfig?.id,
         descriptionId: subTitleConfig?.id,
+        titleLanguage: titleConfig?.language,
+        descriptionLanguage: subTitleConfig?.language,
       });
       setTempContentData({
         title: titleConfig?.value?.replace(/<br>/g, "\n") || "",
         description: subTitleConfig?.value || "",
         titleId: titleConfig?.id,
         descriptionId: subTitleConfig?.id,
+        titleLanguage: titleConfig?.language,
+        descriptionLanguage: subTitleConfig?.language,
       });
     }
   }, [pageConfigData]);
 
   const getImageUrl = (file: ImagePickerFile | undefined) => {
     if (!file) return "";
-    
+
     let imagePath = "";
     if (file.compress_info) {
       imagePath = file.compress_info.desktop || file.compress_info.tablet || file.path || "";
@@ -115,12 +123,12 @@ export function GalleryConfig() {
 
   const handleImageSelect = (file: ImagePickerFile) => {
     const imageUrl = getImageUrl(file);
-    
+
     if (!imageUrl) {
       toast.error({ title: "Lỗi", content: "Không thể lấy URL ảnh!" });
       return;
     }
-    
+
     setSelectedImageForCrop(imageUrl);
     setImagePickerOpen(false);
     setCropModalOpen(true);
@@ -134,12 +142,12 @@ export function GalleryConfig() {
         image: croppedImageUrl,
       };
       setBannerSlides(updatedSlides);
-      
+
       // Store the blob for later upload
       const newBlobs = new Map(croppedBlobs);
       newBlobs.set(editingSlideIndex, croppedBlob);
       setCroppedBlobs(newBlobs);
-      
+
       setEditingSlideIndex(null);
       setHasChanges(true);
     }
@@ -206,6 +214,7 @@ export function GalleryConfig() {
               data: {
                 key: slide.key,
                 value: result.uploadedUrl,
+                language: (slide.language as "vi" | "en") || "vi",
               },
             });
           }
@@ -219,6 +228,7 @@ export function GalleryConfig() {
           data: {
             key: "title",
             value: tempContentData.title.replace(/\n/g, "<br>"),
+            language: (contentData.titleLanguage as "vi" | "en") || "vi",
           },
         });
       }
@@ -229,6 +239,7 @@ export function GalleryConfig() {
           data: {
             key: "sub_title",
             value: tempContentData.description,
+            language: (contentData.descriptionLanguage as "vi" | "en") || "vi",
           },
         });
       }
@@ -239,9 +250,9 @@ export function GalleryConfig() {
       setContentData(tempContentData);
     } catch (error) {
       console.error("Error saving gallery:", error);
-      const errorMessage = 
-        error instanceof Error 
-          ? error.message 
+      const errorMessage =
+        error instanceof Error
+          ? error.message
           : "Có lỗi xảy ra khi lưu gallery!";
       toast.error({ title: "Lỗi", content: errorMessage });
     } finally {
@@ -516,8 +527,8 @@ export function GalleryConfig() {
           editingSlideIndex === 0 || editingSlideIndex === 3
             ? 16 / 9  // Wide images
             : editingSlideIndex === 1
-            ? 3 / 7   // Tall image
-            : 7 / 10  // Medium image
+              ? 3 / 7   // Tall image
+              : 7 / 10  // Medium image
         }
         onClose={() => {
           setCropModalOpen(false);

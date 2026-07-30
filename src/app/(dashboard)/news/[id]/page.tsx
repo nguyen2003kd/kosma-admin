@@ -86,7 +86,7 @@ function ContentSection({
     return (
       <div className="prose prose-lg max-w-none">
         <div className='tiptap prose max-w-none text-justify'>
-           {content.content ? parse(content.content) : null}
+          {content.content ? parse(content.content) : null}
         </div>
       </div>
     );
@@ -252,9 +252,19 @@ export default function NewsDetailPage() {
                 </h1>
 
                 {news.summary && (
-                        <div className='tiptap prose max-w-none text-justify'>
-                {news?.summary ? parse(news.summary) : <p>Không có nội dung</p>}
-              </div> 
+                  <div className='tiptap prose max-w-none text-justify'>
+                    {news?.summary ? parse(news.summary) : <p>Không có nội dung</p>}
+                  </div>
+                )}
+
+                {news.tags && Array.isArray(news.tags) && news.tags.length > 0 && (
+                  <div className="flex flex-wrap items-center gap-2 mb-4">
+                    {news.tags.map((tag: any) => (
+                      <Badge key={tag.id} variant="secondary" className="bg-blue-50 text-blue-700">
+                        {tag.name || "Không rõ"}
+                      </Badge>
+                    ))}
+                  </div>
                 )}
 
                 {/* {news.category_ids && Array.isArray(news.category_ids) && news.category_ids.length > 0 ? (
@@ -336,19 +346,18 @@ export default function NewsDetailPage() {
 
               {/* Thumbnail Display */}
               {(news.thumbnail_compress_info as { desktop?: string; tablet?: string; mobile?: string } | null)?.desktop ||
-               (news.thumbnail_compress_info as { desktop?: string; tablet?: string; mobile?: string } | null)?.tablet ||
-               (news.thumbnail_compress_info as { desktop?: string; tablet?: string; mobile?: string } | null)?.mobile ||
-               news.thumbnail_path ? (
+                (news.thumbnail_compress_info as { desktop?: string; tablet?: string; mobile?: string } | null)?.tablet ||
+                (news.thumbnail_compress_info as { desktop?: string; tablet?: string; mobile?: string } | null)?.mobile ||
+                news.thumbnail_path ? (
                 <div className="mb-6">
                   <h3 className="text-lg font-semibold mb-3">Ảnh đại diện</h3>
                   <div className="relative w-48 h-48 rounded-lg overflow-hidden border">
                     <Image
-                      src={`${baseConfig.imgEndpointDomain}${
-                        (news.thumbnail_compress_info as { desktop?: string; tablet?: string; mobile?: string } | null)?.desktop ||
+                      src={`${baseConfig.imgEndpointDomain}${(news.thumbnail_compress_info as { desktop?: string; tablet?: string; mobile?: string } | null)?.desktop ||
                         (news.thumbnail_compress_info as { desktop?: string; tablet?: string; mobile?: string } | null)?.tablet ||
                         (news.thumbnail_compress_info as { desktop?: string; tablet?: string; mobile?: string } | null)?.mobile ||
                         news.thumbnail_path
-                      }`}
+                        }`}
                       alt={news.title || "Hình ảnh đại diện"}
                       fill
                       className="object-cover"
@@ -361,8 +370,8 @@ export default function NewsDetailPage() {
               {/* Post Content */}
               <div className="space-y-6">
                 {news.post_content &&
-                Array.isArray(news.post_content) &&
-                news.post_content.length > 0 ? (
+                  Array.isArray(news.post_content) &&
+                  news.post_content.length > 0 ? (
                   (
                     news.post_content as Array<{
                       position: number;
@@ -404,41 +413,38 @@ export default function NewsDetailPage() {
                     desktop?: string;
                     preload?: string;
                   } | null) && (
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs">
-                      <div>
-                        <span className="font-medium">Mobile:</span>
-                        <br />
-                        {
-                          (news.thumbnail_compress_info as { mobile?: string })
-                            .mobile
-                        }
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs">
+                        <div>
+                          <span className="font-medium">Mobile:</span>
+                          <br />
+                          {
+                            (news.thumbnail_compress_info as { mobile?: string })
+                              .mobile
+                          }
+                        </div>
+                        <div>
+                          <span className="font-medium">Tablet:</span>
+                          <br />
+                          {
+                            (news.thumbnail_compress_info as { tablet?: string })
+                              .tablet
+                          }
+                        </div>
+                        <div>
+                          <span className="font-medium">Desktop:</span>
+                          <br />
+                          {
+                            (news.thumbnail_compress_info as { desktop?: string })
+                              .desktop
+                          }
+                        </div>
+                        <div>
+                          <span className="font-medium">Preload:</span>
+                          <br />
+                          {(news.thumbnail_compress_info as { preload?: string }).preload}
+                        </div>
                       </div>
-                      <div>
-                        <span className="font-medium">Tablet:</span>
-                        <br />
-                        {
-                          (news.thumbnail_compress_info as { tablet?: string })
-                            .tablet
-                        }
-                      </div>
-                      <div>
-                        <span className="font-medium">Desktop:</span>
-                        <br />
-                        {
-                          (news.thumbnail_compress_info as { desktop?: string })
-                            .desktop
-                        }
-                      </div>
-                      <div>
-                        <span className="font-medium">Preload:</span>
-                        <br />
-                        {
-                          (news.thumbnail_compress_info as { preload?: string })
-                            .preload
-                        }
-                      </div>
-                    </div>
-                  )}
+                    )}
                 </div>
               )}
             </CardContent>

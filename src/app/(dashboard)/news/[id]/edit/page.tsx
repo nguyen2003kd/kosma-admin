@@ -28,8 +28,8 @@ import {
   PostContentEditor,
   type PostContentSection,
 } from "@/components/features/news/PostContentEditor";
-// import { HierarchicalCategorySelector } from "@/components/shared/hierarchical-category-selector";
-import { RichTextEditor } from "@/components/shared/rich-text-editor";
+import { RichTextEditor, TagInput, type TagItem } from "@/components/shared";
+import { postApiV10Tags } from "@/api/endpoints/tag";
 import baseConfig from "@configs/base";
 export default function EditNewsPage() {
   const ability = useAbility();
@@ -43,18 +43,10 @@ export default function EditNewsPage() {
   const { data: response, isLoading, error } = useGetApiV10PostId(newsId);
   const news = response?.responseData;
   const updatePostMutation = usePutApiV10PostId();
-  const { data: categoriesData } = useGetApiV10Category({
-    query: {
-      enabled: !!news,
-    },
-  });
   const { data: thumbnailData } = useGetApiV10FileId(
     (news?.thumbnail_file_id || "").toString(),
     { query: { enabled: !!news?.thumbnail_file_id } }
   );
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const categories = categoriesData?.responseData || [];
 
   const [title, setTitle] = useState("");
   const [code, setCode] = useState("");
@@ -68,6 +60,7 @@ export default function EditNewsPage() {
   const [selectedThumbnail, setSelectedThumbnail] =
     useState<ImagePickerFile | null>(null);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [selectedTags, setSelectedTags] = useState<TagItem[]>([]);
   const [showImagePicker, setShowImagePicker] = useState(false);
 
   const handleImageSelect = (file: ImagePickerFile) => {
@@ -84,6 +77,13 @@ export default function EditNewsPage() {
       setIsHidden(news.is_hidden || false);
       setIsService(news.is_service || false);
       setSelectedCategories((news.category_ids as string[]) || []);
+
+      const newsTags = (news.tags as Array<{ id?: string; name?: string }>) || [];
+      setSelectedTags(
+        newsTags
+          .filter((t): t is { id: string; name: string } => !!t.id && !!t.name)
+          .map((t) => ({ id: t.id, name: t.name })),
+      );
 
       if (news.expired_at) {
         const date = new Date(news.expired_at);
@@ -159,11 +159,11 @@ export default function EditNewsPage() {
         size: String(fileData.size || 0),
         compress_info: fileData.compress_info
           ? {
-              mobile: fileData.compress_info.mobile || "",
-              tablet: fileData.compress_info.tablet || "",
-              desktop: fileData.compress_info.desktop || "",
-              preload: fileData.compress_info.preload || "",
-            }
+            mobile: fileData.compress_info.mobile || "",
+            tablet: fileData.compress_info.tablet || "",
+            desktop: fileData.compress_info.desktop || "",
+            preload: fileData.compress_info.preload || "",
+          }
           : undefined,
         title: fileData.title,
         description: fileData.description,
@@ -188,6 +188,17 @@ export default function EditNewsPage() {
     // }
 
     try {
+      const tagIds: string[] = [];
+      for (const tag of selectedTags) {
+        if (tag.isNew) {
+          const created = await postApiV10Tags({ name: tag.name });
+          const newId = (created.responseData as any)?.id;
+          if (newId) tagIds.push(newId);
+        } else {
+          tagIds.push(tag.id);
+        }
+      }
+
       const postData: PostMutate = {
         title: title.trim(),
         code: code.trim() || news?.code || "",
@@ -212,6 +223,7 @@ export default function EditNewsPage() {
           ? new Date(publishedAt).toISOString()
           : undefined,
         category_ids: selectedCategories,
+        tag_ids: tagIds,
         thumbnail_file_id: selectedThumbnail?.id || undefined,
         post_content: postSections.map((section) => {
           const baseContent = {
@@ -359,12 +371,11 @@ export default function EditNewsPage() {
                       <div className="relative inline-block">
                         <div className="w-32 h-32 rounded-lg overflow-hidden border-2 border-gray-200 relative">
                           <Image
-                            src={`${baseConfig.imgEndpointDomain}${
-                              selectedThumbnail?.path ||
+                            src={`${baseConfig.imgEndpointDomain}${selectedThumbnail?.path ||
                               selectedThumbnail?.compress_info?.desktop ||
                               news.thumbnail_path ||
                               ""
-                            }`}
+                              }`}
                             alt={
                               selectedThumbnail?.title ||
                               selectedThumbnail?.name ||
@@ -417,6 +428,12 @@ export default function EditNewsPage() {
                     className="min-h-[120px]"
                   />
                 </div>
+
+                <TagInput
+                  value={selectedTags}
+                  onChange={setSelectedTags}
+                  label="Tags"
+                />
 
                 <div className="space-y-2">
                   <Label>Nội dung</Label>

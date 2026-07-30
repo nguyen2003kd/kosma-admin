@@ -64,6 +64,7 @@ export default function EditFooterPage({ params }: { params: { id: string } }) {
     if (footerData?.responseData) {
       const footer = footerData.responseData;
       setFormData({
+        language: footer.language ?? "vi",
         description: footer.description || "",
         sub_description: footer.sub_description || "",
         phone: footer.phone || "",
@@ -129,6 +130,7 @@ export default function EditFooterPage({ params }: { params: { id: string } }) {
     const submitData = getSubmitData();
 
     const payload: FooterMutate = {
+      language: existingFooter.language ?? "vi",
       description: canEditBasicInfo
         ? submitData.description
         : existingFooter.description,
@@ -225,407 +227,407 @@ export default function EditFooterPage({ params }: { params: { id: string } }) {
               {/* Basic Info Section */}
               {canEditBasicInfo && (
                 <div>
-                <div className="flex items-center gap-3 mb-6 pb-3 border-b">
-                  <div className="h-10 w-10 rounded-lg bg-blue-100 flex items-center justify-center">
-                    <Building2 className="h-5 w-5 text-blue-600" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-lg">Thông tin cơ bản</h3>
-                    <p className="text-sm text-muted-foreground">
-                      Nhập thông tin chung của footer
-                    </p>
-                  </div>
-                </div>
-
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="description">Mô tả *</Label>
-                    <Input
-                      id="description"
-                      required
-                      value={formData.description || ""}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          description: e.target.value,
-                        })
-                      }
-                      placeholder="Công ty TNHH..."
-                      className="bg-gray-50"
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="sub_description">Mô tả phụ</Label>
-                    <Textarea
-                      id="sub_description"
-                      value={formData.sub_description || ""}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          sub_description: e.target.value,
-                        })
-                      }
-                      placeholder="Chuyên cung cấp..."
-                      rows={3}
-                      className="bg-gray-50"
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="phone">Số điện thoại *</Label>
-                      <Input
-                        id="phone"
-                        required
-                        value={formData.phone || ""}
-                        onChange={(e) =>
-                          setFormData({ ...formData, phone: e.target.value })
-                        }
-                        placeholder="+84 123 456 789"
-                        className="bg-gray-50"
-                      />
+                  <div className="flex items-center gap-3 mb-6 pb-3 border-b">
+                    <div className="h-10 w-10 rounded-lg bg-blue-100 flex items-center justify-center">
+                      <Building2 className="h-5 w-5 text-blue-600" />
                     </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="email">Email *</Label>
-                      <Input
-                        id="email"
-                        type="email"
-                        required
-                        value={formData.email || ""}
-                        onChange={(e) =>
-                          setFormData({ ...formData, email: e.target.value })
-                        }
-                        placeholder="contact@example.com"
-                        className="bg-gray-50"
-                      />
+                    <div>
+                      <h3 className="font-semibold text-lg">Thông tin cơ bản</h3>
+                      <p className="text-sm text-muted-foreground">
+                        Nhập thông tin chung của footer
+                      </p>
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-4">
                     <div className="space-y-2">
-                      <Label htmlFor="online_visitors">Số người online</Label>
+                      <Label htmlFor="description">Mô tả *</Label>
                       <Input
-                        id="online_visitors"
-                        type="number"
-                        min="0"
-                        value={formData.online_visitors ?? 0}
+                        id="description"
+                        required
+                        value={formData.description || ""}
                         onChange={(e) =>
                           setFormData({
                             ...formData,
-                            online_visitors: parseInt(e.target.value) || 0,
+                            description: e.target.value,
                           })
                         }
+                        placeholder="Công ty TNHH..."
                         className="bg-gray-50"
                       />
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="total_views">Tổng lượt xem</Label>
-                      <Input
-                        id="total_views"
-                        type="number"
-                        min="0"
-                        value={
-                          typeof formData.total_views === "number"
-                            ? formData.total_views
-                            : 0
-                        }
+                      <Label htmlFor="sub_description">Mô tả phụ</Label>
+                      <Textarea
+                        id="sub_description"
+                        value={formData.sub_description || ""}
                         onChange={(e) =>
                           setFormData({
                             ...formData,
-                            total_views: parseInt(e.target.value) || 0,
+                            sub_description: e.target.value,
                           })
                         }
+                        placeholder="Chuyên cung cấp..."
+                        rows={3}
                         className="bg-gray-50"
                       />
                     </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="phone">Số điện thoại *</Label>
+                        <Input
+                          id="phone"
+                          required
+                          value={formData.phone || ""}
+                          onChange={(e) =>
+                            setFormData({ ...formData, phone: e.target.value })
+                          }
+                          placeholder="+84 123 456 789"
+                          className="bg-gray-50"
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="email">Email *</Label>
+                        <Input
+                          id="email"
+                          type="email"
+                          required
+                          value={formData.email || ""}
+                          onChange={(e) =>
+                            setFormData({ ...formData, email: e.target.value })
+                          }
+                          placeholder="contact@example.com"
+                          className="bg-gray-50"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="online_visitors">Số người online</Label>
+                        <Input
+                          id="online_visitors"
+                          type="number"
+                          min="0"
+                          value={formData.online_visitors ?? 0}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              online_visitors: parseInt(e.target.value) || 0,
+                            })
+                          }
+                          className="bg-gray-50"
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="total_views">Tổng lượt xem</Label>
+                        <Input
+                          id="total_views"
+                          type="number"
+                          min="0"
+                          value={
+                            typeof formData.total_views === "number"
+                              ? formData.total_views
+                              : 0
+                          }
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              total_views: parseInt(e.target.value) || 0,
+                            })
+                          }
+                          className="bg-gray-50"
+                        />
+                      </div>
+                    </div>
                   </div>
-                </div>
                 </div>
               )}
 
               {canUpdateAddress && (
                 <div className="border-t pt-8">
-                {/* Addresses Section */}
-                <div>
-                  <div className="flex items-center justify-between mb-6 pb-3 border-b">
-                    <div className="flex items-center gap-3">
-                      <div className="h-10 w-10 rounded-lg bg-red-50 flex items-center justify-center">
-                        <MapPin className="h-5 w-5 text-red-600" />
+                  {/* Addresses Section */}
+                  <div>
+                    <div className="flex items-center justify-between mb-6 pb-3 border-b">
+                      <div className="flex items-center gap-3">
+                        <div className="h-10 w-10 rounded-lg bg-red-50 flex items-center justify-center">
+                          <MapPin className="h-5 w-5 text-red-600" />
+                        </div>
+                        <div>
+                          <h3 className="font-semibold text-lg">Địa chỉ</h3>
+                          <p className="text-sm text-muted-foreground">
+                            Quản lý các địa chỉ của công ty
+                          </p>
+                        </div>
                       </div>
-                      <div>
-                        <h3 className="font-semibold text-lg">Địa chỉ</h3>
-                        <p className="text-sm text-muted-foreground">
-                          Quản lý các địa chỉ của công ty
-                        </p>
-                      </div>
-                    </div>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={handleAddAddress}
-                    >
-                      <Plus className="h-4 w-4 mr-2" />
-                      Thêm địa chỉ
-                    </Button>
-                  </div>
-
-                  <div className="space-y-4">
-                    {addresses.map((address, index) => (
-                      <div
-                        key={index}
-                        className="p-4 bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow"
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={handleAddAddress}
                       >
-                        <div className="space-y-4">
-                          <div className="flex items-center justify-between pb-3 border-b">
-                            <div className="flex items-center gap-2">
-                              <div className="h-8 w-8 rounded-md bg-red-50 flex items-center justify-center">
-                                <MapPin className="h-4 w-4 text-red-600" />
+                        <Plus className="h-4 w-4 mr-2" />
+                        Thêm địa chỉ
+                      </Button>
+                    </div>
+
+                    <div className="space-y-4">
+                      {addresses.map((address, index) => (
+                        <div
+                          key={index}
+                          className="p-4 bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow"
+                        >
+                          <div className="space-y-4">
+                            <div className="flex items-center justify-between pb-3 border-b">
+                              <div className="flex items-center gap-2">
+                                <div className="h-8 w-8 rounded-md bg-red-50 flex items-center justify-center">
+                                  <MapPin className="h-4 w-4 text-red-600" />
+                                </div>
+                                <h4 className="font-semibold text-sm">
+                                  Địa chỉ {index + 1}
+                                </h4>
                               </div>
-                              <h4 className="font-semibold text-sm">
-                                Địa chỉ {index + 1}
-                              </h4>
-                            </div>
-                            {addresses.length > 1 && (
-                              <Button
-                                type="button"
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => handleRemoveAddress(index)}
-                                className="h-8 w-8 p-0 hover:bg-red-50"
-                              >
-                                <Trash2 className="h-4 w-4 text-red-600" />
-                              </Button>
-                            )}
-                          </div>
-
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div className="space-y-2">
-                              <Label className="text-sm font-medium">
-                                Tiêu đề
-                              </Label>
-                              <Input
-                                value={address.title}
-                                onChange={(e) =>
-                                  handleAddressChange(
-                                    index,
-                                    "title",
-                                    e.target.value,
-                                  )
-                                }
-                                placeholder="Trụ sở chính"
-                                className="bg-gray-50"
-                              />
+                              {addresses.length > 1 && (
+                                <Button
+                                  type="button"
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => handleRemoveAddress(index)}
+                                  className="h-8 w-8 p-0 hover:bg-red-50"
+                                >
+                                  <Trash2 className="h-4 w-4 text-red-600" />
+                                </Button>
+                              )}
                             </div>
 
-                            <div className="space-y-2">
-                              <Label className="text-sm font-medium">
-                                Địa chỉ
-                              </Label>
-                              <Input
-                                value={address.location}
-                                onChange={(e) =>
-                                  handleAddressChange(
-                                    index,
-                                    "location",
-                                    e.target.value,
-                                  )
-                                }
-                                placeholder="123 Đường ABC..."
-                                className="bg-gray-50"
-                              />
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              <div className="space-y-2">
+                                <Label className="text-sm font-medium">
+                                  Tiêu đề
+                                </Label>
+                                <Input
+                                  value={address.title}
+                                  onChange={(e) =>
+                                    handleAddressChange(
+                                      index,
+                                      "title",
+                                      e.target.value,
+                                    )
+                                  }
+                                  placeholder="Trụ sở chính"
+                                  className="bg-gray-50"
+                                />
+                              </div>
+
+                              <div className="space-y-2">
+                                <Label className="text-sm font-medium">
+                                  Địa chỉ
+                                </Label>
+                                <Input
+                                  value={address.location}
+                                  onChange={(e) =>
+                                    handleAddressChange(
+                                      index,
+                                      "location",
+                                      e.target.value,
+                                    )
+                                  }
+                                  placeholder="123 Đường ABC..."
+                                  className="bg-gray-50"
+                                />
+                              </div>
                             </div>
                           </div>
                         </div>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
-                </div>
                 </div>
               )}
 
               {canUpdateSocial && (
                 <div className="border-t pt-8">
-                {/* Social Links Section */}
-                <div>
-                  <div className="flex items-center gap-3 mb-6 pb-3 border-b">
-                    <div className="h-10 w-10 rounded-lg bg-blue-100 flex items-center justify-center">
-                      <Globe className="h-5 w-5 text-blue-600" />
+                  {/* Social Links Section */}
+                  <div>
+                    <div className="flex items-center gap-3 mb-6 pb-3 border-b">
+                      <div className="h-10 w-10 rounded-lg bg-blue-100 flex items-center justify-center">
+                        <Globe className="h-5 w-5 text-blue-600" />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold text-lg">Mạng xã hội</h3>
+                        <p className="text-sm text-muted-foreground">
+                          Liên kết các trang mạng xã hội
+                        </p>
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="font-semibold text-lg">Mạng xã hội</h3>
-                      <p className="text-sm text-muted-foreground">
-                        Liên kết các trang mạng xã hội
-                      </p>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label>Facebook</Label>
+                        <Input
+                          value={socialLinks.facebook}
+                          onChange={(e) =>
+                            setSocialLinks({
+                              ...socialLinks,
+                              facebook: e.target.value,
+                            })
+                          }
+                          placeholder="https://facebook.com/..."
+                          className="bg-gray-50"
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label>Twitter</Label>
+                        <Input
+                          value={socialLinks.twitter}
+                          onChange={(e) =>
+                            setSocialLinks({
+                              ...socialLinks,
+                              twitter: e.target.value,
+                            })
+                          }
+                          placeholder="https://twitter.com/..."
+                          className="bg-gray-50"
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label>LinkedIn</Label>
+                        <Input
+                          value={socialLinks.linkedin}
+                          onChange={(e) =>
+                            setSocialLinks({
+                              ...socialLinks,
+                              linkedin: e.target.value,
+                            })
+                          }
+                          placeholder="https://linkedin.com/..."
+                          className="bg-gray-50"
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label>Instagram</Label>
+                        <Input
+                          value={socialLinks.instagram}
+                          onChange={(e) =>
+                            setSocialLinks({
+                              ...socialLinks,
+                              instagram: e.target.value,
+                            })
+                          }
+                          placeholder="https://instagram.com/..."
+                          className="bg-gray-50"
+                        />
+                      </div>
                     </div>
                   </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label>Facebook</Label>
-                      <Input
-                        value={socialLinks.facebook}
-                        onChange={(e) =>
-                          setSocialLinks({
-                            ...socialLinks,
-                            facebook: e.target.value,
-                          })
-                        }
-                        placeholder="https://facebook.com/..."
-                        className="bg-gray-50"
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label>Twitter</Label>
-                      <Input
-                        value={socialLinks.twitter}
-                        onChange={(e) =>
-                          setSocialLinks({
-                            ...socialLinks,
-                            twitter: e.target.value,
-                          })
-                        }
-                        placeholder="https://twitter.com/..."
-                        className="bg-gray-50"
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label>LinkedIn</Label>
-                      <Input
-                        value={socialLinks.linkedin}
-                        onChange={(e) =>
-                          setSocialLinks({
-                            ...socialLinks,
-                            linkedin: e.target.value,
-                          })
-                        }
-                        placeholder="https://linkedin.com/..."
-                        className="bg-gray-50"
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label>Instagram</Label>
-                      <Input
-                        value={socialLinks.instagram}
-                        onChange={(e) =>
-                          setSocialLinks({
-                            ...socialLinks,
-                            instagram: e.target.value,
-                          })
-                        }
-                        placeholder="https://instagram.com/..."
-                        className="bg-gray-50"
-                      />
-                    </div>
-                  </div>
-                </div>
                 </div>
               )}
 
               {canUpdateLinks && (
                 <div className="border-t pt-8">
-                {/* Links Section */}
-                <div>
-                  <div className="flex items-center justify-between mb-6 pb-3 border-b">
-                    <div className="flex items-center gap-3">
-                      <div className="h-10 w-10 rounded-lg bg-purple-50 flex items-center justify-center">
-                        <Link2 className="h-5 w-5 text-purple-600" />
+                  {/* Links Section */}
+                  <div>
+                    <div className="flex items-center justify-between mb-6 pb-3 border-b">
+                      <div className="flex items-center gap-3">
+                        <div className="h-10 w-10 rounded-lg bg-purple-50 flex items-center justify-center">
+                          <Link2 className="h-5 w-5 text-purple-600" />
+                        </div>
+                        <div>
+                          <h3 className="font-semibold text-lg">Liên kết</h3>
+                          <p className="text-sm text-muted-foreground">
+                            Các liên kết website bổ sung
+                          </p>
+                        </div>
                       </div>
-                      <div>
-                        <h3 className="font-semibold text-lg">Liên kết</h3>
-                        <p className="text-sm text-muted-foreground">
-                          Các liên kết website bổ sung
-                        </p>
-                      </div>
-                    </div>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={handleAddLink}
-                    >
-                      <Plus className="h-4 w-4 mr-2" />
-                      Thêm liên kết
-                    </Button>
-                  </div>
-
-                  <div className="space-y-4">
-                    {links.map((link, index) => (
-                      <div
-                        key={index}
-                        className="p-4 bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow"
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={handleAddLink}
                       >
-                        <div className="space-y-4">
-                          <div className="flex items-center justify-between pb-3 border-b">
-                            <div className="flex items-center gap-2">
-                              <div className="h-8 w-8 rounded-md bg-purple-50 flex items-center justify-center">
-                                <Link2 className="h-4 w-4 text-purple-600" />
+                        <Plus className="h-4 w-4 mr-2" />
+                        Thêm liên kết
+                      </Button>
+                    </div>
+
+                    <div className="space-y-4">
+                      {links.map((link, index) => (
+                        <div
+                          key={index}
+                          className="p-4 bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow"
+                        >
+                          <div className="space-y-4">
+                            <div className="flex items-center justify-between pb-3 border-b">
+                              <div className="flex items-center gap-2">
+                                <div className="h-8 w-8 rounded-md bg-purple-50 flex items-center justify-center">
+                                  <Link2 className="h-4 w-4 text-purple-600" />
+                                </div>
+                                <h4 className="font-semibold text-sm">
+                                  Liên kết {index + 1}
+                                </h4>
                               </div>
-                              <h4 className="font-semibold text-sm">
-                                Liên kết {index + 1}
-                              </h4>
-                            </div>
-                            {links.length > 1 && (
-                              <Button
-                                type="button"
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => handleRemoveLink(index)}
-                                className="h-8 w-8 p-0 hover:bg-red-50"
-                              >
-                                <Trash2 className="h-4 w-4 text-red-600" />
-                              </Button>
-                            )}
-                          </div>
-
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div className="space-y-2">
-                              <Label className="text-sm font-medium">
-                                Tiêu đề
-                              </Label>
-                              <Input
-                                value={link.title}
-                                onChange={(e) =>
-                                  handleLinkChange(
-                                    index,
-                                    "title",
-                                    e.target.value,
-                                  )
-                                }
-                                placeholder="Sở Khoa học và Công nghệ"
-                                className="bg-gray-50"
-                              />
+                              {links.length > 1 && (
+                                <Button
+                                  type="button"
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => handleRemoveLink(index)}
+                                  className="h-8 w-8 p-0 hover:bg-red-50"
+                                >
+                                  <Trash2 className="h-4 w-4 text-red-600" />
+                                </Button>
+                              )}
                             </div>
 
-                            <div className="space-y-2">
-                              <Label className="text-sm font-medium">
-                                Đường dẫn (URL)
-                              </Label>
-                              <Input
-                                value={link.link}
-                                onChange={(e) =>
-                                  handleLinkChange(
-                                    index,
-                                    "link",
-                                    e.target.value,
-                                  )
-                                }
-                                placeholder="https://example.com"
-                                className="bg-gray-50"
-                              />
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              <div className="space-y-2">
+                                <Label className="text-sm font-medium">
+                                  Tiêu đề
+                                </Label>
+                                <Input
+                                  value={link.title as string}
+                                  onChange={(e) =>
+                                    handleLinkChange(
+                                      index,
+                                      "title",
+                                      e.target.value,
+                                    )
+                                  }
+                                  placeholder="Sở Khoa học và Công nghệ"
+                                  className="bg-gray-50"
+                                />
+                              </div>
+
+                              <div className="space-y-2">
+                                <Label className="text-sm font-medium">
+                                  Đường dẫn (URL)
+                                </Label>
+                                <Input
+                                  value={link.link as string}
+                                  onChange={(e) =>
+                                    handleLinkChange(
+                                      index,
+                                      "link",
+                                      e.target.value,
+                                    )
+                                  }
+                                  placeholder="https://example.com"
+                                  className="bg-gray-50"
+                                />
+                              </div>
                             </div>
                           </div>
                         </div>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
-                </div>
                 </div>
               )}
             </div>

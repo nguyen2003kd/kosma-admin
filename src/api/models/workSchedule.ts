@@ -15,9 +15,15 @@ export interface WorkSchedule {
    * @nullable
    */
   tasks?: string | null;
-  /** Host name (free-text) */
+  /**
+   * Free-text name of the host
+   * @nullable
+   */
   host?: string | null;
-  /** Participants (free-text list) */
+  /**
+   * Free-text list of participants
+   * @nullable
+   */
   participants?: string | null;
   /** Work schedule date-time */
   schedule_time?: string;
