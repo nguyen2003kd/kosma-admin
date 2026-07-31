@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState, useDeferredValue } from 'react'
 import * as LucideIcons from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -18,6 +18,7 @@ interface IconItem {
   kebabName: string
   pascalName: string
   keywords: string[]
+  Component: LucideIcon
 }
 
 // Word-level alias map: what user types → which icon name parts it maps to
@@ -423,6 +424,7 @@ export function IconPicker({ value, onChange, className }: IconPickerProps) {
   const wrapperRef = useRef<HTMLDivElement>(null)
 
   const iconList = useMemo<IconItem[]>(() => {
+    const icons = LucideIcons as unknown as Record<string, LucideIcon>
     return Object.keys(LucideIcons)
       .filter(
         (key) =>
@@ -435,17 +437,27 @@ export function IconPicker({ value, onChange, className }: IconPickerProps) {
         kebabName: pascalToKebab(pascalName),
         pascalName,
         keywords: buildKeywords(pascalToKebab(pascalName), pascalName),
+        Component: icons[pascalName] || LucideIcons.HelpCircle,
       }))
   }, [])
 
+  const deferredSearch = useDeferredValue(search)
+
+  const MAX_VISIBLE = 120
+
   const filteredIcons = useMemo(() => {
     const results = iconList
-      .map((icon) => ({ icon, result: matchesSearch(icon, search) }))
+      .map((icon) => ({ icon, result: matchesSearch(icon, deferredSearch) }))
       .filter(({ result }) => result.pass)
       .sort((a, b) => b.result.score - a.result.score)
 
     return results.map(({ icon }) => icon)
-  }, [iconList, search])
+  }, [iconList, deferredSearch])
+
+  const visibleIcons = useMemo(
+    () => filteredIcons.slice(0, MAX_VISIBLE),
+    [filteredIcons]
+  )
 
   useEffect(() => {
     if (!open) return
@@ -497,13 +509,15 @@ export function IconPicker({ value, onChange, className }: IconPickerProps) {
             />
             <p className='mt-2 text-xs text-gray-500'>
               Tìm thấy {filteredIcons.length} / {iconList.length} icons
+              {filteredIcons.length > visibleIcons.length &&
+                ` (hiển thị ${visibleIcons.length} đầu)`}
             </p>
           </div>
           <ScrollArea className='h-[300px]'>
-            {filteredIcons.length > 0 ? (
+            {visibleIcons.length > 0 ? (
               <div className='grid grid-cols-6 gap-2 p-3'>
-                {filteredIcons.map((icon) => {
-                  const IconComponent = getIconComponent(icon.kebabName)
+                {visibleIcons.map((icon) => {
+                  const IconComponent = icon.Component
 
                   return (
                     <button

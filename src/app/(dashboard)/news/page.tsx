@@ -102,39 +102,6 @@ export default function NewsPage() {
             <CardHeader>
               <CardTitle>Danh sách tin tức</CardTitle>
               <CardDescription>Quản lý các bài viết tin tức</CardDescription>
-              {/* Tabs filter for is_service */}
-              <div className="mt-4">
-                <Tabs
-                  value={filterType}
-                  onValueChange={(value) =>
-                    setFilterType(value as "all" | "news" | "service")
-                  }
-                  className="w-full"
-                >
-                  <TabsList className="inline-flex h-auto gap-1 bg-gray-100 p-1 rounded-lg">
-                    <TabsTrigger
-                      value="all"
-                      className="data-[state=active]:bg-white data-[state=active]:text-blue-600 data-[state=active]:shadow-sm px-4 py-2 rounded-md text-sm font-medium transition-all"
-                    >
-                      Tất cả ({news.length})
-                    </TabsTrigger>
-                    <TabsTrigger
-                      value="news"
-                      className="data-[state=active]:bg-white data-[state=active]:text-green-600 data-[state=active]:shadow-sm px-4 py-2 rounded-md text-sm font-medium transition-all flex items-center gap-1.5"
-                    >
-                      <Newspaper className="h-4 w-4" />
-                      Tin tức ({news.filter((n) => !n.is_service).length})
-                    </TabsTrigger>
-                    <TabsTrigger
-                      value="service"
-                      className="data-[state=active]:bg-white data-[state=active]:text-purple-600 data-[state=active]:shadow-sm px-4 py-2 rounded-md text-sm font-medium transition-all flex items-center gap-1.5"
-                    >
-                      <Briefcase className="h-4 w-4" />
-                      Dịch vụ ({news.filter((n) => n.is_service).length})
-                    </TabsTrigger>
-                  </TabsList>
-                </Tabs>
-              </div>
             </CardHeader>
             <CardContent>
               <DataTable
