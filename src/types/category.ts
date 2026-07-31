@@ -30,6 +30,7 @@ export interface CategoryFormProps {
 	values: {
 		name: string
 		code: string
+		language: string
 		description: string
 		position: string
 		parent_category_id: string
@@ -53,13 +54,13 @@ export interface CategoryStatsProps {
 	}
 }
 export interface CategoryTableProps {
-    rows: Array<Category & { depth: number; parentId: string | null }>
-    visibleRows: Array<Category & { depth: number; parentId: string | null }>
-    expanded: Record<string, boolean>
-    isLoading: boolean
-    onToggle: (id: string) => void
-    onEdit: (category: Category) => void
-    onAddChild: (category: Category) => void
-    onDelete: (id: string) => void
-    onRefresh: () => void
+	rows: Array<Category & { depth: number; parentId: string | null }>
+	visibleRows: Array<Category & { depth: number; parentId: string | null }>
+	expanded: Record<string, boolean>
+	isLoading: boolean
+	onToggle: (id: string) => void
+	onEdit: (category: Category) => void
+	onAddChild: (category: Category) => void
+	onDelete: (id: string) => void
+	onRefresh: () => void
 }
