@@ -30,7 +30,7 @@ const ToastLayout = (props: { title?: string; content: ReactNode }) => {
   return (
     <div>
       <h2 className='font-semibold'>{title || 'Thông báo'}</h2>
-      {content}
+      <p className='font-normal'>{content}</p>
     </div>
   )
 }

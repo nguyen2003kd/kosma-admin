@@ -4,7 +4,7 @@ import React from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { Button } from '@/components/ui/button'
 import { Trash } from 'lucide-react'
-import { useDeleteApiV10CategoryId } from '@/api/endpoints/category'
+import { useDeleteApiV10CategoryId, getGetApiV10CategoryQueryKey } from '@/api/endpoints/category'
 import { toast } from '@/components/ui/toaster'
 import { extractErrorMessage } from '@/utils/error'
 
@@ -18,7 +18,7 @@ export const CategoryDelete: React.FC<{ id: string }> = ({ id }) => {
     if (!confirm('Bạn có chắc chắn muốn xóa danh mục này?')) return
     try {
       await deleteMutation.mutateAsync({ id })
-      await queryClient.invalidateQueries({ queryKey: ['/api/v1.0/category'] })
+      await queryClient.invalidateQueries({ queryKey: getGetApiV10CategoryQueryKey() })
       toast.success({ title: 'Xóa danh mục thành công', content: 'Danh mục đã được xóa.' })
     } catch (err: unknown) {
       console.error(err)
