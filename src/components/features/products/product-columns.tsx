@@ -11,23 +11,26 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { MoreHorizontal, ArrowUpDown, Eye, Edit, Trash } from 'lucide-react';
-import { Product } from '@/types';
+import { MoreHorizontal, ArrowUpDown, Edit, Trash } from 'lucide-react';
+import type { Product } from '@/api/models/product';
 
-export const productColumns: ColumnDef<Product>[] = [
+export interface ProductColumnsProps {
+  onEdit?: (product: Product) => void;
+  onDelete?: (product: Product) => void;
+}
+
+export const productColumns = ({ onEdit, onDelete }: ProductColumnsProps = {}): ColumnDef<Product>[] => [
   {
     accessorKey: 'name',
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-        >
-          Product Name
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+      >
+        Product Name
+        <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
+    ),
   },
   {
     accessorKey: 'sku',
@@ -37,50 +40,48 @@ export const productColumns: ColumnDef<Product>[] = [
     accessorKey: 'category',
     header: 'Category',
     cell: ({ row }) => {
-      const category = row.getValue('category') as string;
-      return <Badge variant="outline">{category}</Badge>;
+      const category = row.original.category;
+      return <Badge variant="outline">{category || '-'}</Badge>;
     },
   },
   {
     accessorKey: 'price',
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-        >
-          Price
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+      >
+        Price
+        <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
+    ),
     cell: ({ row }) => {
-      const amount = parseFloat(row.getValue('price'));
-      const formatted = new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'USD',
-      }).format(amount);
-      return <div className="font-medium">{formatted}</div>;
+      const price = row.original.price;
+      if (!price) return '-';
+      return (
+        <div className="font-medium">
+          ${typeof price === 'number' ? price.toFixed(2) : price}
+        </div>
+      );
     },
   },
   {
     accessorKey: 'stock',
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-        >
-          Stock
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+      >
+        Stock
+        <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
+    ),
     cell: ({ row }) => {
-      const stock = row.getValue('stock') as number;
+      const stock = row.original.stock ?? 0;
       const isLowStock = stock < 10;
+      const isOutOfStock = stock === 0;
       return (
-        <div className={isLowStock ? 'text-red-600 font-medium' : ''}>
+        <div className={isOutOfStock ? 'text-red-600 font-medium' : isLowStock ? 'text-yellow-600 font-medium' : ''}>
           {stock}
         </div>
       );
@@ -90,36 +91,33 @@ export const productColumns: ColumnDef<Product>[] = [
     accessorKey: 'status',
     header: 'Status',
     cell: ({ row }) => {
-      const status = row.getValue('status') as string;
-      const statusColors = {
+      const status = row.original.status || 'active';
+      const statusColors: Record<string, string> = {
         active: 'bg-green-100 text-green-800',
-        inactive: 'bg-gray-100 text-gray-800',
+        draft: 'bg-gray-100 text-gray-800',
         out_of_stock: 'bg-red-100 text-red-800',
+        discontinued: 'bg-red-100 text-red-800',
       };
-      
       return (
-        <Badge 
-          variant="secondary" 
-          className={statusColors[status as keyof typeof statusColors]}
-        >
-          {status.replace('_', ' ').charAt(0).toUpperCase() + status.replace('_', ' ').slice(1)}
+        <Badge className={statusColors[status] || 'bg-gray-100 text-gray-800'}>
+          {(status || 'active').replace('_', ' ')}
         </Badge>
       );
     },
   },
   {
-    accessorKey: 'createdAt',
+    accessorKey: 'created_at',
     header: 'Created',
     cell: ({ row }) => {
-      const date = new Date(row.getValue('createdAt'));
-      return <div>{date.toLocaleDateString()}</div>;
+      const date = row.original.created_at;
+      if (!date) return '-';
+      return <div>{new Date(date).toLocaleDateString()}</div>;
     },
   },
   {
     id: 'actions',
     cell: ({ row }) => {
       const product = row.original;
-
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -130,24 +128,22 @@ export const productColumns: ColumnDef<Product>[] = [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(product.id)}
-            >
+            <DropdownMenuItem onClick={() => product.id && navigator.clipboard.writeText(product.id)}>
               Copy product ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <Eye className="mr-2 h-4 w-4" />
-              View product
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              <Edit className="mr-2 h-4 w-4" />
-              Edit product
-            </DropdownMenuItem>
-            <DropdownMenuItem className="text-red-600">
-              <Trash className="mr-2 h-4 w-4" />
-              Delete product
-            </DropdownMenuItem>
+            {onEdit && (
+              <DropdownMenuItem onClick={() => onEdit(product)}>
+                <Edit className="mr-2 h-4 w-4" />
+                Edit product
+              </DropdownMenuItem>
+            )}
+            {onDelete && (
+              <DropdownMenuItem className="text-red-600" onClick={() => onDelete(product)}>
+                <Trash className="mr-2 h-4 w-4" />
+                Delete product
+              </DropdownMenuItem>
+            )}
           </DropdownMenuContent>
         </DropdownMenu>
       );
