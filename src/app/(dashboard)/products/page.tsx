@@ -38,7 +38,7 @@ export default function ProductsPage() {
         pageSize: String(pageSize),
         ...filters,
       });
-      return res.data;
+      return (res as { responseData?: { count: number; rows: Product[] } }).responseData;
     },
   });
 

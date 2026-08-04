@@ -16,7 +16,8 @@ export function useOrders() {
 
   const statusCounts = useMemo(() => {
     return orders.reduce((acc, order) => {
-      acc[order.status] = (acc[order.status] || 0) + 1
+      const key = (order.status || 'pending') as string
+      acc[key] = (acc[key] || 0) + 1
       return acc
     }, {} as Record<string, number>)
   }, [orders])
