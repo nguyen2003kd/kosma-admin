@@ -25,6 +25,7 @@ import type {
 
 import type {
   DeleteApiV10PostId200,
+  GetApiV10PostByTagsTagIdsParams,
   GetApiV10PostId200,
   GetApiV10PostIdApprovalHistoriesParams,
   GetApiV10PostParams,
@@ -639,6 +640,216 @@ export const usePostApiV10PostIdResult = <TError = unknown,
       return useMutation(mutationOptions, queryClient);
     }
     /**
+ * Retrieve a list of posts matching ANY of the given tag IDs (comma-separated). Supports pagination, filtering and sorting.
+ * @summary Get posts by tag IDs
+ */
+export const getApiV10PostByTagsTagIds = (
+    tagIds: string,
+    params?: GetApiV10PostByTagsTagIdsParams,
+ signal?: AbortSignal
+) => {
+      
+      
+      return mainInstance<ResponseGetAllData>(
+      {url: `/api/v1.0/post/by-tags/${tagIds}`, method: 'GET',
+        params, signal
+    },
+      );
+    }
+  
+
+
+
+export const getGetApiV10PostByTagsTagIdsInfiniteQueryKey = (tagIds?: string,
+    params?: GetApiV10PostByTagsTagIdsParams,) => {
+    return [
+    'infinite', `/api/v1.0/post/by-tags/${tagIds}`, ...(params ? [params]: [])
+    ] as const;
+    }
+
+export const getGetApiV10PostByTagsTagIdsQueryKey = (tagIds?: string,
+    params?: GetApiV10PostByTagsTagIdsParams,) => {
+    return [
+    `/api/v1.0/post/by-tags/${tagIds}`, ...(params ? [params]: [])
+    ] as const;
+    }
+
+    
+export const getGetApiV10PostByTagsTagIdsInfiniteQueryOptions = <TData = InfiniteData<Awaited<ReturnType<typeof getApiV10PostByTagsTagIds>>>, TError = void>(tagIds: string,
+    params?: GetApiV10PostByTagsTagIdsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiV10PostByTagsTagIds>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiV10PostByTagsTagIdsInfiniteQueryKey(tagIds,params);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiV10PostByTagsTagIds>>> = ({ signal }) => getApiV10PostByTagsTagIds(tagIds,params, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(tagIds),  retry: 3, retryDelay: 1000,  ...queryOptions} as UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiV10PostByTagsTagIds>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiV10PostByTagsTagIdsInfiniteQueryResult = NonNullable<Awaited<ReturnType<typeof getApiV10PostByTagsTagIds>>>
+export type GetApiV10PostByTagsTagIdsInfiniteQueryError = void
+
+
+export function useGetApiV10PostByTagsTagIdsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiV10PostByTagsTagIds>>>, TError = void>(
+ tagIds: string,
+    params: undefined |  GetApiV10PostByTagsTagIdsParams, options: { query:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiV10PostByTagsTagIds>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiV10PostByTagsTagIds>>,
+          TError,
+          Awaited<ReturnType<typeof getApiV10PostByTagsTagIds>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiV10PostByTagsTagIdsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiV10PostByTagsTagIds>>>, TError = void>(
+ tagIds: string,
+    params?: GetApiV10PostByTagsTagIdsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiV10PostByTagsTagIds>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiV10PostByTagsTagIds>>,
+          TError,
+          Awaited<ReturnType<typeof getApiV10PostByTagsTagIds>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiV10PostByTagsTagIdsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiV10PostByTagsTagIds>>>, TError = void>(
+ tagIds: string,
+    params?: GetApiV10PostByTagsTagIdsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiV10PostByTagsTagIds>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get posts by tag IDs
+ */
+
+export function useGetApiV10PostByTagsTagIdsInfinite<TData = InfiniteData<Awaited<ReturnType<typeof getApiV10PostByTagsTagIds>>>, TError = void>(
+ tagIds: string,
+    params?: GetApiV10PostByTagsTagIdsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiV10PostByTagsTagIds>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiV10PostByTagsTagIdsInfiniteQueryOptions(tagIds,params,options)
+
+  const query = useInfiniteQuery(queryOptions, queryClient) as  UseInfiniteQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+/**
+ * @summary Get posts by tag IDs
+ */
+export const prefetchGetApiV10PostByTagsTagIdsInfiniteQuery = async <TData = Awaited<ReturnType<typeof getApiV10PostByTagsTagIds>>, TError = void>(
+ queryClient: QueryClient, tagIds: string,
+    params?: GetApiV10PostByTagsTagIdsParams, options?: { query?:Partial<UseInfiniteQueryOptions<Awaited<ReturnType<typeof getApiV10PostByTagsTagIds>>, TError, TData>>, }
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getGetApiV10PostByTagsTagIdsInfiniteQueryOptions(tagIds,params,options)
+
+  await queryClient.prefetchInfiniteQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+export const getGetApiV10PostByTagsTagIdsQueryOptions = <TData = Awaited<ReturnType<typeof getApiV10PostByTagsTagIds>>, TError = void>(tagIds: string,
+    params?: GetApiV10PostByTagsTagIdsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiV10PostByTagsTagIds>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiV10PostByTagsTagIdsQueryKey(tagIds,params);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiV10PostByTagsTagIds>>> = ({ signal }) => getApiV10PostByTagsTagIds(tagIds,params, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(tagIds),  retry: 3, retryDelay: 1000,  ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getApiV10PostByTagsTagIds>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiV10PostByTagsTagIdsQueryResult = NonNullable<Awaited<ReturnType<typeof getApiV10PostByTagsTagIds>>>
+export type GetApiV10PostByTagsTagIdsQueryError = void
+
+
+export function useGetApiV10PostByTagsTagIds<TData = Awaited<ReturnType<typeof getApiV10PostByTagsTagIds>>, TError = void>(
+ tagIds: string,
+    params: undefined |  GetApiV10PostByTagsTagIdsParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiV10PostByTagsTagIds>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiV10PostByTagsTagIds>>,
+          TError,
+          Awaited<ReturnType<typeof getApiV10PostByTagsTagIds>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiV10PostByTagsTagIds<TData = Awaited<ReturnType<typeof getApiV10PostByTagsTagIds>>, TError = void>(
+ tagIds: string,
+    params?: GetApiV10PostByTagsTagIdsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiV10PostByTagsTagIds>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiV10PostByTagsTagIds>>,
+          TError,
+          Awaited<ReturnType<typeof getApiV10PostByTagsTagIds>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiV10PostByTagsTagIds<TData = Awaited<ReturnType<typeof getApiV10PostByTagsTagIds>>, TError = void>(
+ tagIds: string,
+    params?: GetApiV10PostByTagsTagIdsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiV10PostByTagsTagIds>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Get posts by tag IDs
+ */
+
+export function useGetApiV10PostByTagsTagIds<TData = Awaited<ReturnType<typeof getApiV10PostByTagsTagIds>>, TError = void>(
+ tagIds: string,
+    params?: GetApiV10PostByTagsTagIdsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiV10PostByTagsTagIds>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiV10PostByTagsTagIdsQueryOptions(tagIds,params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+/**
+ * @summary Get posts by tag IDs
+ */
+export const prefetchGetApiV10PostByTagsTagIdsQuery = async <TData = Awaited<ReturnType<typeof getApiV10PostByTagsTagIds>>, TError = void>(
+ queryClient: QueryClient, tagIds: string,
+    params?: GetApiV10PostByTagsTagIdsParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiV10PostByTagsTagIds>>, TError, TData>>, }
+
+  ): Promise<QueryClient> => {
+
+  const queryOptions = getGetApiV10PostByTagsTagIdsQueryOptions(tagIds,params,options)
+
+  await queryClient.prefetchQuery(queryOptions);
+
+  return queryClient;
+}
+
+
+
+/**
  * Retrieve a list of post with pagination, filtering and sorting. Supports filtering by category_id and page_id. Can sort by view count using sortField=view.
  * @summary Get all post
  */

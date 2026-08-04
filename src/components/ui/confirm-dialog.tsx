@@ -42,3 +42,54 @@ export function ConfirmDialog({
 }
 
 export default ConfirmDialog;
+
+// Hook wrapper for imperative confirm usage
+type ConfirmOptions = {
+  title?: string;
+  description?: string;
+  confirmText?: string;
+  cancelText?: string;
+  variant?: 'default' | 'destructive';
+};
+
+export function useConfirmModal(): {
+  confirm: (options?: ConfirmOptions) => Promise<boolean>;
+  ConfirmDialog: React.ReactNode;
+} {
+  const [state, setState] = React.useState<{
+    open: boolean;
+    options: ConfirmOptions;
+    resolve: (value: boolean) => void;
+  }>({ open: false, options: {}, resolve: () => {} });
+
+  const confirm = React.useCallback((options: ConfirmOptions = {}): Promise<boolean> => {
+    return new Promise((resolve) => {
+      setState({ open: true, options, resolve });
+    });
+  }, []);
+
+  const handleConfirm = () => {
+    state.resolve(true);
+    setState((s) => ({ ...s, open: false }));
+  };
+
+  const handleCancel = () => {
+    state.resolve(false);
+    setState((s) => ({ ...s, open: false }));
+  };
+
+  return {
+    confirm,
+    ConfirmDialog: (
+      <ConfirmDialog
+        open={state.open}
+        title={state.options.title}
+        description={state.options.description}
+        confirmLabel={state.options.confirmText}
+        cancelLabel={state.options.cancelText}
+        onConfirm={handleConfirm}
+        onCancel={handleCancel}
+      />
+    ),
+  };
+}

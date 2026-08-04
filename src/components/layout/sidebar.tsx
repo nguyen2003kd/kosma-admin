@@ -122,7 +122,7 @@ export function Sidebar() {
                 />
               </Link>
             )}
-            <Button
+            {/* <Button
               variant="ghost"
               size="icon"
               onClick={toggle}
@@ -134,13 +134,13 @@ export function Sidebar() {
                   !isOpen && "rotate-180",
                 )}
               />
-            </Button>
+            </Button> */}
           </div>
 
           <Separator />
 
           {/* Navigation */}
-          <nav className="flex-1 space-y-2 py-4 bg-white">
+          <nav className="flex-1 space-y-2 py-4 mx-2 bg-white">
             {filteredNavigation.map((item) => {
               const isActive = pathname === item.href;
               return (
