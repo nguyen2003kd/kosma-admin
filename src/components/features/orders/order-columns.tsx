@@ -12,7 +12,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { MoreHorizontal, Eye, Edit, Trash } from 'lucide-react';
-import type { Order } from '@/api/models/order';
+import type { Order } from '@/types';
 
 export interface OrderColumnsProps {
   onView?: (order: Order) => void;

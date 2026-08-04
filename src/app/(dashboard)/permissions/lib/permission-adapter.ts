@@ -178,7 +178,9 @@ export const MODULE_DEFINITIONS = [
   { id: "service", name: "Dịch vụ", description: "Quản lý dịch vụ" },
   { id: "recruitment", name: "Tuyển dụng", description: "Quản lý tuyển dụng" },
   { id: "candidate", name: "Ứng viên", description: "Quản lý ứng viên" },
-  { id: "introduction", name: "Trang giới thiệu", description: "Quản lý Trang giới thiệu" }
+  { id: "introduction", name: "Trang giới thiệu", description: "Quản lý Trang giới thiệu" },
+  { id: "orders", name: "Đơn hàng", description: "Quản lý đơn hàng" },
+  { id: "products", name: "Sản phẩm", description: "Quản lý sản phẩm" }
 ];
 
 /**

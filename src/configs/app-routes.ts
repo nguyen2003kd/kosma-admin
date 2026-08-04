@@ -204,7 +204,16 @@ export const APP_ROUTES: AppRouteConfig[] = [
     access: { resources: ['department'] },
     sidebar: { label: 'Phòng ban / Khối', icon: 'organizational-chart' },
   },
-
+  {
+    path: '/orders',
+    access: { resources: ['orders'] },
+    sidebar: { label: 'Đơn hàng', icon: 'circleCheckBig' },
+  },
+  {
+    path: '/products',
+    access: { resources: ['products'] },
+    sidebar: { label: 'Sản phẩm', icon: 'circleCheckBig' },
+  }
   // {
   //   path: '/recruitment',
   //   access: { resources: ['recruitment'] },

@@ -38,46 +38,60 @@ export interface ApiError {
   data?: unknown;
 }
 
-// Order Types
-export interface Order {
-  id: string;
-  orderNumber: string;
-  customerId: string;
-  customerName: string;
-  customerEmail: string;
-  status: OrderStatus;
-  totalAmount: number;
-  currency: string;
-  items: OrderItem[];
-  shippingAddress: Address;
-  billingAddress: Address;
-  paymentMethod: string;
-  createdAt: string;
-  updatedAt: string;
+// Order Types — matches backend Order/OrderItem shape (POST /api/v1.0/order)
+export interface OrderItem {
+  id?: string;
+  order_id?: string;
+  product_id?: string | null;
+  product_name?: string;
+  product_sku?: string | null;
+  product_image?: string | null;
+  quantity?: number;
+  unit_price?: number;
+  total_price?: number;
+  specifications?: Record<string, unknown> | null;
+  created_at?: string | null;
 }
 
-export type OrderStatus = 
-  | 'pending' 
-  | 'processing' 
-  | 'shipped' 
-  | 'delivered' 
+export type OrderStatus =
+  | 'pending'
+  | 'confirmed'
+  | 'processing'
+  | 'shipped'
+  | 'delivered'
   | 'cancelled';
 
-export interface OrderItem {
-  id: string;
-  productId: string;
-  productName: string;
-  quantity: number;
-  price: number;
-  subtotal: number;
-}
-
-export interface Address {
-  street: string;
-  city: string;
-  state: string;
-  country: string;
-  postalCode: string;
+export interface Order {
+  id?: string;
+  code?: string;
+  customer_name?: string;
+  customer_email?: string | null;
+  customer_phone?: string;
+  shipping_address?: string | null;
+  shipping_city?: string | null;
+  shipping_state?: string | null;
+  shipping_zip?: string | null;
+  subtotal?: number | null;
+  shipping_fee?: number | null;
+  tax?: number | null;
+  total?: number | null;
+  payment_method?: 'cod' | 'bank_transfer' | 'card' | null;
+  payment_status?: string | null;
+  payment_id?: string | null;
+  notes?: string | null;
+  source?: string | null;
+  is_guest?: boolean | null;
+  user_id?: string | null;
+  status?: OrderStatus | null;
+  confirmed_at?: string | null;
+  shipped_at?: string | null;
+  delivered_at?: string | null;
+  cancelled_at?: string | null;
+  created_at?: string | null;
+  updated_at?: string | null;
+  created_by?: string | null;
+  updated_by?: string | null;
+  order_items?: OrderItem[] | null;
 }
 
 // Product Types
@@ -112,6 +126,14 @@ export interface ProductFormData {
 }
 
 // Customer Types
+export interface Address {
+  street: string;
+  city: string;
+  state: string;
+  country: string;
+  postalCode: string;
+}
+
 export interface Customer {
   id: string;
   name: string;
