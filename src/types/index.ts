@@ -98,31 +98,47 @@ export interface Order {
 export interface Product {
   id: string;
   name: string;
-  description: string;
+  slug: string;
+  description?: string | null;
   sku: string;
-  category: string;
-  price: number;
-  costPrice: number;
-  stock: number;
-  images: string[];
+  category?: string | null;
+  price?: number | null;
+  original_price?: number | null;
+  cost_price?: number | null;
+  stock?: number | null;
+  product_type?: 'furniture' | 'material' | null;
+  brand?: string | null;
+  thumbnail_path?: string | null;
+  images?: string[] | null;
+  weight?: number | null;
+  dimensions?: string | null;
+  material?: string | null;
+  is_featured?: boolean | null;
+  is_active?: boolean | null;
   status: ProductStatus;
-  tags: string[];
-  createdAt: string;
-  updatedAt: string;
+  meta_title?: string | null;
+  meta_description?: string | null;
+  position?: number | null;
+  created_at?: string | null;
+  updated_at?: string | null;
+  created_by?: string | null;
+  updated_by?: string | null;
 }
 
-export type ProductStatus = 'active' | 'inactive' | 'out_of_stock';
+export type ProductStatus = 'active' | 'draft' | 'out_of_stock' | 'discontinued';
 
 export interface ProductFormData {
   name: string;
   description: string;
   sku: string;
+  slug: string;
   category: string;
   price: number;
-  costPrice: number;
+  original_price?: number;
   stock: number;
+  product_type: 'furniture' | 'material';
+  brand: string;
   status: ProductStatus;
-  tags: string[];
 }
 
 // Customer Types

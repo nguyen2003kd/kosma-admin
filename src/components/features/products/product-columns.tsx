@@ -12,7 +12,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { MoreHorizontal, ArrowUpDown, Edit, Trash } from 'lucide-react';
-import type { Product } from '@/api/models/product';
+import type { Product } from '@/types';
 
 export interface ProductColumnsProps {
   onEdit?: (product: Product) => void;
