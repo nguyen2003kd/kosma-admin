@@ -24,7 +24,7 @@ export function useProducts() {
   const stats = useMemo((): ProductStats => ({
     total: products.length,
     active: products.filter(p => p.status === 'active').length,
-    lowStock: products.filter(p => p.stock < 10).length,
+    lowStock: products.filter(p => (p.stock ?? 0) < 10).length,
     outOfStock: products.filter(p => p.status === 'out_of_stock').length,
   }), [products])
 

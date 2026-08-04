@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { DataTable } from '@/components/shared/data-table';
 import { productColumns } from '@/components/features/products/product-columns';
 import { getApiV10Product, deleteApiV10ProductId } from '@/api/endpoints/product';
-import type { Product } from '@/api/models/product';
+import type { Product } from '@/types';
 import { Plus, Download, Package, AlertTriangle, TrendingUp } from 'lucide-react';
 import { Header } from '@/components/layout/header';
 import { toast } from '@/components/ui/toaster';
@@ -29,16 +29,16 @@ export default function ProductsPage() {
   const { data, isLoading } = useQuery({
     queryKey: ['products', page, pageSize, search, statusFilter, categoryFilter],
     queryFn: async () => {
-      const filters: Record<string, string> = {};
-      if (search) filters.search = search;
-      if (statusFilter) filters.status = statusFilter;
-      if (categoryFilter) filters.category = categoryFilter;
+      const filterParts: string[] = [];
+      if (search) filterParts.push(`name~${search}`);
+      if (statusFilter) filterParts.push(`status==${statusFilter}`);
+      if (categoryFilter) filterParts.push(`category==${categoryFilter}`);
       const res = await getApiV10Product({
-        page: String(page),
-        pageSize: String(pageSize),
-        ...filters,
+        page,
+        pageSize,
+        ...(filterParts.length ? { filters: filterParts.join(',') } : {}),
       });
-      return (res as { responseData?: { count: number; rows: Product[] } }).responseData;
+      return (res as unknown as { responseData?: { count: number; rows: Product[] } }).responseData;
     },
   });
 

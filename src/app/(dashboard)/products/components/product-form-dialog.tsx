@@ -15,7 +15,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from '@/components/ui/toaster';
 import { postApiV10Product, putApiV10ProductId } from '@/api/endpoints/product';
-import type { Product } from '@/api/models/product';
+import type { Product } from '@/types';
 
 interface ProductFormDialogProps {
   open: boolean;
@@ -96,9 +96,9 @@ export function ProductFormDialog({ open, onClose, product, onSuccess }: Product
         slug: data.slug || data.name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, ''),
       };
       if (isEditing && product?.id) {
-        return putApiV10ProductId(product.id, payload);
+        return (putApiV10ProductId as any)(product.id, payload);
       }
-      return postApiV10Product(payload);
+      return postApiV10Product(payload as any);
     },
     onSuccess: () => {
       toast.success({ title: isEditing ? 'Updated' : 'Created', content: isEditing ? 'Product updated successfully' : 'Product created successfully' });
