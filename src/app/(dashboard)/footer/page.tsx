@@ -4,7 +4,6 @@ import {
   useDeleteApiV10FooterId,
   useGetApiV10Footer,
 } from "@/api/endpoints/footer";
-import type { Footer } from "@/api/models/footer";
 import { Header } from "@/components/layout/header";
 import {
   ConfirmModal,
@@ -127,7 +126,7 @@ export default function FooterPage() {
               <EmptyState />
             ) : (
               <div className="space-y-6">
-                {footers.map((footer: Footer, index: number) => (
+                {footers.map((footer: any, index: number) => (
                   <FooterCard
                     key={footer.id}
                     footer={footer}
