@@ -21,7 +21,9 @@ import {
   Package,
 } from 'lucide-react';
 import { useGetApiV10Order, usePutApiV10OrderId } from '@/api/endpoints/order';
-import type { Order } from '@/api/models/order';
+import type { GetApiV10OrderParams } from '@/api/models';
+import type { PutApiV10OrderIdBodyStatus } from '@/api/models/putApiV10OrderIdBodyStatus';
+import type { Order } from '@/types';
 
 export default function OrdersPage() {
   const [page, setPage] = useState(1);
@@ -30,17 +32,22 @@ export default function OrdersPage() {
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const queryClient = useQueryClient();
 
-  const params: Record<string, string> = {
-    page: String(page),
-    pageSize: String(pageSize),
+  const params: GetApiV10OrderParams = {
+    page,
+    pageSize,
   };
-  if (statusFilter) params.status = statusFilter;
+  if (statusFilter) params.filters = `status==${statusFilter}`;
 
   const { data, isLoading, refetch } = useGetApiV10Order(params);
   const updateStatusMutation = usePutApiV10OrderId();
 
-  const orders: Order[] = data?.data?.rows || [];
-  const totalCount = data?.data?.count || 0;
+  // The generated client types this endpoint's response as `void`, so we
+  // cast to the actual paginated shape returned by the backend.
+  const responseData = (data as unknown as {
+    responseData?: { count: number; rows: Order[] };
+  })?.responseData;
+  const orders: Order[] = responseData?.rows || [];
+  const totalCount = responseData?.count || 0;
   const totalPages = Math.ceil(totalCount / pageSize);
 
   const stats = {
@@ -54,7 +61,7 @@ export default function OrdersPage() {
     try {
       await updateStatusMutation.mutateAsync({
         id: order.id!,
-        data: { status },
+        data: { status: status as PutApiV10OrderIdBodyStatus },
       });
       toast.success({ title: 'Order updated', content: `Order ${order.code} updated to ${status}` });
       queryClient.invalidateQueries({ queryKey: ['/api/v1.0/order'] });
