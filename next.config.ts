@@ -4,7 +4,7 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'smeq-dev.meucorp.com',
+        hostname: 'kosmo.vietprodev.com',
         pathname: '/**',
       },
       {
