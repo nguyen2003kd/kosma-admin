@@ -13,7 +13,6 @@ export const ImageGrid: React.FC<{
   onRefresh: () => void;
 }> = ({ images, onEdit, onDelete }) => {
   const getImageUrl = (image: ImageFile) => {
-    // Use compressed version if available, otherwise use original
     const path =
       image.compress_info?.mobile ||
       image.compress_info?.tablet ||
@@ -65,20 +64,10 @@ export const ImageGrid: React.FC<{
         >
           {/* Image Container */}
           <div className="relative bg-gray-100 aspect-square overflow-hidden">
-            {/* <img
-              src={getImageUrl(image)}
-              alt={image.title || image.name}
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
-              loading="lazy"
-            /> */}
-
             <Image
               src={getImageUrl(image)}
               alt={image.title || image.name}
               fill
-              sizes="(max-width: 640px) 100vw,
-    (max-width: 1024px) 50vw,
-    25vw"
               className="object-contain group-hover:scale-105 transition-transform duration-200"
             />
 
@@ -90,8 +79,8 @@ export const ImageGrid: React.FC<{
                   className="p-2 bg-green-600 rounded-lg text-white hover:bg-green-700 opacity-0 group-hover:opacity-100 transition-opacity"
                   title="Tải xuống ảnh"
                 >
-                <Download className="h-5 w-5" />
-              </button>
+                  <Download className="h-5 w-5" />
+                </button>
               </Can>
               <Can I="update" a="gallery">
                 <button
@@ -100,16 +89,16 @@ export const ImageGrid: React.FC<{
                   title="Chỉnh sửa"
                 >
                   <Edit className="h-5 w-5" />
-              </button>
+                </button>
               </Can>
               <Can I="delete" a="gallery">
-              <button
-                onClick={() => onDelete(image)}
-                className="p-2 bg-red-600 rounded-lg text-white hover:bg-red-700 opacity-0 group-hover:opacity-100 transition-opacity"
-                title="Xóa"
-              >
-                <Trash2 className="h-5 w-5" />
-              </button>
+                <button
+                  onClick={() => onDelete(image)}
+                  className="p-2 bg-red-600 rounded-lg text-white hover:bg-red-700 opacity-0 group-hover:opacity-100 transition-opacity"
+                  title="Xóa"
+                >
+                  <Trash2 className="h-5 w-5" />
+                </button>
               </Can>
             </div>
           </div>

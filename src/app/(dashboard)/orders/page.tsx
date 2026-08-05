@@ -1,10 +1,12 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { DataTable } from '@/components/shared/data-table';
+import { orderColumns } from '@/components/features/orders/order-columns';
 import {
   Dialog,
   DialogContent,
@@ -19,6 +21,7 @@ import {
   CheckCircle,
   Truck,
   Package,
+  Download,
 } from 'lucide-react';
 import { useGetApiV10Order, usePutApiV10OrderId } from '@/api/endpoints/order';
 import type { GetApiV10OrderParams } from '@/api/models';
@@ -38,7 +41,7 @@ export default function OrdersPage() {
   };
   if (statusFilter) params.filters = `status==${statusFilter}`;
 
-  const { data, isLoading, refetch } = useGetApiV10Order(params);
+  const { data, isLoading } = useGetApiV10Order(params);
   const updateStatusMutation = usePutApiV10OrderId();
 
   // The generated client types this endpoint's response as `void`, so we
@@ -70,28 +73,42 @@ export default function OrdersPage() {
     }
   };
 
+  const handleView = (order: Order) => {
+    setSelectedOrder(order);
+  };
+
   return (
     <div>
       <Header title="Orders" />
       <main className="container mx-auto p-4 md:p-6">
         <div className="space-y-8">
-          {/* Page Header */}
-          <div>
-            <h2 className="text-3xl font-bold tracking-tight">Orders</h2>
-            <p className="text-muted-foreground">
-              Manage customer orders and track fulfillment
-            </p>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h2 className="text-3xl font-bold tracking-tight">Orders</h2>
+              <p className="text-muted-foreground">
+                Manage customer orders and track fulfillment
+              </p>
+            </div>
+            <div className="flex space-x-2">
+              <Button variant="outline">
+                <Download className="mr-2 h-4 w-4" />
+                Export
+              </Button>
+            </div>
           </div>
 
-          {/* Stats Cards */}
-          <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
+          {/* Order Stats */}
+          <div className="grid gap-4 grid-cols-2 md:grid-cols-2 lg:grid-cols-4">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Total</CardTitle>
+                <CardTitle className="text-sm font-medium">Total Orders</CardTitle>
                 <ShoppingCart className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">{totalCount}</div>
+                <p className="text-xs text-muted-foreground">
+                  Total orders from customers
+                </p>
               </CardContent>
             </Card>
 
@@ -101,17 +118,23 @@ export default function OrdersPage() {
                 <Clock className="h-4 w-4 text-yellow-500" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-yellow-600">{stats.pending}</div>
+                <div className="text-2xl font-bold">{stats.pending}</div>
+                <p className="text-xs text-yellow-500">
+                  Awaiting confirmation
+                </p>
               </CardContent>
             </Card>
 
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">Processing</CardTitle>
-                <Package className="h-4 w-4 text-blue-500" />
+                <Package className="h-4 w-4 text-blue-600" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-blue-600">{stats.processing}</div>
+                <div className="text-2xl font-bold">{stats.processing}</div>
+                <p className="text-xs text-blue-600">
+                  Confirmed &amp; in progress
+                </p>
               </CardContent>
             </Card>
 
@@ -121,7 +144,10 @@ export default function OrdersPage() {
                 <CheckCircle className="h-4 w-4 text-green-600" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-green-600">{stats.delivered}</div>
+                <div className="text-2xl font-bold">{stats.delivered}</div>
+                <p className="text-xs text-green-600">
+                  Successfully fulfilled
+                </p>
               </CardContent>
             </Card>
           </div>
@@ -132,9 +158,12 @@ export default function OrdersPage() {
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div>
                   <CardTitle>All Orders</CardTitle>
-                  <CardDescription>Customer orders from the website</CardDescription>
+                  <CardDescription>
+                    A list of all customer orders from the website
+                  </CardDescription>
                 </div>
-                <div className="flex gap-2">
+                {/* Filters */}
+                <div className="flex flex-wrap gap-2">
                   <select
                     value={statusFilter}
                     onChange={(e) => setStatusFilter(e.target.value)}
@@ -152,95 +181,12 @@ export default function OrdersPage() {
               </div>
             </CardHeader>
             <CardContent>
-              {isLoading ? (
-                <div className="text-center py-8">Loading...</div>
-              ) : orders.length === 0 ? (
-                <div className="text-center py-8 text-muted-foreground">
-                  No orders found
-                </div>
-              ) : (
-                <>
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-sm">
-                      <thead>
-                        <tr className="border-b bg-muted/50">
-                          <th className="text-left py-3 px-4 font-medium">Code</th>
-                          <th className="text-left py-3 px-4 font-medium">Customer</th>
-                          <th className="text-left py-3 px-4 font-medium">Phone</th>
-                          <th className="text-left py-3 px-4 font-medium">Total</th>
-                          <th className="text-left py-3 px-4 font-medium">Payment</th>
-                          <th className="text-left py-3 px-4 font-medium">Status</th>
-                          <th className="text-left py-3 px-4 font-medium">Date</th>
-                          <th className="text-left py-3 px-4 font-medium">Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {orders.map((order) => (
-                          <tr key={order.id} className="border-b hover:bg-muted/30">
-                            <td className="py-3 px-4 font-mono font-medium">{order.code}</td>
-                            <td className="py-3 px-4">
-                              <div className="font-medium">{order.customer_name}</div>
-                              <div className="text-xs text-muted-foreground">{order.customer_email}</div>
-                            </td>
-                            <td className="py-3 px-4">{order.customer_phone}</td>
-                            <td className="py-3 px-4 font-medium">${Number(order.total || 0).toFixed(2)}</td>
-                            <td className="py-3 px-4">
-                              <Badge variant="outline">{order.payment_method?.toUpperCase()}</Badge>
-                            </td>
-                            <td className="py-3 px-4">
-                              <StatusBadge status={order.status} />
-                            </td>
-                            <td className="py-3 px-4">
-                              {order.created_at ? new Date(order.created_at).toLocaleDateString() : '-'}
-                            </td>
-                            <td className="py-3 px-4">
-                              <div className="flex gap-1">
-                                <Button size="sm" variant="ghost" onClick={() => setSelectedOrder(order)}>
-                                  View
-                                </Button>
-                                {order.status === 'pending' && (
-                                  <Button size="sm" variant="ghost" onClick={() => handleUpdateStatus(order, 'confirmed')}>
-                                    <CheckCircle className="h-4 w-4 text-blue-600" />
-                                  </Button>
-                                )}
-                                {order.status === 'confirmed' && (
-                                  <Button size="sm" variant="ghost" onClick={() => handleUpdateStatus(order, 'processing')}>
-                                    <Clock className="h-4 w-4 text-purple-600" />
-                                  </Button>
-                                )}
-                                {['confirmed', 'processing'].includes(order.status || '') && (
-                                  <Button size="sm" variant="ghost" onClick={() => handleUpdateStatus(order, 'shipped')}>
-                                    <Truck className="h-4 w-4 text-indigo-600" />
-                                  </Button>
-                                )}
-                              </div>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-
-                  {/* Pagination */}
-                  {totalPages > 1 && (
-                    <div className="flex items-center justify-center gap-2 mt-4">
-                      <Button variant="outline" size="sm" onClick={() => setPage(1)} disabled={page === 1}>
-                        First
-                      </Button>
-                      <Button variant="outline" size="sm" onClick={() => setPage(p => Math.max(1, p - 1))} disabled={page === 1}>
-                        Prev
-                      </Button>
-                      <span className="text-sm px-4">Page {page} of {totalPages}</span>
-                      <Button variant="outline" size="sm" onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={page === totalPages}>
-                        Next
-                      </Button>
-                      <Button variant="outline" size="sm" onClick={() => setPage(totalPages)} disabled={page === totalPages}>
-                        Last
-                      </Button>
-                    </div>
-                  )}
-                </>
-              )}
+              <DataTable
+                columns={orderColumns({ onView: handleView, onUpdateStatus: handleUpdateStatus })}
+                data={orders}
+                searchPlaceholder="Search orders..."
+                isLoading={isLoading}
+              />
             </CardContent>
           </Card>
         </div>
@@ -347,21 +293,5 @@ export default function OrdersPage() {
         </DialogContent>
       </Dialog>
     </div>
-  );
-}
-
-function StatusBadge({ status }: { status?: string | null }) {
-  const colors: Record<string, string> = {
-    pending: 'bg-yellow-100 text-yellow-800',
-    confirmed: 'bg-blue-100 text-blue-800',
-    processing: 'bg-purple-100 text-purple-800',
-    shipped: 'bg-indigo-100 text-indigo-800',
-    delivered: 'bg-green-100 text-green-800',
-    cancelled: 'bg-red-100 text-red-800',
-  };
-  return (
-    <Badge className={colors[status || 'pending'] || 'bg-gray-100'}>
-      {status || 'pending'}
-    </Badge>
   );
 }
