@@ -95,6 +95,29 @@ export interface Order {
 }
 
 // Product Types
+export interface ProductImageFile {
+  id: string;
+  path: string;
+  name?: string | null;
+  mime?: string | null;
+  size?: number | string | null;
+  compress_info?: {
+    mobile?: string;
+    tablet?: string;
+    desktop?: string;
+    preload?: string;
+  } | null;
+}
+
+export interface ProductImage {
+  id: string;
+  position: number;
+  file_id: string;
+  product_id: string;
+  created_at?: string | null;
+  file?: ProductImageFile;
+}
+
 export interface Product {
   id: string;
   name: string;
@@ -109,7 +132,7 @@ export interface Product {
   product_type?: 'furniture' | 'material' | null;
   brand?: string | null;
   thumbnail_path?: string | null;
-  images?: string[] | null;
+  product_images?: ProductImage[] | null;
   weight?: number | null;
   dimensions?: string | null;
   material?: string | null;

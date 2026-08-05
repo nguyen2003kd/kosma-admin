@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { DataTable } from '@/components/shared/data-table';
 import { productColumns } from '@/components/features/products/product-columns';
-import { getApiV10Product, deleteApiV10ProductId } from '@/api/endpoints/product';
+import { getApiV10Product, getApiV10ProductId, deleteApiV10ProductId } from '@/api/endpoints/product';
 import type { Product } from '@/types';
 import { Plus, Download, Package, AlertTriangle, TrendingUp } from 'lucide-react';
 import { Header } from '@/components/layout/header';
@@ -67,8 +67,15 @@ export default function ProductsPage() {
     outOfStock: products.filter(p => p.status === 'out_of_stock' || (p.stock || 0) === 0).length,
   };
 
-  const handleEdit = (product: Product) => {
-    setEditingProduct(product);
+  const handleEdit = async (product: Product) => {
+    // Fetch full product detail (with product_images) before opening the form
+    try {
+      const res = await getApiV10ProductId(product.id);
+      const detail = (res as unknown as { responseData?: Product }).responseData;
+      setEditingProduct(detail ?? product);
+    } catch {
+      setEditingProduct(product);
+    }
     setIsFormOpen(true);
   };
 
