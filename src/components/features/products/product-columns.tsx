@@ -1,6 +1,7 @@
 'use client';
 
 import { ColumnDef } from '@tanstack/react-table';
+import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import {
@@ -13,13 +14,57 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { MoreHorizontal, ArrowUpDown, Edit, Trash } from 'lucide-react';
 import type { Product } from '@/types';
+import baseConfig from '@/configs/base';
 
 export interface ProductColumnsProps {
   onEdit?: (product: Product) => void;
   onDelete?: (product: Product) => void;
 }
 
+function getProductThumbSrc(product: Product): string | null {
+  const first = (product.product_images ?? [])
+    .slice()
+    .sort((a, b) => a.position - b.position)[0];
+  if (first?.file) {
+    const p =
+      (first.file.compress_info as any)?.desktop ||
+      (first.file.compress_info as any)?.tablet ||
+      first.file.path;
+    if (p) return `${baseConfig.imgEndpointDomain}${p}`;
+  }
+  if (product.thumbnail_path) {
+    return `${baseConfig.imgEndpointDomain}${product.thumbnail_path}`;
+  }
+  return null;
+}
+
 export const productColumns = ({ onEdit, onDelete }: ProductColumnsProps = {}): ColumnDef<Product>[] => [
+  {
+    id: 'image',
+    header: 'Image',
+    cell: ({ row }) => {
+      const src = getProductThumbSrc(row.original);
+      if (!src) {
+        return (
+          <div className="h-10 w-10 rounded-md bg-muted flex items-center justify-center text-[10px] text-muted-foreground">
+            No img
+          </div>
+        );
+      }
+      return (
+        <div className="relative h-10 w-10 rounded-md overflow-hidden border">
+          <Image
+            src={src}
+            alt={row.original.name}
+            fill
+            className="object-cover"
+            sizes="40px"
+          />
+        </div>
+      );
+    },
+    enableSorting: false,
+  },
   {
     accessorKey: 'name',
     header: ({ column }) => (

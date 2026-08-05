@@ -24,13 +24,13 @@ export const metadata: Metadata = {
 
   title: {
     default:
-      'Trung tâm Kỹ thuật Tiêu chuẩn Đo lường Chất lượng TP. Hồ Chí Minh',
+      'Kosmo - Admin',
     template:
-      '%s | Trung tâm Kỹ thuật Tiêu chuẩn Đo lường Chất lượng TP.HCM',
+      '%s | Kosmo - Admin',
   },
 
   description:
-    'Trung tâm Kỹ thuật Tiêu chuẩn Đo lường Chất lượng TP. Hồ Chí Minh là đơn vị sự nghiệp công lập trực thuộc Sở Khoa học và Công nghệ, thực hiện kiểm định, hiệu chuẩn, thử nghiệm, tư vấn và chứng nhận tiêu chuẩn, đo lường, chất lượng phục vụ quản lý nhà nước và doanh nghiệp.',
+    'Kosmo - Admin',
 
   keywords: [
     'tiêu chuẩn đo lường chất lượng',
@@ -48,30 +48,30 @@ export const metadata: Metadata = {
   ],
 
   robots: {
-    index: true,
-    follow: true,
+    index: false,
+    follow: false,
     nocache: false,
     googleBot: {
-      index: true,
-      follow: true,
+      index: false,
+      follow: false,
     },
   },
 
   openGraph: {
     title:
-      'Trung tâm Kỹ thuật Tiêu chuẩn Đo lường Chất lượng TP. Hồ Chí Minh',
+      'Kosmo - Admin',
     description:
-      'Đơn vị sự nghiệp công lập trực thuộc Sở Khoa học và Công nghệ TP.HCM, cung cấp dịch vụ kiểm định, hiệu chuẩn, thử nghiệm, chứng nhận và tư vấn về tiêu chuẩn, đo lường, chất lượng.',
+      'Kosmo - Admin',
     url: baseConfig.frontendDomain,
     siteName:
-      'Trung tâm Kỹ thuật Tiêu chuẩn Đo lường Chất lượng TP.HCM',
+      'Kosmo - Admin',
     images: [
       {
         url: `${baseConfig.frontendDomain}/${Thumnail.src}`,
         width: 1200,
         height: 630,
         alt:
-          'Trung tâm Kỹ thuật Tiêu chuẩn Đo lường Chất lượng TP. Hồ Chí Minh',
+          'Kosmo - Admin',
       },
     ],
     locale: 'vi_VN',
@@ -81,9 +81,9 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title:
-      'Trung tâm Kỹ thuật Tiêu chuẩn Đo lường Chất lượng TP.HCM',
+      'Kosmo - Admin',
     description:
-      'Kiểm định – Hiệu chuẩn – Thử nghiệm – Tư vấn tiêu chuẩn đo lường chất lượng tại TP. Hồ Chí Minh.',
+      'Kosmo - Admin',
     images: [`${baseConfig.frontendDomain}/${Thumnail.src}`],
   },
 }
