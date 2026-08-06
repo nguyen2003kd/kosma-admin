@@ -91,12 +91,17 @@ export const APP_ROUTES: AppRouteConfig[] = [
   {
     path: '/question',
     sidebar: {
-      label: 'Câu Hỏi Tuyển Dụng',
+      label: 'Tư vấn thiết kế',
       icon: 'quotation',
     },
     access: {
       resources: ['settings'],
     },
+  },
+  {
+    path: '/contact',
+    access: { resources: ['contact'] },
+    sidebar: { label: 'Liên hệ tư vấn', icon: 'contact' },
   },
   {
     path: '/list-img',
@@ -152,11 +157,6 @@ export const APP_ROUTES: AppRouteConfig[] = [
     path: '/candidate',
     access: { resources: ['candidate'] },
     sidebar: { label: 'Ứng viên', icon: 'users' },
-  },
-  {
-    path: '/contact',
-    access: { resources: ['contact'] },
-    sidebar: { label: 'Liên hệ', icon: 'contact' },
   },
   {
     path: '/quotation-status',

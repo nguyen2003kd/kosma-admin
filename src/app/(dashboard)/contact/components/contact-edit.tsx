@@ -1,8 +1,8 @@
 "use client"
 
 import React, { useEffect, useState } from "react"
-import type { Question } from "@/api/models/question"
-import type { QuestionMutate } from "@/api/models/questionMutate"
+import type { Contact } from "@/api/models/contact"
+import type { ContactMutate } from "@/api/models/contactMutate"
 import {
   Dialog,
   DialogContent,
@@ -16,25 +16,24 @@ import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Loader2 } from "lucide-react"
 
-interface QuestionEditProps {
-  item: Question | null
+interface ContactEditProps {
+  item: Contact | null
   open: boolean
   onClose: () => void
-  onSubmit: (id: string, values: QuestionMutate) => Promise<void>
+  onSubmit: (id: string, values: ContactMutate) => Promise<void>
 }
 
-export const QuestionEdit: React.FC<QuestionEditProps> = ({
+export const ContactEdit: React.FC<ContactEditProps> = ({
   item,
   open,
   onClose,
   onSubmit,
 }) => {
-  const [values, setValues] = useState<QuestionMutate>({
+  const [values, setValues] = useState<ContactMutate>({
     first_name: "",
     last_name: "",
     phone_number: "",
     email: "",
-    address: "",
     content: "",
   })
   const [saving, setSaving] = useState(false)
@@ -46,13 +45,12 @@ export const QuestionEdit: React.FC<QuestionEditProps> = ({
         last_name: item.last_name ?? "",
         phone_number: item.phone_number ?? "",
         email: item.email ?? "",
-        address: item.address ?? "",
         content: item.content ?? "",
       })
     }
   }, [item])
 
-  const handleChange = (field: keyof QuestionMutate, value: string) => {
+  const handleChange = (field: keyof ContactMutate, value: string) => {
     setValues((prev) => ({ ...prev, [field]: value }))
   }
 
@@ -75,49 +73,51 @@ export const QuestionEdit: React.FC<QuestionEditProps> = ({
     <Dialog open={open} onOpenChange={(o) => !o && handleClose()}>
       <DialogContent className="sm:max-w-[640px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Chỉnh sửa câu hỏi</DialogTitle>
+          <DialogTitle>Chỉnh sửa liên hệ</DialogTitle>
         </DialogHeader>
         <Card>
           <CardHeader>
-            <CardTitle>Chỉnh sửa thông tin câu hỏi</CardTitle>
+            <CardTitle>Chỉnh sửa thông tin liên hệ</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="q-lastname">Họ <span className="text-red-500">*</span></Label>
-                  <Input
-                    id="q-lastname"
-                    value={values.last_name ?? ""}
-                    onChange={(e) => handleChange("last_name", e.target.value)}
-                    className="mt-1"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="q-firstname">Tên <span className="text-red-500">*</span></Label>
-                  <Input
-                    id="q-firstname"
-                    value={values.first_name ?? ""}
-                    onChange={(e) => handleChange("first_name", e.target.value)}
-                    className="mt-1"
-                  />
+              <div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="c-lastname">Họ <span className="text-red-500">*</span></Label>
+                    <Input
+                      id="c-lastname"
+                      value={values.last_name ?? ""}
+                      onChange={(e) => handleChange("last_name", e.target.value)}
+                      className="mt-1"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="c-firstname">Tên <span className="text-red-500">*</span></Label>
+                    <Input
+                      id="c-firstname"
+                      value={values.first_name ?? ""}
+                      onChange={(e) => handleChange("first_name", e.target.value)}
+                      className="mt-1"
+                    />
+                  </div>
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Label htmlFor="q-phone">Số điện thoại</Label>
+                  <Label htmlFor="c-phone">Số điện thoại</Label>
                   <Input
-                    id="q-phone"
+                    id="c-phone"
                     value={values.phone_number ?? ""}
                     onChange={(e) => handleChange("phone_number", e.target.value)}
                     className="mt-1"
                   />
                 </div>
                 <div>
-                  <Label htmlFor="q-email">Email</Label>
+                  <Label htmlFor="c-email">Email</Label>
                   <Input
-                    id="q-email"
+                    id="c-email"
                     type="email"
                     value={values.email ?? ""}
                     onChange={(e) => handleChange("email", e.target.value)}
@@ -127,19 +127,9 @@ export const QuestionEdit: React.FC<QuestionEditProps> = ({
               </div>
 
               <div>
-                <Label htmlFor="q-address">Địa chỉ</Label>
-                <Input
-                  id="q-address"
-                  value={values.address ?? ""}
-                  onChange={(e) => handleChange("address", e.target.value)}
-                  className="mt-1"
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="q-content">Nội dung câu hỏi</Label>
+                <Label htmlFor="c-content">Nội dung tin nhắn</Label>
                 <Textarea
-                  id="q-content"
+                  id="c-content"
                   value={values.content ?? ""}
                   onChange={(e) => handleChange("content", e.target.value)}
                   rows={4}
