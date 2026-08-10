@@ -140,16 +140,16 @@ export function ProductFormDialog({ open, onClose, product, onSuccess }: Product
     },
     onSuccess: () => {
       toast.success({
-        title: isEditing ? 'Updated' : 'Created',
-        content: isEditing ? 'Product updated successfully' : 'Product created successfully',
+        title: isEditing ? 'Đã cập nhật' : 'Đã tạo',
+        content: isEditing ? 'Sản phẩm đã được cập nhật thành công' : 'Sản phẩm đã được tạo thành công',
       });
       queryClient.invalidateQueries({ queryKey: ['products'] });
       onSuccess();
     },
     onError: () => {
       toast.error({
-        title: 'Error',
-        content: isEditing ? 'Failed to update product' : 'Failed to create product',
+        title: 'Lỗi',
+        content: isEditing ? 'Không thể cập nhật sản phẩm' : 'Không thể tạo sản phẩm',
       });
     },
   });
@@ -186,11 +186,11 @@ export function ProductFormDialog({ open, onClose, product, onSuccess }: Product
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.name.trim()) {
-      toast.error({ title: 'Validation', content: 'Product name is required' });
+      toast.error({ title: 'Xác thực', content: 'Tên sản phẩm là bắt buộc' });
       return;
     }
     if (!form.sku.trim()) {
-      toast.error({ title: 'Validation', content: 'SKU is required' });
+      toast.error({ title: 'Xác thực', content: 'Mã SKU là bắt buộc' });
       return;
     }
     const payload = {
@@ -204,19 +204,19 @@ export function ProductFormDialog({ open, onClose, product, onSuccess }: Product
     <Dialog open={open} onOpenChange={(o) => !o && onClose()}>
       <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>{isEditing ? 'Edit Product' : 'Add New Product'}</DialogTitle>
+          <DialogTitle>{isEditing ? 'Chỉnh sửa sản phẩm' : 'Thêm sản phẩm mới'}</DialogTitle>
           <DialogDescription>
-            {isEditing ? 'Update product information below.' : 'Fill in the product details below.'}
+            {isEditing ? 'Cập nhật thông tin sản phẩm bên dưới.' : 'Nhập thông tin sản phẩm bên dưới.'}
           </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Multi-image picker */}
           <div className="col-span-2">
-            <Label>Product Images</Label>
+            <Label>Hình ảnh sản phẩm</Label>
             <p className="text-xs text-muted-foreground mb-2">
-              Select one or more images from the media library. Drag to reorder — the first image is
-              the primary image.
+              Chọn một hoặc nhiều hình ảnh từ thư viện media. Kéo để sắp xếp lại — hình ảnh đầu tiên là
+              hình ảnh chính.
             </p>
 
             {images.length > 0 && (
@@ -235,14 +235,14 @@ export function ProductFormDialog({ open, onClose, product, onSuccess }: Product
                     />
                     {idx === 0 && (
                       <span className="absolute top-1 left-1 px-1.5 py-0.5 rounded bg-black/70 text-white text-[9px] font-bold uppercase">
-                        Primary
+                        Ảnh chính
                       </span>
                     )}
                     <button
                       type="button"
                       onClick={() => handleRemoveImage(img.file_id)}
                       className="absolute top-1 right-1 p-1 bg-red-600 text-white rounded hover:bg-red-700 transition"
-                      aria-label="Remove image"
+                      aria-label="Xóa ảnh"
                     >
                       <X className="h-3 w-3" />
                     </button>
@@ -252,7 +252,7 @@ export function ProductFormDialog({ open, onClose, product, onSuccess }: Product
                         onClick={() => handleMoveImage(idx, 'up')}
                         disabled={idx === 0}
                         className="px-1.5 py-0.5 text-white text-xs disabled:opacity-30"
-                        aria-label="Move up"
+                        aria-label="Di chuyển lên"
                       >
                         ↑
                       </button>
@@ -262,7 +262,7 @@ export function ProductFormDialog({ open, onClose, product, onSuccess }: Product
                         onClick={() => handleMoveImage(idx, 'down')}
                         disabled={idx === images.length - 1}
                         className="px-1.5 py-0.5 text-white text-xs disabled:opacity-30"
-                        aria-label="Move down"
+                        aria-label="Di chuyển xuống"
                       >
                         ↓
                       </button>
@@ -279,19 +279,19 @@ export function ProductFormDialog({ open, onClose, product, onSuccess }: Product
               onClick={() => setShowImagePicker(true)}
             >
               <Upload className="h-4 w-4 mr-2" />
-              {images.length > 0 ? 'Add more images' : 'Select images'}
+              {images.length > 0 ? 'Thêm ảnh' : 'Chọn ảnh'}
             </Button>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div className="col-span-2">
-              <Label htmlFor="name">Product Name *</Label>
+              <Label htmlFor="name">Tên sản phẩm *</Label>
               <Input
                 id="name"
                 name="name"
                 value={form.name}
                 onChange={handleChange}
-                placeholder="One-Piece Elongated Toilet"
+                placeholder="Nhập tên sản phẩm"
                 required
               />
             </div>
@@ -309,7 +309,7 @@ export function ProductFormDialog({ open, onClose, product, onSuccess }: Product
             </div>
 
             <div>
-              <Label htmlFor="category">Category</Label>
+              <Label htmlFor="category">Danh mục</Label>
               <select
                 id="category"
                 name="category"
@@ -317,18 +317,18 @@ export function ProductFormDialog({ open, onClose, product, onSuccess }: Product
                 onChange={handleChange}
                 className="w-full px-3 py-2 border rounded-md text-sm"
               >
-                <option value="">Select category</option>
-                <option value="toilets">Toilets</option>
-                <option value="sinks">Sinks</option>
-                <option value="lighting">Lighting</option>
-                <option value="hardware">Hardware</option>
-                <option value="materials">Materials</option>
-                <option value="furniture">Furniture</option>
+                <option value="">Chọn danh mục</option>
+                <option value="toilets">Bồn cầu</option>
+                <option value="sinks">Bồn rửa</option>
+                <option value="lighting">Đèn chiếu sáng</option>
+                <option value="hardware">Phụ kiện</option>
+                <option value="materials">Vật liệu</option>
+                <option value="furniture">Nội thất</option>
               </select>
             </div>
 
             <div>
-              <Label htmlFor="product_type">Product Type</Label>
+              <Label htmlFor="product_type">Loại sản phẩm</Label>
               <select
                 id="product_type"
                 name="product_type"
@@ -336,13 +336,13 @@ export function ProductFormDialog({ open, onClose, product, onSuccess }: Product
                 onChange={handleChange}
                 className="w-full px-3 py-2 border rounded-md text-sm"
               >
-                <option value="material">Material</option>
-                <option value="furniture">Furniture</option>
+                <option value="material">Vật liệu</option>
+                <option value="furniture">Nội thất</option>
               </select>
             </div>
 
             <div>
-              <Label htmlFor="status">Status</Label>
+              <Label htmlFor="status">Trạng thái</Label>
               <select
                 id="status"
                 name="status"
@@ -350,15 +350,15 @@ export function ProductFormDialog({ open, onClose, product, onSuccess }: Product
                 onChange={handleChange}
                 className="w-full px-3 py-2 border rounded-md text-sm"
               >
-                <option value="active">Active</option>
-                <option value="draft">Draft</option>
-                <option value="out_of_stock">Out of Stock</option>
-                <option value="discontinued">Discontinued</option>
+                <option value="active">Đang kinh doanh</option>
+                <option value="draft">Bản nháp</option>
+                <option value="out_of_stock">Hết hàng</option>
+                <option value="discontinued">Ngừng kinh doanh</option>
               </select>
             </div>
 
             <div>
-              <Label htmlFor="price">Price ($)</Label>
+              <Label htmlFor="price">Giá ($)</Label>
               <Input
                 id="price"
                 name="price"
@@ -371,7 +371,7 @@ export function ProductFormDialog({ open, onClose, product, onSuccess }: Product
             </div>
 
             <div>
-              <Label htmlFor="original_price">Original Price ($)</Label>
+              <Label htmlFor="original_price">Giá gốc ($)</Label>
               <Input
                 id="original_price"
                 name="original_price"
@@ -384,7 +384,7 @@ export function ProductFormDialog({ open, onClose, product, onSuccess }: Product
             </div>
 
             <div>
-              <Label htmlFor="stock">Stock</Label>
+              <Label htmlFor="stock">Tồn kho</Label>
               <Input
                 id="stock"
                 name="stock"
@@ -396,7 +396,7 @@ export function ProductFormDialog({ open, onClose, product, onSuccess }: Product
             </div>
 
             <div>
-              <Label htmlFor="brand">Brand</Label>
+              <Label htmlFor="brand">Thương hiệu</Label>
               <Input
                 id="brand"
                 name="brand"
@@ -407,7 +407,7 @@ export function ProductFormDialog({ open, onClose, product, onSuccess }: Product
             </div>
 
             <div className="col-span-2">
-              <Label htmlFor="description">Description</Label>
+              <Label htmlFor="description">Mô tả</Label>
               <textarea
                 id="description"
                 name="description"
@@ -415,17 +415,17 @@ export function ProductFormDialog({ open, onClose, product, onSuccess }: Product
                 onChange={handleChange}
                 rows={3}
                 className="w-full px-3 py-2 border rounded-md text-sm"
-                placeholder="Product description..."
+                placeholder="Mô tả sản phẩm..."
               />
             </div>
           </div>
 
           <DialogFooter>
             <Button type="button" variant="outline" onClick={onClose}>
-              Cancel
+              Hủy
             </Button>
             <Button type="submit" disabled={mutation.isPending}>
-              {mutation.isPending ? 'Saving...' : isEditing ? 'Update Product' : 'Create Product'}
+              {mutation.isPending ? 'Đang lưu...' : isEditing ? 'Cập nhật sản phẩm' : 'Tạo sản phẩm'}
             </Button>
           </DialogFooter>
         </form>

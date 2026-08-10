@@ -48,11 +48,11 @@ export default function ProductsPage() {
       return deleteApiV10ProductId(id);
     },
     onSuccess: () => {
-      toast.success({ title: 'Deleted', content: 'Product deleted successfully' });
+      toast.success({ title: 'Đã xóa', content: 'Sản phẩm đã được xóa thành công' });
       queryClient.invalidateQueries({ queryKey: ['products'] });
     },
     onError: () => {
-      toast.error({ title: 'Delete failed', content: 'Failed to delete product' });
+      toast.error({ title: 'Xóa thất bại', content: 'Không thể xóa sản phẩm' });
     },
   });
 
@@ -81,9 +81,9 @@ export default function ProductsPage() {
 
   const handleDelete = async (product: Product) => {
     const confirmed = await confirmModal({
-      title: 'Delete Product',
-      description: `Are you sure you want to delete "${product.name}"? This action cannot be undone.`,
-      confirmText: 'Delete',
+      title: 'Xóa sản phẩm',
+      description: `Bạn có chắc muốn xóa "${product.name}"? Hành động này không thể hoàn tác.`,
+      confirmText: 'Xóa',
       variant: 'destructive',
     });
     if (confirmed && product.id) {
@@ -98,24 +98,24 @@ export default function ProductsPage() {
 
   return (
     <div>
-      <Header title="Products" />
-      <main className="container mx-auto p-4 md:p-6">
+      <Header title="Sản phẩm" />
+      <div className="p-6">
         <div className="space-y-8">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-              <h2 className="text-3xl font-bold tracking-tight">Products</h2>
+              <h2 className="text-3xl font-bold tracking-tight">Sản phẩm</h2>
               <p className="text-muted-foreground">
-                Manage your product inventory and catalog
+                Quản lý kho hàng và danh mục sản phẩm
               </p>
             </div>
             <div className="flex space-x-2">
               <Button variant="outline">
                 <Download className="mr-2 h-4 w-4" />
-                Export
+                Xuất
               </Button>
               <Button onClick={() => setIsFormOpen(true)}>
                 <Plus className="mr-2 h-4 w-4" />
-                Add Product
+                Thêm sản phẩm
               </Button>
             </div>
           </div>
@@ -124,52 +124,52 @@ export default function ProductsPage() {
           <div className="grid gap-4 grid-cols-2 md:grid-cols-2 lg:grid-cols-4">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Total Products</CardTitle>
+                <CardTitle className="text-sm font-medium">Tổng sản phẩm</CardTitle>
                 <Package className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">{totalCount}</div>
                 <p className="text-xs text-muted-foreground">
-                  Total products in catalog
+                  Tổng sản phẩm trong danh mục
                 </p>
               </CardContent>
             </Card>
 
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Active Products</CardTitle>
+                <CardTitle className="text-sm font-medium">Sản phẩm hoạt động</CardTitle>
                 <TrendingUp className="h-4 w-4 text-green-600" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">{stats.active}</div>
                 <p className="text-xs text-green-600">
-                  Currently available
+                  Đang kinh doanh
                 </p>
               </CardContent>
             </Card>
 
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Low Stock</CardTitle>
+                <CardTitle className="text-sm font-medium">Sắp hết hàng</CardTitle>
                 <AlertTriangle className="h-4 w-4 text-yellow-500" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">{stats.lowStock}</div>
                 <p className="text-xs text-yellow-500">
-                  Less than 10 items
+                  Còn dưới 10 sản phẩm
                 </p>
               </CardContent>
             </Card>
 
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Out of Stock</CardTitle>
+                <CardTitle className="text-sm font-medium">Hết hàng</CardTitle>
                 <AlertTriangle className="h-4 w-4 text-red-600" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">{stats.outOfStock}</div>
                 <p className="text-xs text-red-600">
-                  Needs restocking
+                  Cần nhập thêm hàng
                 </p>
               </CardContent>
             </Card>
@@ -180,9 +180,9 @@ export default function ProductsPage() {
             <CardHeader>
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div>
-                  <CardTitle>All Products</CardTitle>
+                  <CardTitle>Tất cả sản phẩm</CardTitle>
                   <CardDescription>
-                    A list of all products in your inventory
+                    Danh sách tất cả sản phẩm trong kho
                   </CardDescription>
                 </div>
                 {/* Filters */}
@@ -192,24 +192,24 @@ export default function ProductsPage() {
                     onChange={(e) => setStatusFilter(e.target.value)}
                     className="px-3 py-1.5 text-sm border rounded-md"
                   >
-                    <option value="">All Status</option>
-                    <option value="active">Active</option>
-                    <option value="draft">Draft</option>
-                    <option value="out_of_stock">Out of Stock</option>
-                    <option value="discontinued">Discontinued</option>
+                    <option value="">Tất cả trạng thái</option>
+                    <option value="active">Đang kinh doanh</option>
+                    <option value="draft">Bản nháp</option>
+                    <option value="out_of_stock">Hết hàng</option>
+                    <option value="discontinued">Ngừng kinh doanh</option>
                   </select>
                   <select
                     value={categoryFilter}
                     onChange={(e) => setCategoryFilter(e.target.value)}
                     className="px-3 py-1.5 text-sm border rounded-md"
                   >
-                    <option value="">All Categories</option>
-                    <option value="toilets">Toilets</option>
-                    <option value="sinks">Sinks</option>
-                    <option value="lighting">Lighting</option>
-                    <option value="hardware">Hardware</option>
-                    <option value="materials">Materials</option>
-                    <option value="furniture">Furniture</option>
+                    <option value="">Tất cả danh mục</option>
+                    <option value="toilets">Bồn cầu</option>
+                    <option value="sinks">Bồn rửa</option>
+                    <option value="lighting">Đèn chiếu sáng</option>
+                    <option value="hardware">Phụ kiện</option>
+                    <option value="materials">Vật liệu</option>
+                    <option value="furniture">Nội thất</option>
                   </select>
                 </div>
               </div>
@@ -218,13 +218,13 @@ export default function ProductsPage() {
               <DataTable
                 columns={productColumns({ onEdit: handleEdit, onDelete: handleDelete })}
                 data={products}
-                searchPlaceholder="Search products..."
+                searchPlaceholder="Tìm kiếm sản phẩm..."
                 isLoading={isLoading}
               />
             </CardContent>
           </Card>
         </div>
-      </main>
+      </div>
 
       {/* Confirm Dialog */}
       {ConfirmDialog}

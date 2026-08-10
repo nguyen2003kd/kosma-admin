@@ -98,7 +98,7 @@ const BLOCK_LIBRARY: BlockTemplate[] = [
       nameVi1: "TRUNG TÂM DỊCH VỤ PHÂN TÍCH THÍ NGHIỆM",
       nameVi2: "VÀ TIÊU CHUẨN ĐO LƯỜNG CHẤT LƯỢNG THÀNH PHỐ HỒ CHÍ MINH",
       nameEn: "CENTER OF ANALYTICAL SERVICES, EXPERIMENTATION AND STANDARDS, METROLOGY, QUALITY OF HO CHI MINH CITY",
-      abbreviation: "CASE-SMQ",
+      abbreviation: "Kosmo",
       headquarterAddress: "Số 2 Nguyễn Văn Thủ, Phường Tân Định, Thành phố Hồ Chí Minh",
       taxCode: "0319238568",
     }),
@@ -155,7 +155,7 @@ const BLOCK_LIBRARY: BlockTemplate[] = [
     type: "badge", group: "atomic",
     label: "Nhãn (Badge)", description: "Text nổi bật có màu",
     icon: <Tag className="w-4 h-4 text-yellow-600" />,
-    create: (): BadgeBlock => ({ id: generateId(), type: "badge", text: "CASE-SMQ", color: "cyan" }),
+    create: (): BadgeBlock => ({ id: generateId(), type: "badge", text: "Kosmo", color: "cyan" }),
   },
   // ── Layout ──
   {

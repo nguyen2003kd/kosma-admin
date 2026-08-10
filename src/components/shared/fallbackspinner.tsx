@@ -38,7 +38,7 @@ const CaseSmqProSpinner: React.FC<{ size?: number }> = ({ size = 700 }) => {
 
         <text x="200" y="115" dominantBaseline="middle" textAnchor="middle" fill={colors.text}
           style={{ fontFamily: 'Arial, Helvetica, sans-serif', fontWeight: 900, fontSize: 20, letterSpacing: '-0.5px', userSelect: 'none' }}>
-          CASE-SMQ
+          Kosmo
         </text>
 
         <circle className="ring-smooth-reverse" cx="200" cy="110" r="115" fill="none" stroke={colors.swooshStart} strokeWidth="1" strokeDasharray="10 20" opacity="0.2" />
