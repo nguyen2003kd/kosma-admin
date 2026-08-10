@@ -36,13 +36,13 @@ function getProductThumbSrc(product: Product): string | null {
 export const productColumns = ({ onEdit, onDelete }: ProductColumnsProps = {}): ColumnDef<Product>[] => [
   {
     id: 'image',
-    header: 'Image',
+    header: 'Ảnh',
     cell: ({ row }) => {
       const src = getProductThumbSrc(row.original);
       if (!src) {
         return (
           <div className="h-10 w-10 rounded-md bg-muted flex items-center justify-center text-[10px] text-muted-foreground">
-            No img
+            Không ảnh
           </div>
         );
       }
@@ -67,18 +67,18 @@ export const productColumns = ({ onEdit, onDelete }: ProductColumnsProps = {}): 
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
       >
-        Product Name
+        Tên sản phẩm
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
   },
   {
     accessorKey: 'sku',
-    header: 'SKU',
+    header: 'Mã SKU',
   },
   {
     accessorKey: 'category',
-    header: 'Category',
+    header: 'Danh mục',
     cell: ({ row }) => {
       const category = row.original.category;
       return <Badge variant="outline">{category || '-'}</Badge>;
@@ -91,7 +91,7 @@ export const productColumns = ({ onEdit, onDelete }: ProductColumnsProps = {}): 
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
       >
-        Price
+        Giá
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
@@ -112,7 +112,7 @@ export const productColumns = ({ onEdit, onDelete }: ProductColumnsProps = {}): 
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
       >
-        Stock
+        Tồn kho
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
@@ -129,7 +129,7 @@ export const productColumns = ({ onEdit, onDelete }: ProductColumnsProps = {}): 
   },
   {
     accessorKey: 'status',
-    header: 'Status',
+    header: 'Trạng thái',
     cell: ({ row }) => {
       const status = row.original.status || 'active';
       const statusColors: Record<string, string> = {
@@ -138,16 +138,22 @@ export const productColumns = ({ onEdit, onDelete }: ProductColumnsProps = {}): 
         out_of_stock: 'bg-red-100 text-red-800',
         discontinued: 'bg-red-100 text-red-800',
       };
+      const statusLabels: Record<string, string> = {
+        active: 'Đang kinh doanh',
+        draft: 'Bản nháp',
+        out_of_stock: 'Hết hàng',
+        discontinued: 'Ngừng kinh doanh',
+      };
       return (
         <Badge className={statusColors[status] || 'bg-gray-100 text-gray-800'}>
-          {(status || 'active').replace('_', ' ')}
+          {statusLabels[status] || status}
         </Badge>
       );
     },
   },
   {
     accessorKey: 'created_at',
-    header: 'Created',
+    header: 'Ngày tạo',
     cell: ({ row }) => {
       const date = row.original.created_at;
       if (!date) return '-';
@@ -162,26 +168,26 @@ export const productColumns = ({ onEdit, onDelete }: ProductColumnsProps = {}): 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
+              <span className="sr-only">Mở menu</span>
               <MoreHorizontal className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+            <DropdownMenuLabel>Hành động</DropdownMenuLabel>
             <DropdownMenuItem onClick={() => product.id && navigator.clipboard.writeText(product.id)}>
-              Copy product ID
+              Sao chép ID sản phẩm
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             {onEdit && (
               <DropdownMenuItem onClick={() => onEdit(product)}>
                 <Edit className="mr-2 h-4 w-4" />
-                Edit product
+                Chỉnh sửa sản phẩm
               </DropdownMenuItem>
             )}
             {onDelete && (
               <DropdownMenuItem className="text-red-600" onClick={() => onDelete(product)}>
                 <Trash className="mr-2 h-4 w-4" />
-                Delete product
+                Xóa sản phẩm
               </DropdownMenuItem>
             )}
           </DropdownMenuContent>

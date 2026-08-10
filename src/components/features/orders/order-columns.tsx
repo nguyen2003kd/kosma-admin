@@ -31,14 +31,14 @@ const STATUS_COLORS: Record<string, string> = {
 export const orderColumns = ({ onView, onUpdateStatus }: OrderColumnsProps = {}): ColumnDef<Order>[] => [
   {
     accessorKey: 'code',
-    header: 'Order Code',
+    header: 'Mã đơn hàng',
     cell: ({ row }) => (
       <span className="font-mono font-medium">{row.original.code}</span>
     ),
   },
   {
     accessorKey: 'customer_name',
-    header: 'Customer',
+    header: 'Khách hàng',
     cell: ({ row }) => (
       <div>
         <div className="font-medium">{row.original.customer_name}</div>
@@ -48,12 +48,12 @@ export const orderColumns = ({ onView, onUpdateStatus }: OrderColumnsProps = {})
   },
   {
     accessorKey: 'customer_phone',
-    header: 'Phone',
+    header: 'Điện thoại',
     cell: ({ row }) => row.original.customer_phone || '-',
   },
   {
     accessorKey: 'total',
-    header: 'Total',
+    header: 'Tổng tiền',
     cell: ({ row }) => {
       const total = row.original.total;
       return <span className="font-medium">${Number(total || 0).toFixed(2)}</span>;
@@ -61,28 +61,36 @@ export const orderColumns = ({ onView, onUpdateStatus }: OrderColumnsProps = {})
   },
   {
     accessorKey: 'payment_method',
-    header: 'Payment',
+    header: 'Thanh toán',
     cell: ({ row }) => {
       const method = row.original.payment_method;
-      const labels: Record<string, string> = { cod: 'COD', bank_transfer: 'Bank', card: 'Card' };
+      const labels: Record<string, string> = { cod: 'COD', bank_transfer: 'Ngân hàng', card: 'Thẻ' };
       return <Badge variant="outline">{labels[method || ''] || method || '-'}</Badge>;
     },
   },
   {
     accessorKey: 'status',
-    header: 'Status',
+    header: 'Trạng thái',
     cell: ({ row }) => {
       const status = row.original.status || 'pending';
+      const statusLabels: Record<string, string> = {
+        pending: 'Chờ xử lý',
+        confirmed: 'Đã xác nhận',
+        processing: 'Đang xử lý',
+        shipped: 'Đã giao hàng',
+        delivered: 'Đã giao',
+        cancelled: 'Đã hủy',
+      };
       return (
         <Badge className={STATUS_COLORS[status] || 'bg-gray-100'}>
-          {status}
+          {statusLabels[status] || status}
         </Badge>
       );
     },
   },
   {
     accessorKey: 'created_at',
-    header: 'Date',
+    header: 'Ngày',
     cell: ({ row }) => {
       const date = row.original.created_at;
       return date ? new Date(date).toLocaleDateString() : '-';
@@ -100,15 +108,15 @@ export const orderColumns = ({ onView, onUpdateStatus }: OrderColumnsProps = {})
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+            <DropdownMenuLabel>Hành động</DropdownMenuLabel>
             <DropdownMenuItem onClick={() => navigator.clipboard.writeText(order.id || '')}>
-              Copy ID
+              Sao chép ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             {onView && (
               <DropdownMenuItem onClick={() => onView(order)}>
                 <Eye className="mr-2 h-4 w-4" />
-                View Details
+                Xem chi tiết
               </DropdownMenuItem>
             )}
             {onUpdateStatus && (
@@ -116,7 +124,7 @@ export const orderColumns = ({ onView, onUpdateStatus }: OrderColumnsProps = {})
                 {order.status === 'confirmed' && (
                   <DropdownMenuItem onClick={() => onUpdateStatus(order, 'processing')}>
                     <Edit className="mr-2 h-4 w-4" />
-                    Move to Processing
+                    Chuyển sang đang xử lý
                   </DropdownMenuItem>
                 )}
                 {!['cancelled', 'delivered'].includes(order.status || '') && (
@@ -125,7 +133,7 @@ export const orderColumns = ({ onView, onUpdateStatus }: OrderColumnsProps = {})
                     onClick={() => onUpdateStatus(order, 'cancelled')}
                   >
                     <Trash className="mr-2 h-4 w-4" />
-                    Cancel Order
+                    Hủy đơn hàng
                   </DropdownMenuItem>
                 )}
               </>

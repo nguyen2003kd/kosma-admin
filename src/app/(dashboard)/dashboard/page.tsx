@@ -28,11 +28,11 @@ export default function DashboardPage() {
             <div>
               <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
               <p className="text-muted-foreground">
-                Welcome back! Here&apos;s an overview of your business.
+                Chào mừng bạn đến với trang dashboard.
               </p>
             </div>
             <Badge variant="outline">
-              Last updated: {new Date().toLocaleDateString()}
+              Cập nhật lần cuối: {new Date().toLocaleDateString()}
             </Badge>
           </div>
 
