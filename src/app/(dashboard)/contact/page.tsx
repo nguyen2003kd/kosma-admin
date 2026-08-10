@@ -1,146 +1,145 @@
-"use client";
+"use client"
 
-import React from "react";
+import React, { useCallback, useMemo, useState } from "react"
+import { useQueryClient } from "@tanstack/react-query"
+import { Header } from "@/components/layout/header"
+import { DataTable } from "@/components/shared/data-table"
+import { ConfirmModal, useConfirmModal } from "@/components/shared/confirm-modal"
+import { toast } from "@/components/ui/toaster"
+import { extractErrorMessage } from "@/utils/error"
+
+import type { Contact } from "@/api/models/contact"
+import type { ContactMutate } from "@/api/models/contactMutate"
+
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Header } from "@/components/layout/header";
-import { DataTable } from "@/components/shared/data-table";
-import {
-  useContactColumns,
-  ContactEditDialog,
-  ContactViewDialog,
-} from "./components";
-import { useContactData, useContactDetail, useContactMutations } from "./hooks";
-import type { Contact } from "@/types";
+  getGetApiV10ContactQueryKey,
+  useDeleteApiV10ContactId,
+  useGetApiV10Contact,
+  usePutApiV10ContactId,
+} from "@/api/endpoints/contact"
 
-export default function ContactPage() {
-  const [searchTerm, setSearchTerm] = React.useState("");
-  const [isEditDialogOpen, setIsEditDialogOpen] = React.useState(false);
-  const [isViewDialogOpen, setIsViewDialogOpen] = React.useState(false);
-  const [selectedContact, setSelectedContact] = React.useState<Contact | null>(
-    null
-  );
+import { createContactColumns, ContactDetail, ContactEdit } from "./components"
 
-  // Data hooks
-  const {
-    contacts,
-    totalCount,
-    isLoading,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-    refetch,
-  } = useContactData(searchTerm);
+const Page: React.FC = () => {
+  const queryClient = useQueryClient()
+  const { confirm } = useConfirmModal()
 
-  const contactDetail = useContactDetail(selectedContact?.id);
+  const { data: contactData, isLoading } = useGetApiV10Contact()
 
-  const {
-    formData,
-    setFormData,
-    resetForm,
-    setFormFromContact,
-    handleUpdate,
-    handleDelete,
-    isUpdating,
-  } = useContactMutations(refetch);
+  const updateMutation = usePutApiV10ContactId()
+  const deleteMutation = useDeleteApiV10ContactId()
 
-  // Handlers
-  const handleViewClick = (contact: Contact) => {
-    setSelectedContact(contact);
-    setIsViewDialogOpen(true);
-  };
+  const [viewing, setViewing] = useState<Contact | null>(null)
+  const [editing, setEditing] = useState<Contact | null>(null)
+  const [editOpen, setEditOpen] = useState(false)
+  const [deletingId, setDeletingId] = useState<string | null>(null)
 
-  const handleEditClick = (contact: Contact) => {
-    setSelectedContact(contact);
-    setFormFromContact(contact);
-    setIsEditDialogOpen(true);
-  };
+  const rows: Contact[] = useMemo(() => {
+    const r = (contactData as { responseData?: { rows?: Contact[] } } | undefined)?.responseData?.rows
+    if (Array.isArray(r)) return r
+    return []
+  }, [contactData])
 
-  const handleDeleteContact = (id: string) => {
-    handleDelete(id);
-  };
+  const canEdit = true
+  const canDelete = true
 
-  const handleUpdateContact = () => {
-    if (selectedContact?.id) {
-      handleUpdate(selectedContact.id);
-      setIsEditDialogOpen(false);
-      resetForm();
+  const handleRefresh = () => {
+    queryClient.invalidateQueries({ queryKey: getGetApiV10ContactQueryKey() })
+  }
+
+  const handleView = useCallback((item: Contact) => {
+    setViewing(item)
+  }, [])
+
+  const handleEdit = useCallback((item: Contact) => {
+    setEditing(item)
+    setEditOpen(true)
+  }, [])
+
+  const handleDelete = useCallback(
+    async (id: string) => {
+      const confirmed = await confirm({
+        title: "Xác nhận xóa",
+        description: "Bạn có chắc chắn muốn xóa liên hệ này? Hành động này không thể hoàn tác.",
+        confirmText: "Xóa",
+        cancelText: "Hủy bỏ",
+        variant: "destructive",
+      })
+      if (!confirmed) return
+
+      setDeletingId(id)
+      try {
+        await deleteMutation.mutateAsync({ id })
+        toast.success({ title: "Thành công", content: "Đã xóa liên hệ thành công" })
+        queryClient.invalidateQueries({ queryKey: getGetApiV10ContactQueryKey() })
+      } catch (error) {
+        const msg = extractErrorMessage(error)
+        toast.error({ title: "Xóa thất bại", content: msg })
+      } finally {
+        setDeletingId(null)
+      }
+    },
+    [confirm, deleteMutation, queryClient]
+  )
+
+  const handleUpdate = async (id: string, data: ContactMutate) => {
+    try {
+      await updateMutation.mutateAsync({ id, data })
+      toast.success({ title: "Thành công", content: "Đã cập nhật liên hệ thành công" })
+      queryClient.invalidateQueries({ queryKey: getGetApiV10ContactQueryKey() })
+    } catch (error) {
+      const msg = extractErrorMessage(error)
+      toast.error({ title: "Cập nhật thất bại", content: msg })
+      throw error
     }
-  };
+  }
 
-  const handleCancelEdit = () => {
-    setIsEditDialogOpen(false);
-    resetForm();
-  };
-
-  // Columns with action handlers
-  const columns = useContactColumns({
-    onView: handleViewClick,
-    onEdit: handleEditClick,
-    onDelete: handleDeleteContact,
-  });
+  const columns = useMemo(
+    () =>
+      createContactColumns({
+        onView: handleView,
+        onEdit: handleEdit,
+        onDelete: handleDelete,
+        deletingId,
+        canDelete,
+        canEdit,
+      }),
+    [handleView, handleEdit, handleDelete, deletingId, canDelete, canEdit]
+  )
 
   return (
-    <div>
-      <Header title="Quản lý Liên hệ" />
-      <main className="container mx-auto p-4 md:p-6">
-        <div className="space-y-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <h2 className="text-3xl font-bold tracking-tight">
-                Quản lý Liên hệ
-              </h2>
-              <p className="text-muted-foreground">
-                Quản lý các liên hệ từ khách hàng
-              </p>
-            </div>
-          </div>
-
-          {/* Contacts DataTable */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Danh sách liên hệ</CardTitle>
-              <CardDescription>Tổng cộng: {totalCount} liên hệ</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <DataTable
-                columns={columns}
-                data={contacts}
-                searchPlaceholder="Tìm kiếm theo tên, email hoặc điện thoại..."
-                isLoading={isLoading}
-                onRefresh={refetch}
-                onLoadMore={fetchNextPage}
-                hasNextPage={hasNextPage}
-                isFetchingNextPage={isFetchingNextPage}
-                onSearch={setSearchTerm}
-              />
-            </CardContent>
-          </Card>
+    <>
+      <Header title="Liên hệ" />
+      <div className="container mx-auto p-4 md:p-6 space-y-6">
+        <div>
+          <h2 className="text-3xl font-bold tracking-tight">Quản lý Liên hệ</h2>
+          <p className="text-muted-foreground">Danh sách liên hệ từ khách hàng</p>
         </div>
-      </main>
 
-      {/* Edit Dialog */}
-      <ContactEditDialog
-        open={isEditDialogOpen}
-        onOpenChange={setIsEditDialogOpen}
-        formData={formData}
-        onFormChange={setFormData}
-        onSubmit={handleUpdateContact}
-        onCancel={handleCancelEdit}
-        isPending={isUpdating}
+        <DataTable
+          columns={columns}
+          data={rows}
+          searchPlaceholder="Tìm kiếm liên hệ..."
+          isLoading={isLoading}
+          onRefresh={handleRefresh}
+        />
+      </div>
+
+      <ContactDetail item={viewing} open={Boolean(viewing)} onClose={() => setViewing(null)} />
+
+      <ContactEdit
+        item={editing}
+        open={editOpen}
+        onClose={() => {
+          setEditOpen(false)
+          setEditing(null)
+        }}
+        onSubmit={handleUpdate}
       />
 
-      {/* View Dialog */}
-      <ContactViewDialog
-        open={isViewDialogOpen}
-        onOpenChange={setIsViewDialogOpen}
-        contact={contactDetail}
-      />
-    </div>
-  );
+      <ConfirmModal />
+    </>
+  )
 }
+
+export default Page
