@@ -590,11 +590,10 @@ export function PostManagerPanel({
               availablePosts.map((post) => (
                 <div
                   key={post.id}
-                  className={`group flex items-center gap-3 p-4 rounded-xl border transition-all duration-200 ${
-                    selectedPostIds.has(post.id)
+                  className={`group flex items-center gap-3 p-4 rounded-xl border transition-all duration-200 ${selectedPostIds.has(post.id)
                       ? "bg-blue-50 border-blue-400 shadow-md ring-2 ring-blue-200"
                       : "bg-white border-gray-200 hover:shadow-md hover:border-blue-500/30"
-                  }`}
+                    }`}
                 >
                   <Checkbox
                     checked={selectedPostIds.has(post.id)}
@@ -611,11 +610,7 @@ export function PostManagerPanel({
                     className="h-5 w-5 data-[state=checked]:bg-blue-500 data-[state=checked]:border-blue-500"
                   />
                   <PostImage
-                    src={
-                      post.thumbnail_compress_info?.mobile ||
-                      post.thumbnail_path ||
-                      null
-                    }
+                    src={post.thumbnail_path || null}
                     alt={post.title}
                     className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 border border-gray-200 shadow-sm"
                   />
@@ -845,10 +840,10 @@ export function PostManagerPanel({
                       <SortablePostItem
                         post={activePost}
                         index={activePostIndex}
-                        onRemove={() => {}}
+                        onRemove={() => { }}
                         isRemoving={false}
                         isSelected={false}
-                        onSelectChange={() => {}}
+                        onSelectChange={() => { }}
                         isMultiSelectMode={false}
                       />
                     </div>

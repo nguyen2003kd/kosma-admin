@@ -11,7 +11,6 @@ import { Switch } from "@/components/ui/switch";
 import { Header } from "@/components/layout/header";
 import { useGetApiV10PostId, usePutApiV10PostId } from "@/api/endpoints/post";
 import { useGetApiV10Category } from "@/api/endpoints/category";
-import { useGetApiV10FileId } from "@/api/endpoints/file";
 import { PostMutateStatus, type PostMutate } from "@/api/models";
 import { ArrowLeft, Save, Upload, X } from "lucide-react";
 import { toast } from "@/components/ui/toaster";
@@ -30,7 +29,7 @@ import {
 } from "@/components/features/news/PostContentEditor";
 import { RichTextEditor, TagInput, type TagItem } from "@/components/shared";
 import { postApiV10Tags } from "@/api/endpoints/tag";
-import baseConfig from "@configs/base";
+
 export default function EditNewsPage() {
   const ability = useAbility();
   const params = useParams();
@@ -43,10 +42,6 @@ export default function EditNewsPage() {
   const { data: response, isLoading, error } = useGetApiV10PostId(newsId);
   const news = response?.responseData;
   const updatePostMutation = usePutApiV10PostId();
-  const { data: thumbnailData } = useGetApiV10FileId(
-    (news?.thumbnail_file_id || "").toString(),
-    { query: { enabled: !!news?.thumbnail_file_id } }
-  );
 
   const [title, setTitle] = useState("");
   const [code, setCode] = useState("");
@@ -134,42 +129,16 @@ export default function EditNewsPage() {
   }, [news]);
 
   useEffect(() => {
-    if (thumbnailData?.responseData) {
-      const fileData = thumbnailData.responseData as {
-        id: string;
-        path: string;
-        name: string;
-        full_path?: string;
-        mime?: string;
-        size?: number;
-        title?: string;
-        description?: string;
-        compress_info?: {
-          mobile?: string;
-          tablet?: string;
-          desktop?: string;
-          preload?: string;
-        };
-      };
+    if (news?.thumbnail_path) {
       setSelectedThumbnail({
-        id: fileData.id,
-        path: fileData.path || fileData.full_path || "",
-        name: fileData.name,
-        mime: fileData.mime || "image/*",
-        size: String(fileData.size || 0),
-        compress_info: fileData.compress_info
-          ? {
-            mobile: fileData.compress_info.mobile || "",
-            tablet: fileData.compress_info.tablet || "",
-            desktop: fileData.compress_info.desktop || "",
-            preload: fileData.compress_info.preload || "",
-          }
-          : undefined,
-        title: fileData.title,
-        description: fileData.description,
+        id: "",
+        path: news.thumbnail_path,
+        file_name: "",
+        mime: "image/*",
+        size: "0",
       });
     }
-  }, [thumbnailData]);
+  }, [news?.thumbnail_path]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -224,7 +193,7 @@ export default function EditNewsPage() {
           : undefined,
         category_ids: selectedCategories,
         tag_ids: tagIds,
-        thumbnail_file_id: selectedThumbnail?.id || undefined,
+        thumbnail_path: selectedThumbnail?.path || undefined,
         post_content: postSections.map((section) => {
           const baseContent = {
             content:
@@ -371,14 +340,13 @@ export default function EditNewsPage() {
                       <div className="relative inline-block">
                         <div className="w-32 h-32 rounded-lg overflow-hidden border-2 border-gray-200 relative">
                           <Image
-                            src={`${baseConfig.imgEndpointDomain}${selectedThumbnail?.path ||
-                              selectedThumbnail?.compress_info?.desktop ||
+                            src={selectedThumbnail?.path ||
                               news.thumbnail_path ||
                               ""
-                              }`}
+                            }
                             alt={
                               selectedThumbnail?.title ||
-                              selectedThumbnail?.name ||
+                              selectedThumbnail?.file_name ||
                               news.title ||
                               "Thumbnail"
                             }

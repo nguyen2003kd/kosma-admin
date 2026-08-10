@@ -93,9 +93,6 @@ export function useCategoryPostsWithQuery(
           created_by: String(postData.created_by ?? ""),
           updated_by: String(postData.updated_by ?? ""),
           is_service: Boolean(postData.is_service),
-          thumbnail_compress_info:
-            (postData.thumbnail_compress_info as News["thumbnail_compress_info"]) ??
-            null,
         };
 
         return {
@@ -111,9 +108,9 @@ export function useCategoryPostsWithQuery(
           post,
           page: pageData.id
             ? {
-                id: String(pageData.id ?? ""),
-                name: String(pageData.name ?? ""),
-              }
+              id: String(pageData.id ?? ""),
+              name: String(pageData.name ?? ""),
+            }
             : undefined,
         };
       });

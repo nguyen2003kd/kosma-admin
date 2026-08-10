@@ -129,7 +129,7 @@ export function VideoConfig() {
 
   const handleVideoSelect = async (file: ImagePickerFile) => {
     const newUrl = file.path;
-    const newTitle = file.title || file.name || "";
+    const newTitle = file.title || file.file_name || "";
 
     // Set URL & title immediately
     setVideos((prev) => {

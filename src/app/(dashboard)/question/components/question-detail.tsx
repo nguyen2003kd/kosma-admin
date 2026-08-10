@@ -13,7 +13,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { Loader2, Paperclip, FileText, Image as ImageIcon, Download } from "lucide-react"
 import { mainInstance } from "@/api/mutator/custom-instance"
-import baseConfig from "@/configs/base"
 import Image from "next/image"
 
 interface QuestionFileRow {
@@ -54,20 +53,9 @@ const DetailRow: React.FC<{ label: string; value?: string | null }> = ({
   </div>
 )
 
-const getCompressPath = (file?: File | null): string => {
-  if (!file) return ""
-  const ci = file.compress_info as
-    | { mobile?: string; tablet?: string; desktop?: string; preload?: string }
-    | null
-    | undefined
-  return ci?.mobile || ci?.tablet || ci?.desktop || ci?.preload || file.path || ""
-}
-
 const getFileUrl = (file?: File | null): string => {
-  const path = getCompressPath(file)
-  if (!path) return ""
-  if (path.startsWith("http")) return path
-  return `${baseConfig.imgEndpointDomain}${path}`
+  if (!file) return ""
+  return file.path || ""
 }
 
 const isImage = (file?: File | null): boolean => {
@@ -182,7 +170,7 @@ export const QuestionDetail: React.FC<QuestionDetailProps> = ({
                           <div className="relative w-full h-24 bg-gray-100 rounded overflow-hidden">
                             <Image
                               src={url}
-                              alt={file.name || "file"}
+                              alt={file.file_name || "file"}
                               fill
                               className="object-cover"
                             />
@@ -195,7 +183,7 @@ export const QuestionDetail: React.FC<QuestionDetailProps> = ({
                         <div className="flex items-center justify-between gap-2">
                           <div className="min-w-0 flex-1">
                             <p className="text-xs font-medium text-gray-900 truncate">
-                              {file.name || "Unnamed"}
+                              {file.file_name || "Unnamed"}
                             </p>
                             <p className="text-[11px] text-gray-500">
                               {formatFileSize(file.size)}

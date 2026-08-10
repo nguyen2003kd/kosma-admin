@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState, useRef, useEffect } from "react"
-import { Download, Eye, FileText, Loader2, MoreHorizontal} from "lucide-react"
+import { Download, Eye, FileText, Loader2, MoreHorizontal } from "lucide-react"
 import type { Candidate } from "@/api/models/candidate"
 import {
   Dialog,
@@ -51,16 +51,16 @@ const FileItem: React.FC<{
   const dropdownRef = useRef<HTMLDivElement>(null)
 
   const isPdf = file?.mime?.includes("pdf")
-  const fileName = file?.name || "Tệp không tên"
+  const fileName = file?.file_name || "Tệp không tên"
   const filePath = file?.path
   const formattedDate = item.created_at
     ? new Date(item.created_at).toLocaleDateString("vi-VN", {
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-      })
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    })
     : null
 
   useEffect(() => {
@@ -228,23 +228,23 @@ export const CandidateDetail: React.FC<CandidateDetailProps> = ({
                   const { label, className } =
                     normalized === "pending"
                       ? {
-                          label: "Đang xử lý",
-                          className: "bg-yellow-50 text-yellow-700 border-yellow-200",
-                        }
+                        label: "Đang xử lý",
+                        className: "bg-yellow-50 text-yellow-700 border-yellow-200",
+                      }
                       : normalized === "accepted" || normalized === "approved"
-                      ? {
+                        ? {
                           label: "Chấp nhận",
                           className: "bg-green-50 text-green-700 border-green-200",
                         }
-                      : normalized === "reject" || normalized === "rejected"
-                      ? {
-                          label: "Từ chối",
-                          className: "bg-red-50 text-red-600 border-red-200",
-                        }
-                      : {
-                          label: raw || "—",
-                          className: "bg-gray-50 text-gray-600 border-gray-200",
-                        }
+                        : normalized === "reject" || normalized === "rejected"
+                          ? {
+                            label: "Từ chối",
+                            className: "bg-red-50 text-red-600 border-red-200",
+                          }
+                          : {
+                            label: raw || "—",
+                            className: "bg-gray-50 text-gray-600 border-gray-200",
+                          }
                   return (
                     <Badge variant="outline" className={className}>
                       {label}

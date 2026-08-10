@@ -7,7 +7,6 @@ import { Trash2, X } from 'lucide-react'
 import type { LibraryFile } from '@/types/library-file'
 import { toast } from '@/components/ui/toaster'
 import { extractErrorMessage } from '@/utils/error'
-import baseConfig from '@configs/base'
 
 export const VideoDelete: React.FC<{
   video: LibraryFile
@@ -18,7 +17,7 @@ export const VideoDelete: React.FC<{
   const deleteMutation = useDeleteApiV10FileId()
   const deleting = deleteMutation.isPending
 
-  const getVideoUrl = (path: string) => `${baseConfig.imgEndpointDomain}${path}`
+  const getVideoUrl = (path: string) => path
 
   const handleDelete = async () => {
     try {
@@ -59,14 +58,14 @@ export const VideoDelete: React.FC<{
           <div className="bg-red-50 border border-red-200 rounded-lg p-4">
             <p className="text-sm text-red-800 font-medium mb-2">Thao tác này không thể hoàn tác</p>
             <p className="text-sm text-red-700">
-              Bạn có chắc chắn muốn xóa video &quot;{video.title || video.name}&quot;?
+              Bạn có chắc chắn muốn xóa video &quot;{video.title || video.file_name}&quot;?
             </p>
           </div>
 
           <div className="bg-gray-50 p-3 rounded-lg text-sm space-y-1">
             <div className="flex justify-between">
               <span className="text-gray-600">Tên:</span>
-              <span className="font-medium text-gray-900 truncate ml-2">{video.name}</span>
+              <span className="font-medium text-gray-900 truncate ml-2">{video.file_name}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-gray-600">Kích thước:</span>

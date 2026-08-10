@@ -14,7 +14,7 @@ import { VideoEdit } from './components/video-edit'
 import { VideoDelete } from './components/video-delete'
 
 const buildVideoFilter = (searchTerm: string) => {
-  const baseFilter = 'is_in_library==true,type==VIDEO'
+  const baseFilter = 'type==VIDEO'
   if (!searchTerm) return baseFilter
   return `(title|description|note)@=${searchTerm},${baseFilter}`
 }

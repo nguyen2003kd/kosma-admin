@@ -14,7 +14,6 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { MoreHorizontal, ArrowUpDown, Edit, Trash } from 'lucide-react';
 import type { Product } from '@/types';
-import baseConfig from '@/configs/base';
 
 export interface ProductColumnsProps {
   onEdit?: (product: Product) => void;
@@ -26,14 +25,10 @@ function getProductThumbSrc(product: Product): string | null {
     .slice()
     .sort((a, b) => a.position - b.position)[0];
   if (first?.file) {
-    const p =
-      (first.file.compress_info as any)?.desktop ||
-      (first.file.compress_info as any)?.tablet ||
-      first.file.path;
-    if (p) return `${baseConfig.imgEndpointDomain}${p}`;
+    if (first.file.path) return first.file.path;
   }
   if (product.thumbnail_path) {
-    return `${baseConfig.imgEndpointDomain}${product.thumbnail_path}`;
+    return product.thumbnail_path;
   }
   return null;
 }

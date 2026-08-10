@@ -1,14 +1,12 @@
 "use client";
 
-import baseConfig from "@/configs/base";
 import Image from "next/image";
 import type { PostImageProps } from "../types";
 
 export function PostImage({ src, alt, className }: PostImageProps) {
   const getImageUrl = (path: string | null) => {
     if (!path) return null;
-    if (path.startsWith("http")) return path;
-    return baseConfig.imgEndpointDomain + path;
+    return path;
   };
 
   const imageUrl = getImageUrl(src);

@@ -22,7 +22,6 @@ export const VideoUpload: React.FC<{ onSuccess?: () => void }> = ({ onSuccess })
     title: '',
     description: '',
     note: '',
-    is_in_library: true,
   })
 
   const uploading = postMutation.isPending
@@ -73,7 +72,7 @@ export const VideoUpload: React.FC<{ onSuccess?: () => void }> = ({ onSuccess })
       .then((thumb) => {
         if (thumb) setThumbnailUrl(thumb)
       })
-      .catch(() => {})
+      .catch(() => { })
   }
 
   const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -110,7 +109,7 @@ export const VideoUpload: React.FC<{ onSuccess?: () => void }> = ({ onSuccess })
     setFile(null)
     setPreviewUrl('')
     setThumbnailUrl('')
-    setFormData({ title: '', description: '', note: '', is_in_library: true })
+    setFormData({ title: '', description: '', note: '' })
   }
 
   const handleUpload = async () => {
@@ -123,7 +122,6 @@ export const VideoUpload: React.FC<{ onSuccess?: () => void }> = ({ onSuccess })
         title: formData.title || file.name,
         description: formData.description || undefined,
         note: formData.note || undefined,
-        is_in_library: true,
       }
 
       await postMutation.mutateAsync({ data: uploadData })
@@ -167,9 +165,8 @@ export const VideoUpload: React.FC<{ onSuccess?: () => void }> = ({ onSuccess })
                   onDragLeave={handleDrag}
                   onDragOver={handleDrag}
                   onDrop={handleDrop}
-                  className={`border-2 border-dashed rounded-xl p-12 text-center transition ${
-                    dragActive ? 'border-blue-500 bg-blue-50' : 'border-gray-300 bg-gray-50 hover:border-gray-400'
-                  }`}
+                  className={`border-2 border-dashed rounded-xl p-12 text-center transition ${dragActive ? 'border-blue-500 bg-blue-50' : 'border-gray-300 bg-gray-50 hover:border-gray-400'
+                    }`}
                 >
                   <Upload className="h-12 w-12 mx-auto mb-3 text-gray-400" />
                   <p className="text-lg font-medium text-gray-700 mb-1">Kéo thả video vào đây</p>

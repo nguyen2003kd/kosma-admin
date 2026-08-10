@@ -11,7 +11,7 @@
  * Build filter string for document files (list-file page)
  */
 export const buildDocumentFilter = (searchTerm: string): string => {
-  const baseFilter = 'is_in_library==true,type==file'
+  const baseFilter = 'type==file'
   if (!searchTerm) return baseFilter
   return `(title|description|note)@=${encodeURI(searchTerm)},${baseFilter}`
 }
@@ -20,7 +20,7 @@ export const buildDocumentFilter = (searchTerm: string): string => {
  * Build filter string for image files (list-img page)
  */
 export const buildImageFilter = (searchTerm: string): string => {
-  const baseFilter = 'is_in_library==true,type==image'
+  const baseFilter = 'type==image'
   if (!searchTerm) return baseFilter
   return `(title|description|note)@=${encodeURI(searchTerm)},${baseFilter}`
 }
@@ -29,7 +29,7 @@ export const buildImageFilter = (searchTerm: string): string => {
  * Build filter string for video files (list-video page)
  */
 export const buildVideoFilter = (searchTerm: string): string => {
-  const baseFilter = 'is_in_library==true,type==video'
+  const baseFilter = 'type==video'
   if (!searchTerm) return baseFilter
   return `(title|description|note)@=${encodeURI(searchTerm)},${baseFilter}`
 }

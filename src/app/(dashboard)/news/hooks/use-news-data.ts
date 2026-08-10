@@ -35,9 +35,10 @@ export function useNewsData(searchQuery: string) {
         : statusFilter;
 
       const res = await getApiV10Post(
-        { page: pageParam, pageSize, sortOrder: "desc", filters,
+        {
+          page: pageParam, pageSize, sortOrder: "desc", filters,
           filterBy: "ADMIN"
-         },
+        },
         signal
       );
 
@@ -80,9 +81,6 @@ export function useNewsData(searchQuery: string) {
           created_by: String(item.created_by ?? ""),
           updated_by: String(item.updated_by ?? ""),
           is_service: Boolean(item.is_service),
-          thumbnail_compress_info:
-            (item.thumbnail_compress_info as News["thumbnail_compress_info"]) ??
-            null,
         };
       });
 

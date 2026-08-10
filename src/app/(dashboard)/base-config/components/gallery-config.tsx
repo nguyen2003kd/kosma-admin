@@ -11,7 +11,6 @@ import { usePostApiV10File } from "@/api/endpoints/file";
 import { useGetApiV10PageConfig, usePutApiV10PageConfigId } from "@/api/endpoints/page-config";
 import type { PageConfig } from "@/api/models";
 import { Edit, Save, Loader2 } from "lucide-react";
-import baseConfig from "@/configs/base";
 import { toast } from "@/components/ui/toaster";
 
 interface BannerSlide {
@@ -108,17 +107,7 @@ export function GalleryConfig() {
 
   const getImageUrl = (file: ImagePickerFile | undefined) => {
     if (!file) return "";
-
-    let imagePath = "";
-    if (file.compress_info) {
-      imagePath = file.compress_info.desktop || file.compress_info.tablet || file.path || "";
-    } else {
-      imagePath = file.path || "";
-    }
-
-    return imagePath.startsWith("http")
-      ? imagePath
-      : `${baseConfig.imgEndpointDomain}${imagePath}`;
+    return file.path || "";
   };
 
   const handleImageSelect = (file: ImagePickerFile) => {
@@ -187,7 +176,6 @@ export function GalleryConfig() {
                 data: {
                   file: blob,
                   title: `Gallery Image ${index + 1}`,
-                  is_in_library: true,
                 },
               });
 
