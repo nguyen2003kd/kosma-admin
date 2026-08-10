@@ -9,7 +9,6 @@ import { Header } from "@/components/layout/header";
 import { useGetApiV10PostId } from "@/api/endpoints/post";
 import Link from "next/link";
 import Image from "next/image";
-import baseConfig from "@configs/base";
 import parse from 'html-react-parser'
 import { useEffect } from "react";
 function ImageDisplay({
@@ -19,34 +18,15 @@ function ImageDisplay({
   fileData: {
     file_id: string;
     file?: {
-      compress_info?: {
-        mobile?: string;
-        tablet?: string;
-        desktop?: string;
-        preload?: string;
-      };
+      path?: string;
     };
   };
   className?: string;
 }) {
-  // Get the best quality image path from compress_info
-  const getImageUrl = () => {
-    const compressInfo = fileData.file?.compress_info;
-    if (compressInfo) {
-      // Use desktop quality first, fallback to tablet, then mobile
-      const imagePath = compressInfo.desktop || compressInfo.tablet || compressInfo.mobile;
-      if (imagePath) {
-        return `${baseConfig.imgEndpointDomain}${imagePath}`;
-      }
-    }
-    // Fallback to original file endpoint
-    return `${baseConfig.imgEndpointDomain}/files/${fileData.file_id}`;
-  };
-
   return (
     <div className={`relative overflow-hidden rounded-lg ${className}`}>
       <Image
-        src={getImageUrl()}
+        src={fileData.file?.path || ""}
         alt={`Hình ảnh ${fileData.file_id}`}
         fill
         className="object-cover"
@@ -66,12 +46,7 @@ function ContentSection({
       position: number;
       file_id: string;
       file?: {
-        compress_info?: {
-          mobile?: string;
-          tablet?: string;
-          desktop?: string;
-          preload?: string;
-        };
+        path?: string;
       };
     }>;
     image_columns?: number;
@@ -345,19 +320,12 @@ export default function NewsDetailPage() {
               </div>
 
               {/* Thumbnail Display */}
-              {(news.thumbnail_compress_info as { desktop?: string; tablet?: string; mobile?: string } | null)?.desktop ||
-                (news.thumbnail_compress_info as { desktop?: string; tablet?: string; mobile?: string } | null)?.tablet ||
-                (news.thumbnail_compress_info as { desktop?: string; tablet?: string; mobile?: string } | null)?.mobile ||
-                news.thumbnail_path ? (
+              {news.thumbnail_path ? (
                 <div className="mb-6">
                   <h3 className="text-lg font-semibold mb-3">Ảnh đại diện</h3>
                   <div className="relative w-48 h-48 rounded-lg overflow-hidden border">
                     <Image
-                      src={`${baseConfig.imgEndpointDomain}${(news.thumbnail_compress_info as { desktop?: string; tablet?: string; mobile?: string } | null)?.desktop ||
-                        (news.thumbnail_compress_info as { desktop?: string; tablet?: string; mobile?: string } | null)?.tablet ||
-                        (news.thumbnail_compress_info as { desktop?: string; tablet?: string; mobile?: string } | null)?.mobile ||
-                        news.thumbnail_path
-                        }`}
+                      src={news.thumbnail_path}
                       alt={news.title || "Hình ảnh đại diện"}
                       fill
                       className="object-cover"
@@ -380,12 +348,7 @@ export default function NewsDetailPage() {
                         position: number;
                         file_id: string;
                         file?: {
-                          compress_info?: {
-                            mobile?: string;
-                            tablet?: string;
-                            desktop?: string;
-                            preload?: string;
-                          };
+                          path?: string;
                         };
                       }>;
                       image_columns?: number;
@@ -401,52 +364,6 @@ export default function NewsDetailPage() {
                 )}
               </div>
 
-              {/* Thumbnail info */}
-              {news.thumbnail_path && (
-                <div className="mt-8 pt-6 border-t border-gray-200">
-                  {/* <h3 className="text-lg font-semibold mb-3">Ảnh đại diện</h3>
-                  <p className="text-sm text-gray-600 mb-2">Đường dẫn: {news.thumbnail_path}</p> */}
-
-                  {(news.thumbnail_compress_info as {
-                    mobile?: string;
-                    tablet?: string;
-                    desktop?: string;
-                    preload?: string;
-                  } | null) && (
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs">
-                        <div>
-                          <span className="font-medium">Mobile:</span>
-                          <br />
-                          {
-                            (news.thumbnail_compress_info as { mobile?: string })
-                              .mobile
-                          }
-                        </div>
-                        <div>
-                          <span className="font-medium">Tablet:</span>
-                          <br />
-                          {
-                            (news.thumbnail_compress_info as { tablet?: string })
-                              .tablet
-                          }
-                        </div>
-                        <div>
-                          <span className="font-medium">Desktop:</span>
-                          <br />
-                          {
-                            (news.thumbnail_compress_info as { desktop?: string })
-                              .desktop
-                          }
-                        </div>
-                        <div>
-                          <span className="font-medium">Preload:</span>
-                          <br />
-                          {(news.thumbnail_compress_info as { preload?: string }).preload}
-                        </div>
-                      </div>
-                    )}
-                </div>
-              )}
             </CardContent>
           </Card>
         </div>

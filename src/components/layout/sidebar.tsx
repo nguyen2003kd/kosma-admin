@@ -118,6 +118,7 @@ export function Sidebar() {
                   width={120}
                   height={120}
                   className="rounded-xl object-cover"
+                  style={{ height: "auto" }}
                   priority
                 />
               </Link>

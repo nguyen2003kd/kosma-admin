@@ -3,17 +3,17 @@ export type NewsSection = {
   type: "image" | "text";
   order: number;
 } & (
-  | {
+    | {
       type: "image";
       images: string[];
       columns: 1 | 2 | 3 | 4;
       caption?: string;
     }
-  | {
+    | {
       type: "text";
       content: string;
     }
-);
+  );
 
 export type NewsDetail = {
   id: string;
@@ -52,12 +52,6 @@ export type News = {
   created_by: string;
   updated_by: string;
   is_service: boolean;
-  thumbnail_compress_info?: {
-    mobile: string;
-    tablet: string;
-    desktop: string;
-    preload: string;
-  } | null;
 };
 export type PostPage = {
   page?: number;

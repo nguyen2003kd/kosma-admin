@@ -26,7 +26,6 @@ import {
 // Custom popup styles removed Dialog dependency
 import { toast } from "sonner";
 import { ImagePicker, ImagePickerFile } from "@/components/shared/image-picker";
-import baseConfig from "@/configs/base";
 // import { HomeGalleryConfig } from "./components";
 
 // API imports
@@ -138,27 +137,7 @@ export default function BaseConfigPage() {
     file: ImagePickerFile | Record<string, unknown> | null | undefined,
   ) => {
     if (!file) return "";
-
-    let imagePath = "";
-    // Use compressed version if available, fallback to original path
-    if (
-      file &&
-      typeof file === "object" &&
-      "compress_info" in file &&
-      file.compress_info
-    ) {
-      const compressInfo = file.compress_info as Record<string, unknown>;
-      imagePath = String(
-        compressInfo.desktop || compressInfo.tablet || file.path || "",
-      );
-    } else {
-      imagePath = String(file?.path || "");
-    }
-
-    // Add domain if path doesn't start with http
-    return imagePath.startsWith("http")
-      ? imagePath
-      : `${baseConfig.imgEndpointDomain}${imagePath}`;
+    return String(file?.path || "");
   };
 
   // Get URL for selected image file
@@ -456,11 +435,9 @@ export default function BaseConfigPage() {
                                   setSelectedImageFile({
                                     id: String(logoFile.id || ""),
                                     path: String(logoFile.path || ""),
-                                    name: String(logoFile.name || ""),
+                                    file_name: String(logoFile.file_name || ""),
                                     mime: String(logoFile.mime || ""),
                                     size: String(logoFile.size || ""),
-                                    compress_info:
-                                      logoFile.compress_info as ImagePickerFile["compress_info"],
                                   });
                                 }
                                 setImagePickerMode("logo");
@@ -607,11 +584,9 @@ export default function BaseConfigPage() {
                                   setSelectedImageFile({
                                     id: String(bannerFile.id || ""),
                                     path: String(bannerFile.path || ""),
-                                    name: String(bannerFile.name || ""),
+                                    file_name: String(bannerFile.file_name || ""),
                                     mime: String(bannerFile.mime || ""),
                                     size: String(bannerFile.size || ""),
-                                    compress_info:
-                                      bannerFile.compress_info as ImagePickerFile["compress_info"],
                                   });
                                 }
                                 setImagePickerMode("banner");
@@ -668,11 +643,10 @@ export default function BaseConfigPage() {
                       (banner: Record<string, unknown>, index) => (
                         <div
                           key={String(banner.id)}
-                          className={`w-48 h-32 border-2 rounded-lg overflow-hidden cursor-pointer ${
-                            index === currentSlide
-                              ? "border-green-400"
-                              : "border-gray-200"
-                          }`}
+                          className={`w-48 h-32 border-2 rounded-lg overflow-hidden cursor-pointer ${index === currentSlide
+                            ? "border-green-400"
+                            : "border-gray-200"
+                            }`}
                           onClick={() => setCurrentSlide(index)}
                         >
                           {/* eslint-disable-next-line @next/next/no-img-element */}

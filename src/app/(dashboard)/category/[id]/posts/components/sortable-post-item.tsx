@@ -52,11 +52,10 @@ export function SortablePostItem({
     <div
       ref={setNodeRef}
       style={style}
-      className={`flex items-center gap-3 p-3 rounded-lg border transition-all duration-200 ${
-        isSelected
+      className={`flex items-center gap-3 p-3 rounded-lg border transition-all duration-200 ${isSelected
           ? "bg-red-50 border-red-400 shadow-md ring-2 ring-red-200"
           : "bg-white hover:shadow-sm"
-      }`}
+        }`}
     >
       <Checkbox
         checked={isSelected}
@@ -75,9 +74,7 @@ export function SortablePostItem({
         {index + 1}
       </div>
       <PostImage
-        src={
-          post.thumbnail_compress_info?.mobile || post.thumbnail_path || null
-        }
+        src={post.thumbnail_path || null}
         alt={post.title}
         className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 border border-gray-200 shadow-sm"
       />

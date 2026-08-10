@@ -141,7 +141,6 @@ export const useEmailModal = () => {
             const uploadResponse = await postApiV10File({
               file,
               title: file.name,
-              is_in_library: false,
             });
 
             const responseData = (uploadResponse as PostApiV10File200)

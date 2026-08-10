@@ -74,9 +74,6 @@ export function useAllPosts(searchQ: string) {
           created_by: String(item.created_by ?? ""),
           updated_by: String(item.updated_by ?? ""),
           is_service: Boolean(item.is_service),
-          thumbnail_compress_info:
-            (item.thumbnail_compress_info as News["thumbnail_compress_info"]) ??
-            null,
         };
       });
 

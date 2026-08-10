@@ -11,8 +11,8 @@ import {
   Trash2,
 } from 'lucide-react'
 import type { LibraryFile } from '@/types/library-file'
-import baseConfig from '@configs/base'
 import Can from '@/acl/Can';
+
 const getExtension = (name: string) => {
   const ext = name.split('.').pop()
   return ext ? ext.toLowerCase() : ''
@@ -61,12 +61,12 @@ export const FileGrid: React.FC<{
 }> = ({ files, onEdit, onDelete }) => {
   const handleDownload = async (fileItem: LibraryFile) => {
     try {
-      const response = await fetch(`${baseConfig.imgEndpointDomain}${fileItem.path}`)
+      const response = await fetch(fileItem.path)
       const blob = await response.blob()
       const url = window.URL.createObjectURL(blob)
       const link = document.createElement('a')
       link.href = url
-      link.download = fileItem.name
+      link.download = fileItem.file_name
       document.body.appendChild(link)
       link.click()
       window.URL.revokeObjectURL(url)
@@ -85,14 +85,14 @@ export const FileGrid: React.FC<{
         >
           <div className="flex items-start gap-3">
             <div className="w-12 h-12 rounded-lg bg-gray-100 flex items-center justify-center shrink-0">
-              {getFileIcon(fileItem.mime, fileItem.name)}
+              {getFileIcon(fileItem.mime, fileItem.file_name)}
             </div>
 
             <div className="min-w-0 flex-1">
-              <p className="text-sm font-semibold text-gray-900 truncate" title={fileItem.title || fileItem.name}>
-                {fileItem.title || fileItem.name}
+              <p className="text-sm font-semibold text-gray-900 truncate" title={fileItem.title || fileItem.file_name}>
+                {fileItem.title || fileItem.file_name}
               </p>
-              <p className="text-xs text-gray-500 truncate mt-1">{fileItem.name}</p>
+              <p className="text-xs text-gray-500 truncate mt-1">{fileItem.file_name}</p>
               {fileItem.description && (
                 <p className="text-xs text-gray-600 mt-2 line-clamp-2">{fileItem.description}</p>
               )}
@@ -101,7 +101,7 @@ export const FileGrid: React.FC<{
 
           <div className="mt-4 grid grid-cols-2 gap-2 text-xs text-gray-600">
             <div>Kích thước: {formatFileSize(fileItem.size)}</div>
-            <div className="text-right uppercase">{getExtension(fileItem.name) || 'FILE'}</div>
+            <div className="text-right uppercase">{getExtension(fileItem.file_name) || 'FILE'}</div>
             <div className="col-span-2 text-gray-500">{formatDate(fileItem.created_at)}</div>
           </div>
 
@@ -112,27 +112,27 @@ export const FileGrid: React.FC<{
                 className="p-2 bg-green-600 rounded-lg text-white hover:bg-green-700"
                 title="Tải tài liệu"
               >
-              <Download className="h-4 w-4" />
-            </button>
+                <Download className="h-4 w-4" />
+              </button>
             </Can>
             <Can I="update" a="gallery_document">
-            <button
-              onClick={() => onEdit(fileItem)}
-              className="p-2 bg-blue-600 rounded-lg text-white hover:bg-blue-700"
-              title="Chỉnh sửa"
-            >
-              <Edit className="h-4 w-4" />
-            </button>
+              <button
+                onClick={() => onEdit(fileItem)}
+                className="p-2 bg-blue-600 rounded-lg text-white hover:bg-blue-700"
+                title="Chỉnh sửa"
+              >
+                <Edit className="h-4 w-4" />
+              </button>
             </Can>
-             <Can I="delete" a="gallery_document">
-            <button
-              onClick={() => onDelete(fileItem)}
-              className="p-2 bg-red-600 rounded-lg text-white hover:bg-red-700"
-              title="Xóa"
-            >
-              <Trash2 className="h-4 w-4" />
-            </button>
-                </Can>
+            <Can I="delete" a="gallery_document">
+              <button
+                onClick={() => onDelete(fileItem)}
+                className="p-2 bg-red-600 rounded-lg text-white hover:bg-red-700"
+                title="Xóa"
+              >
+                <Trash2 className="h-4 w-4" />
+              </button>
+            </Can>
           </div>
         </div>
       ))}

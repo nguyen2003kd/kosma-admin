@@ -28,7 +28,6 @@ import {
   usePutApiV10PageConfigId,
 } from "@/api/endpoints/page-config";
 import { ImagePicker, type ImagePickerFile } from "@/components/shared/image-picker";
-import baseConfig from "@/configs/base";
 import { toast } from "sonner";
 
 const CUSTOMERS_PARTNERS_CONFIG_KEY = "Customers_partners_config";
@@ -109,21 +108,14 @@ export function CustomersPartnersConfig({ canUpdate = true }: { canUpdate?: bool
   };
 
   const handleImageSelect = (file: ImagePickerFile) => {
-    const bestPath =
-      file.compress_info?.desktop ||
-      file.compress_info?.tablet ||
-      file.compress_info?.mobile ||
-      file.path;
-    setFormData((prev) => ({ ...prev, logo: bestPath }));
+    setFormData((prev) => ({ ...prev, logo: file.path }));
     setSelectedImageFile(file);
     setImagePickerOpen(false);
   };
 
   const getImageUrl = (logo: string | undefined) => {
     if (!logo) return "";
-    return logo.startsWith("http")
-      ? logo
-      : `${baseConfig.imgEndpointDomain}${logo}`;
+    return logo;
   };
 
   const getSelectedImageUrl = () => {
@@ -311,8 +303,8 @@ export function CustomersPartnersConfig({ canUpdate = true }: { canUpdate?: bool
                     <div
                       key={partner.id}
                       className={`w-48 h-32 border-2 rounded-lg overflow-hidden cursor-pointer flex items-center justify-center transition-all ${index === currentSlide
-                          ? "border-green-400"
-                          : "border-gray-200"
+                        ? "border-green-400"
+                        : "border-gray-200"
                         } ${partner.is_active ? "" : "opacity-50"
                         }`}
                       onClick={() => setCurrentSlide(index)}
@@ -361,8 +353,8 @@ export function CustomersPartnersConfig({ canUpdate = true }: { canUpdate?: bool
                   <div className="flex items-center gap-2">
                     <span
                       className={`text-xs px-2 py-1 rounded ${filteredPartners[currentSlide]?.is_active
-                          ? "bg-green-100 text-green-700"
-                          : "bg-gray-200 text-gray-600"
+                        ? "bg-green-100 text-green-700"
+                        : "bg-gray-200 text-gray-600"
                         }`}
                     >
                       {filteredPartners[currentSlide]?.is_active

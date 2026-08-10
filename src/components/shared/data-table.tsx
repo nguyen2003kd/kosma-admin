@@ -53,6 +53,13 @@ interface DataTableProps<TData, TValue> {
   searchColumns?: string[];
   onSearch?: (q: string) => void;
   debounceMs?: number;
+  manualPagination?: boolean;
+  pageCount?: number;
+  pageIndex?: number;
+  pageSize?: number;
+  onPageChange?: (pageIndex: number) => void;
+  onPageSizeChange?: (pageSize: number) => void;
+  manualFiltering?: boolean;
 }
 
 export function DataTable<TData, TValue>({
@@ -66,6 +73,13 @@ export function DataTable<TData, TValue>({
   isFetchingNextPage,
   onSearch,
   debounceMs = 300,
+  manualPagination,
+  pageCount,
+  pageIndex: externalPageIndex,
+  pageSize: externalPageSize,
+  onPageChange,
+  onPageSizeChange,
+  manualFiltering,
 }: DataTableProps<TData, TValue>) {
   const scrollRef = React.useRef<HTMLDivElement | null>(null);
   const [sorting, setSorting] = React.useState<SortingState>([]);
@@ -76,15 +90,44 @@ export function DataTable<TData, TValue>({
     React.useState<VisibilityState>({});
   const [globalFilter, setGlobalFilter] = React.useState("");
   const [searchInput, setSearchInput] = React.useState("");
+  const [pagination, setPagination] = React.useState({
+    pageIndex: 0,
+    pageSize: 10,
+  });
 
-  // Khi dùng infinite query (có onLoadMore), không dùng pagination
+  // Khi dùng infinite query (có onLoadMore) hoặc manual pagination, không dùng pagination nội bộ
   const isInfiniteMode = Boolean(onLoadMore);
+  const isManualPagination = Boolean(manualPagination) || isInfiniteMode;
+
+  const effectivePagination = isManualPagination
+    ? {
+      pageIndex: externalPageIndex ?? 0,
+      pageSize: externalPageSize ?? 10,
+    }
+    : pagination;
+
+  const handlePaginationChange = React.useCallback(
+    (updater: any) => {
+      const next =
+        typeof updater === "function" ? updater(effectivePagination) : updater;
+      if (!isManualPagination) {
+        setPagination(next);
+      }
+      if (next.pageIndex !== effectivePagination.pageIndex) {
+        onPageChange?.(next.pageIndex);
+      }
+      if (next.pageSize !== effectivePagination.pageSize) {
+        onPageSizeChange?.(next.pageSize);
+      }
+    },
+    [effectivePagination, isManualPagination, onPageChange, onPageSizeChange]
+  );
 
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
-    ...(isInfiniteMode
+    ...(isManualPagination
       ? {}
       : { getPaginationRowModel: getPaginationRowModel() }),
     getSortedRowModel: getSortedRowModel(),
@@ -93,24 +136,29 @@ export function DataTable<TData, TValue>({
     onColumnFiltersChange: setColumnFilters,
     onColumnVisibilityChange: setColumnVisibility,
     onGlobalFilterChange: setGlobalFilter,
+    onPaginationChange: handlePaginationChange,
     state: {
       sorting,
       columnFilters,
       columnVisibility,
       globalFilter,
+      pagination: effectivePagination,
     },
-    // Trong infinite mode, hiển thị tất cả rows (không phân trang)
-    ...(isInfiniteMode ? { manualPagination: true } : {}),
+    pageCount: isManualPagination ? pageCount : undefined,
+    // Trong infinite mode hoặc manual pagination, hiển thị theo dữ liệu từ cha
+    ...(isManualPagination ? { manualPagination: true } : {}),
   });
 
   // debounce search input and propagate to table/global filter + parent onSearch
   React.useEffect(() => {
     const id = setTimeout(() => {
-      setGlobalFilter(searchInput);
+      if (!manualFiltering) {
+        setGlobalFilter(searchInput);
+      }
       onSearch?.(searchInput);
     }, debounceMs);
     return () => clearTimeout(id);
-  }, [searchInput, debounceMs, onSearch]);
+  }, [searchInput, debounceMs, onSearch, manualFiltering]);
 
   return (
     <div className="space-y-4">
@@ -171,10 +219,10 @@ export function DataTable<TData, TValue>({
                 .filter((column) => column.getCanHide())
                 .map((column) => {
                   const header = column.columnDef.header;
-                  const displayName = typeof header === 'string' 
-                    ? header 
+                  const displayName = typeof header === 'string'
+                    ? header
                     : (column.columnDef.meta as { title?: string })?.title || column.id;
-                  
+
                   return (
                     <DropdownMenuCheckboxItem
                       key={column.id}
@@ -212,9 +260,9 @@ export function DataTable<TData, TValue>({
                         {header.isPlaceholder
                           ? null
                           : flexRender(
-                              header.column.columnDef.header,
-                              header.getContext()
-                            )}
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
                       </TableHead>
                     );
                   })}
@@ -231,10 +279,9 @@ export function DataTable<TData, TValue>({
                       transition-all duration-150 border-gray-100
                       hover:bg-blue-50/50 
                       ${index % 2 === 0 ? "bg-white" : "bg-gray-50/30"}
-                      ${
-                        row.getIsSelected()
-                          ? "bg-blue-50 hover:bg-blue-100"
-                          : ""
+                      ${row.getIsSelected()
+                        ? "bg-blue-50 hover:bg-blue-100"
+                        : ""
                       }
                     `}
                   >

@@ -48,7 +48,7 @@ export default function LoginPage() {
 
     try {
       const encryptedPassword = CryptoJS.SHA256(data.password).toString()
-      await signInHandler({ email: data.email, password: encryptedPassword});
+      await signInHandler({ email: data.email, password: encryptedPassword });
       router.push("/dashboard");
     } catch (error) {
       const message = extractErrorMessage(error);
@@ -160,10 +160,6 @@ export default function LoginPage() {
                 </Button>
               </form>
             </Form>
-
-            <div className="mt-6 text-sm text-gray-500">
-              Demo credentials: admin@example.com / password
-            </div>
           </CardContent>
         </div>
       </div>

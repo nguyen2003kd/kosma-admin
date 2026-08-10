@@ -65,7 +65,6 @@ export const FileEdit: React.FC<{
     title: fileItem.title || '',
     description: fileItem.description || '',
     note: fileItem.note || '',
-    is_in_library: fileItem.is_in_library,
     file: null as File | null,
   })
 
@@ -100,7 +99,6 @@ export const FileEdit: React.FC<{
         title: formData.title && formData.title.trim() ? formData.title : null,
         description: formData.description && formData.description.trim() ? formData.description : null,
         note: formData.note && formData.note.trim() ? formData.note : null,
-        is_in_library: formData.is_in_library,
       }
 
       if (formData.file) {
@@ -143,7 +141,7 @@ export const FileEdit: React.FC<{
                 <FileText className="h-6 w-6 text-blue-600" />
               </div>
               <div className="min-w-0 flex-1">
-                <p className="text-sm font-medium text-gray-900 truncate">{formData.file?.name || fileItem.name}</p>
+                <p className="text-sm font-medium text-gray-900 truncate">{formData.file?.name || fileItem.file_name}</p>
                 <p className="text-xs text-gray-600">
                   {(((formData.file?.size ?? Number(fileItem.size)) as number) / 1024 / 1024).toFixed(2)} MB
                 </p>
@@ -225,19 +223,6 @@ export const FileEdit: React.FC<{
               />
             </div>
 
-            <div className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                id="is_in_library_file"
-                checked={formData.is_in_library}
-                onChange={(e) => setFormData({ ...formData, is_in_library: e.target.checked })}
-                className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-2 focus:ring-blue-500"
-                disabled={saving}
-              />
-              <label htmlFor="is_in_library_file" className="text-sm text-gray-700 font-medium cursor-pointer">
-                Hiện tài liệu
-              </label>
-            </div>
           </div>
         </div>
 

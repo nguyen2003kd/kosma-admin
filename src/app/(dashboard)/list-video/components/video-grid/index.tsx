@@ -2,7 +2,6 @@
 
 import React from 'react'
 import { Download, Edit, Play, Trash2 } from 'lucide-react'
-import baseConfig from '@configs/base'
 import type { LibraryFile } from '@/types/library-file'
 import Can from '@/acl/Can';
 export const VideoGrid: React.FC<{
@@ -10,7 +9,7 @@ export const VideoGrid: React.FC<{
   onEdit: (video: LibraryFile) => void
   onDelete: (video: LibraryFile) => void
 }> = ({ videos, onEdit, onDelete }) => {
-  const getFileUrl = (video: LibraryFile) => `${baseConfig.imgEndpointDomain}${video.path}`
+  const getFileUrl = (video: LibraryFile) => video.path
 
   const formatFileSize = (bytes: string | number) => {
     const size = typeof bytes === 'string' ? parseInt(bytes, 10) : bytes
@@ -37,7 +36,7 @@ export const VideoGrid: React.FC<{
       const url = window.URL.createObjectURL(blob)
       const link = document.createElement('a')
       link.href = url
-      link.download = video.name
+      link.download = video.file_name
       document.body.appendChild(link)
       link.click()
       window.URL.revokeObjectURL(url)
@@ -59,15 +58,6 @@ export const VideoGrid: React.FC<{
               src={getFileUrl(video)}
               controls
               preload="metadata"
-              poster={
-                video.compress_info?.preload
-                  ? `${baseConfig.imgEndpointDomain}${video.compress_info.preload}`
-                  : video.compress_info?.desktop
-                    ? `${baseConfig.imgEndpointDomain}${video.compress_info.desktop}`
-                    : video.compress_info?.tablet
-                      ? `${baseConfig.imgEndpointDomain}${video.compress_info.tablet}`
-                      : undefined
-              }
               className="w-full h-full object-contain"
             />
 
@@ -79,7 +69,7 @@ export const VideoGrid: React.FC<{
                   title="Tải video"
                 >
                   <Download className="h-4 w-4" />
-              </button>
+                </button>
               </Can>
               <Can I="update" a="gallery_video">
                 <button
@@ -93,22 +83,22 @@ export const VideoGrid: React.FC<{
               <Can I="delete" a="gallery_video">
                 <button
                   onClick={() => onDelete(video)}
-                className="p-2 bg-red-600 rounded-lg text-white hover:bg-red-700"
-                title="Xóa"
-              >
-                <Trash2 className="h-4 w-4" />
-              </button>
-                </Can>
+                  className="p-2 bg-red-600 rounded-lg text-white hover:bg-red-700"
+                  title="Xóa"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </button>
+              </Can>
             </div>
           </div>
 
           <div className="p-3 space-y-2">
             <div className="flex items-start justify-between gap-2">
               <div className="min-w-0">
-                <p className="text-sm font-medium text-gray-900 truncate" title={video.title || video.name}>
-                  {video.title || video.name}
+                <p className="text-sm font-medium text-gray-900 truncate" title={video.title || video.file_name}>
+                  {video.title || video.file_name}
                 </p>
-                <p className="text-xs text-gray-500 truncate">{video.name}</p>
+                <p className="text-xs text-gray-500 truncate">{video.file_name}</p>
               </div>
               <span className="inline-flex items-center gap-1 text-xs text-blue-700 bg-blue-50 px-2 py-1 rounded-md">
                 <Play className="h-3 w-3" /> VIDEO

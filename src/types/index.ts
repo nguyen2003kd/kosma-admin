@@ -103,15 +103,9 @@ export interface Order {
 export interface ProductImageFile {
   id: string;
   path: string;
-  name?: string | null;
+  file_name?: string | null;
   mime?: string | null;
   size?: number | string | null;
-  compress_info?: {
-    mobile?: string;
-    tablet?: string;
-    desktop?: string;
-    preload?: string;
-  } | null;
 }
 
 export interface ProductImage {

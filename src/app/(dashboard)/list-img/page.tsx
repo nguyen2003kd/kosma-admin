@@ -3,13 +3,13 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { Header } from '@/components/layout/header'
-import { getApiV10File} from '@/api/endpoints/file'
+import { getApiV10File } from '@/api/endpoints/file'
 import { getGetApiV10FileQueryKey } from '@/api/endpoints/file'
 import { ImageUpload } from './components/image-upload'
 import { ImageGrid } from './components/image-grid'
 import { ImageEdit } from './components/image-edit'
 import { ImageDelete } from './components/image-delete'
-import type { ImageFile ,FilePage} from '@/types/list-img'
+import type { ImageFile, FilePage } from '@/types/list-img'
 import { useInfiniteQuery } from '@tanstack/react-query'
 import type { InfiniteData } from '@tanstack/react-query'
 import Can from '@/acl/Can'
@@ -36,47 +36,47 @@ const Page: React.FC = () => {
   //   },
   //   { query: {} }
   // )
-const {
-  data: infiniteData,
-  isLoading,
-  isFetchingNextPage,
-  fetchNextPage,
-  hasNextPage,
-  refetch,
-} = useInfiniteQuery<FilePage, Error, InfiniteData<FilePage>, readonly unknown[], number>({
-  queryKey: ['files', 'library', pageSize, searchTerm],
-  queryFn: async ({ pageParam = 1, signal }) => {
-    const res = await getApiV10File({
-      page: pageParam,
-      pageSize: pageSize,
-      filters: searchTerm ? `(title|description|note)@=${searchTerm},is_in_library==true,type==IMAGE` : 'is_in_library==true,type==IMAGE',
-      sortField: 'created_at',
-      sortOrder: 'desc',
-    }, signal)
+  const {
+    data: infiniteData,
+    isLoading,
+    isFetchingNextPage,
+    fetchNextPage,
+    hasNextPage,
+    refetch,
+  } = useInfiniteQuery<FilePage, Error, InfiniteData<FilePage>, readonly unknown[], number>({
+    queryKey: ['files', 'library', pageSize, searchTerm],
+    queryFn: async ({ pageParam = 1, signal }) => {
+      const res = await getApiV10File({
+        page: pageParam,
+        pageSize: pageSize,
+        filters: searchTerm ? `(title|description|note)@=${searchTerm},type==IMAGE` : 'type==IMAGE',
+        sortField: 'created_at',
+        sortOrder: 'desc',
+      }, signal)
 
-    if (res.status !== 'success') {
-      throw new Error(res.message ?? 'Get file error')
-    }
+      if (res.status !== 'success') {
+        throw new Error(res.message ?? 'Get file error')
+      }
 
-    const responseData = (res as { responseData?: Partial<FilePage> })?.responseData ?? {}
+      const responseData = (res as { responseData?: Partial<FilePage> })?.responseData ?? {}
 
-    return {
-      page: responseData.page ?? pageParam,
-      pageSize: responseData.pageSize ?? pageSize,
-      count: typeof responseData.count === 'number' ? responseData.count : 0,
-      rows: Array.isArray(responseData.rows) ? (responseData.rows as ImageFile[]) : [],
-    }
-  },
-  getNextPageParam: (lastPage) => {
-    const p = lastPage.page ?? 1
-    const ps = lastPage.pageSize ?? pageSize
-    const total = lastPage.count ?? 0
-    const totalPages = ps > 0 ? Math.ceil(total / ps) : undefined
-    return totalPages && p < totalPages ? p + 1 : undefined
-  },
-  initialPageParam: 1,
-  staleTime: 30_000,
-})
+      return {
+        page: responseData.page ?? pageParam,
+        pageSize: responseData.pageSize ?? pageSize,
+        count: typeof responseData.count === 'number' ? responseData.count : 0,
+        rows: Array.isArray(responseData.rows) ? (responseData.rows as ImageFile[]) : [],
+      }
+    },
+    getNextPageParam: (lastPage) => {
+      const p = lastPage.page ?? 1
+      const ps = lastPage.pageSize ?? pageSize
+      const total = lastPage.count ?? 0
+      const totalPages = ps > 0 ? Math.ceil(total / ps) : undefined
+      return totalPages && p < totalPages ? p + 1 : undefined
+    },
+    initialPageParam: 1,
+    staleTime: 30_000,
+  })
   // Flatten pages into a single images array
   const images: ImageFile[] = React.useMemo(() => {
     if (!infiniteData?.pages) return []

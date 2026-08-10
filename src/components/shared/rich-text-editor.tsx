@@ -1,9 +1,8 @@
 "use client";
 
-import { useRef, useMemo, lazy, useState, useCallback, forwardRef } from "react";
+import { useRef, useMemo, lazy, useState, useCallback, forwardRef, useImperativeHandle } from "react";
 import type { JoditEditorProps } from "jodit-react";
 import { ImagePicker, type ImagePickerFile } from "./image-picker";
-import baseConfig from "@configs/base";
 
 // Dynamic import for Jodit to avoid SSR issues
 const JoditEditor = lazy(() => import("jodit-react"));
@@ -30,10 +29,19 @@ export const RichTextEditor = forwardRef<RichTextEditorRef, RichTextEditorProps>
   readOnly = false,
   height = 400,
   onBlur,
-}) => {
+}, ref) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const editorRef = useRef<any>(null);
   const [isImagePickerOpen, setIsImagePickerOpen] = useState(false);
+
+  useImperativeHandle(ref, () => ({
+    insertHTML: (html: string) => {
+      const editor = editorRef.current;
+      if (editor && editor.selection) {
+        editor.selection.insertHTML(html);
+      }
+    },
+  }), []);
 
   const openImagePicker = useCallback(() => {
     setIsImagePickerOpen(true);
@@ -45,21 +53,20 @@ export const RichTextEditor = forwardRef<RichTextEditorRef, RichTextEditorProps>
 
   const handleImageSelect = useCallback(
     (file: ImagePickerFile) => {
-      // Get the image URL from compress_info or path
-      const imagePath = file.compress_info?.desktop || file.compress_info?.tablet || file.path;
-      const imageUrl = `${baseConfig.imgEndpointDomain}${imagePath}`;
-      
+      // MinIO path is already a full URL
+      const imageUrl = file.path;
+
       // Build img HTML - remove width: 100% to prevent cropping
-      const imageHtml = `<img src="${imageUrl}" alt="${file.title || file.name || "Hình ảnh"}"" />`;
-      
+      const imageHtml = `<img src="${imageUrl}" alt="${file.title || file.file_name || "Hình ảnh"}"" />`;
+
       // Insert via Jodit's selection API
       if (editorRef.current) {
         const editor = editorRef.current;
-        
+
         // Try using selection.insertHTML if available
         if (editor.selection?.insertHTML) {
           editor.selection.insertHTML(imageHtml);
-        } 
+        }
         // Fallback: use editor's insertHTML method
         else if (typeof editor.insertHTML === 'function') {
           editor.insertHTML(imageHtml);
@@ -84,7 +91,7 @@ export const RichTextEditor = forwardRef<RichTextEditorRef, RichTextEditorProps>
           }
         }
       }
-      
+
       setIsImagePickerOpen(false);
     },
     []
@@ -277,7 +284,7 @@ export const RichTextEditor = forwardRef<RichTextEditorRef, RichTextEditorProps>
         value={value}
         config={editorConfig}
         onBlur={onBlur || ((newContent) => onChange(newContent))}
-        onChange={() => {}}
+        onChange={() => { }}
       />
 
       <ImagePicker

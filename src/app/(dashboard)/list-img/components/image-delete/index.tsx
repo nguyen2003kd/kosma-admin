@@ -11,7 +11,7 @@ import type { ImageFile } from "@/types/list-img";
 import Image from "next/image";
 import { toast } from '@/components/ui/toaster'
 import { extractErrorMessage } from '@/utils/error'
-import baseConfig from "@/configs/base";
+
 export const ImageDelete: React.FC<{
   image: ImageFile;
   onClose: () => void;
@@ -59,8 +59,8 @@ export const ImageDelete: React.FC<{
           {/* Image Preview */}
           <div className="bg-gray-100 rounded-lg overflow-hidden aspect-square max-h-48 mx-auto flex items-center justify-center relative">
             <Image
-              src={`${baseConfig.imgEndpointDomain}${image.compress_info?.mobile || image.compress_info?.tablet || image.compress_info?.desktop || image.path}`}
-              alt={image.title || image.name}
+              src={image.path}
+              alt={image.title || image.file_name}
               fill
               className="object-contain"
               sizes="(max-width: 768px) 100vw, 192px"
@@ -73,7 +73,7 @@ export const ImageDelete: React.FC<{
               Thao tác này không thể hoàn tác
             </p>
             <p className="text-sm text-red-700">
-              Bạn có chắc chắn muốn xóa ảnh &quot;{image.title || image.name}
+              Bạn có chắc chắn muốn xóa ảnh &quot;{image.title || image.file_name}
               &quot;?
             </p>
           </div>
@@ -83,7 +83,7 @@ export const ImageDelete: React.FC<{
             <div className="flex justify-between">
               <span className="text-gray-600">Tên:</span>
               <span className="font-medium text-gray-900 truncate ml-2">
-                {image.name}
+                {image.file_name}
               </span>
             </div>
             <div className="flex justify-between">

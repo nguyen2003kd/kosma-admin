@@ -73,16 +73,16 @@ export const APP_ROUTES: AppRouteConfig[] = [
     path: '/news/[id]/edit',
     access: { resources: ['news'], requiredActions: ['update'] },
   },
-  {
-    path: '/post-approval-l1',
-    access: { resources: ['post-approval-1'] },
-    sidebar: { label: 'Duyệt bài cấp 1', icon: 'news' },
-  },
-  {
-    path: '/post-approval-l2',
-    access: { resources: ['post-approval-2'] },
-    sidebar: { label: 'Duyệt bài cấp 2', icon: 'news' },
-  },
+  // {
+  //   path: '/post-approval-l1',
+  //   access: { resources: ['post-approval-1'] },
+  //   sidebar: { label: 'Duyệt bài cấp 1', icon: 'news' },
+  // },
+  // {
+  //   path: '/post-approval-l2',
+  //   access: { resources: ['post-approval-2'] },
+  //   sidebar: { label: 'Duyệt bài cấp 2', icon: 'news' },
+  // },
   {
     path: '/category',
     access: { resources: ['category'] },
@@ -138,31 +138,31 @@ export const APP_ROUTES: AppRouteConfig[] = [
     access: { resources: ['settings'] },
     sidebar: { label: 'Cài đặt chung', icon: 'settings' },
   },
-  {
-    path: '/introduction',
-    access: { resources: ['introduction'] },
-    sidebar: { label: 'Trang giới thiệu', icon: 'info' },
-  },
+  // {
+  //   path: '/introduction',
+  //   access: { resources: ['introduction'] },
+  //   sidebar: { label: 'Trang giới thiệu', icon: 'info' },
+  // },
   // {
   //   path: '/certification-config',
   //   access: { resources: ['settings'] },
   //   sidebar: { label: 'Cấu hình chứng nhận', icon: 'shieldCheck' },
   // },
-  {
-    path: '/recruitment',
-    access: { resources: ['recruitment'] },
-    sidebar: { label: 'Tin Tuyển Dụng', icon: 'recruitment' },
-  },
-  {
-    path: '/candidate',
-    access: { resources: ['candidate'] },
-    sidebar: { label: 'Ứng viên', icon: 'users' },
-  },
-  {
-    path: '/quotation-status',
-    access: { resources: ['template_type'] },
-    sidebar: { label: 'Quản lý loại mẫu', icon: 'template-type' },
-  },
+  // {
+  //   path: '/recruitment',
+  //   access: { resources: ['recruitment'] },
+  //   sidebar: { label: 'Tin Tuyển Dụng', icon: 'recruitment' },
+  // },
+  // {
+  //   path: '/candidate',
+  //   access: { resources: ['candidate'] },
+  //   sidebar: { label: 'Ứng viên', icon: 'users' },
+  // },
+  // {
+  //   path: '/quotation-status',
+  //   access: { resources: ['template_type'] },
+  //   sidebar: { label: 'Quản lý loại mẫu', icon: 'template-type' },
+  // },
   {
     path: '/footer',
     access: { resources: ['footer'] },
@@ -184,26 +184,26 @@ export const APP_ROUTES: AppRouteConfig[] = [
       ],
     },
   },
-  {
-    path: '/organizational-chart',
-    access: { resources: ['diagram'] },
-    sidebar: { label: 'Sơ đồ tổ chức', icon: 'organizational-chart' },
-  },
-  {
-    path: '/work-schedule',
-    access: { resources: ['work-schedule'] },
-    sidebar: { label: 'Lịch Công tác', icon: 'work-schedule' },
-  },
-  {
-    path: '/service',
-    access: { resources: ['service'] },
-    sidebar: { label: 'Dịch vụ', icon: 'service' },
-  },
-  {
-    path: '/department',
-    access: { resources: ['department'] },
-    sidebar: { label: 'Phòng ban / Khối', icon: 'organizational-chart' },
-  },
+  // {
+  //   path: '/organizational-chart',
+  //   access: { resources: ['diagram'] },
+  //   sidebar: { label: 'Sơ đồ tổ chức', icon: 'organizational-chart' },
+  // },
+  // {
+  //   path: '/work-schedule',
+  //   access: { resources: ['work-schedule'] },
+  //   sidebar: { label: 'Lịch Công tác', icon: 'work-schedule' },
+  // },
+  // {
+  //   path: '/service',
+  //   access: { resources: ['service'] },
+  //   sidebar: { label: 'Dịch vụ', icon: 'service' },
+  // },
+  // {
+  //   path: '/department',
+  //   access: { resources: ['department'] },
+  //   sidebar: { label: 'Phòng ban / Khối', icon: 'organizational-chart' },
+  // },
   {
     path: '/orders',
     access: { resources: ['orders'] },
