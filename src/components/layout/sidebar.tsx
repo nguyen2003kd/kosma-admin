@@ -1,5 +1,5 @@
 "use client";
-import Logo from "@/assets/images/logo-smeq.jpg";
+import Logo from "@/assets/images/logo-kosmo.png";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { useSidebarStore } from "@/hooks/use-sidebar";
@@ -60,6 +60,7 @@ const ICON_MAP: Record<SidebarIconKey, React.ComponentType<{ className?: string 
   recruitment: Briefcase,
   shieldCheck: ShieldCheck,
   info: Info,
+  box: Package,
 };
 
 const navigation: NavItem[] = APP_ROUTES
@@ -109,33 +110,32 @@ export function Sidebar() {
       >
         <div className="flex h-full flex-col">
           {/* Logo & Header */}
-          <div className="flex h-20 items-center justify-between px-4 bg-white">
+          <div className="flex h-20 items-center justify-between px-4 py-2 bg-white">
             {isOpen && (
               <Link href="/dashboard" className="flex items-center space-x-1">
                 <Image
                   src={Logo}
-                  alt="SMEQ Logo"
-                  width={120}
-                  height={120}
-                  className="rounded-xl object-cover"
-                  style={{ height: "auto" }}
+                  alt="Kosmo Logo"
+                  width={80}
+                  height={80}
+                  className="object-cover"
                   priority
                 />
               </Link>
             )}
-            {/* <Button
+            <Button
               variant="ghost"
               size="icon"
               onClick={toggle}
-              className="group ml-auto text-black hover:bg-[#0e3449] hover:text-white border bg-white"
+              className="group ml-auto hover:bg-white"
             >
               <ChevronLeft
                 className={cn(
-                  "h-5 w-5 transition-transform group-hover:text-white text-black",
+                  "h-5 w-5 transition-transform text-black",
                   !isOpen && "rotate-180",
                 )}
               />
-            </Button> */}
+            </Button>
           </div>
 
           <Separator />
@@ -181,7 +181,7 @@ export function Sidebar() {
               {isOpen ? (
                 <div className="space-y-1">
                   <div className="font-medium text-black dark:text-gray-300">
-                    SMEQ System
+                    Kosmo System
                   </div>
                   <div className="text-black">© 2025 All rights reserved</div>
                 </div>

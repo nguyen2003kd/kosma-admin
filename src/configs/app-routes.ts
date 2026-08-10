@@ -19,6 +19,7 @@ export type SidebarIconKey =
   | 'recruitment'
   | 'shieldCheck'
   | 'info'
+  | 'box'
 
 export type AppRouteAccessRule = {
   resources: string[]
@@ -118,11 +119,11 @@ export const APP_ROUTES: AppRouteConfig[] = [
     access: { resources: ['gallery_document'] },
     sidebar: { label: 'Kho tài liệu', icon: 'document-library' },
   },
-  {
-    path: '/quotation',
-    access: { resources: ['quotation'] },
-    sidebar: { label: 'Báo Giá', icon: 'quotation' },
-  },
+  // {
+  //   path: '/quotation',
+  //   access: { resources: ['quotation'] },
+  //   sidebar: { label: 'Báo Giá', icon: 'quotation' },
+  // },
   {
     path: '/customers',
     access: { resources: ['users'] },
@@ -133,11 +134,11 @@ export const APP_ROUTES: AppRouteConfig[] = [
     access: { resources: ['role', 'user_role'] },
     sidebar: { label: 'Phân quyền', icon: 'permissions' },
   },
-  {
-    path: '/base-config',
-    access: { resources: ['settings'] },
-    sidebar: { label: 'Cài đặt chung', icon: 'settings' },
-  },
+  // {
+  //   path: '/base-config',
+  //   access: { resources: ['settings'] },
+  //   sidebar: { label: 'Cài đặt chung', icon: 'settings' },
+  // },
   // {
   //   path: '/introduction',
   //   access: { resources: ['introduction'] },
@@ -212,7 +213,7 @@ export const APP_ROUTES: AppRouteConfig[] = [
   {
     path: '/products',
     access: { resources: ['products'] },
-    sidebar: { label: 'Sản phẩm', icon: 'circleCheckBig' },
+    sidebar: { label: 'Sản phẩm', icon: 'box' },
   }
   // {
   //   path: '/recruitment',
