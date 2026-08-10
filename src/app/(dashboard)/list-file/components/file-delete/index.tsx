@@ -54,7 +54,7 @@ export const FileDelete: React.FC<{
               <FileText className="h-6 w-6 text-blue-600" />
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-sm font-medium text-gray-900 truncate">{fileItem.name}</p>
+              <p className="text-sm font-medium text-gray-900 truncate">{fileItem.file_name}</p>
               <p className="text-xs text-gray-600">
                 {fileSize / 1024 / 1024 < 1
                   ? `${(fileSize / 1024).toFixed(2)} KB`
@@ -66,7 +66,7 @@ export const FileDelete: React.FC<{
           <div className="bg-red-50 border border-red-200 rounded-lg p-4">
             <p className="text-sm text-red-800 font-medium mb-2">Thao tác này không thể hoàn tác</p>
             <p className="text-sm text-red-700">
-              Bạn có chắc chắn muốn xóa tài liệu &quot;{fileItem.title || fileItem.name}&quot;?
+              Bạn có chắc chắn muốn xóa tài liệu &quot;{fileItem.title || fileItem.file_name}&quot;?
             </p>
           </div>
         </div>

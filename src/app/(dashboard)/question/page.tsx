@@ -20,11 +20,37 @@ import {
 
 import { createQuestionColumns, QuestionDetail, QuestionEdit } from "./components"
 
+interface QuestionResponseData {
+  rows?: Question[]
+  count?: number
+  page?: number
+  pageSize?: number
+}
+
 const Page: React.FC = () => {
   const queryClient = useQueryClient()
   const { confirm } = useConfirmModal()
 
-  const { data: questionData, isLoading } = useGetApiV10Question()
+  const [page, setPage] = useState(1)
+  const [pageSize, setPageSize] = useState(10)
+  const [search, setSearch] = useState("")
+
+  const params = useMemo(
+    () => ({
+      page,
+      pageSize,
+      ...(search
+        ? {
+          filters: `(first_name|last_name|email|phone_number|content)@=${encodeURI(search)}` as string,
+        }
+        : {}),
+      sortField: "created_at" as const,
+      sortOrder: "desc" as const,
+    }),
+    [page, pageSize, search]
+  )
+
+  const { data: questionData, isLoading } = useGetApiV10Question(params)
 
   const updateMutation = usePutApiV10QuestionId()
   const deleteMutation = useDeleteApiV10QuestionId()
@@ -34,11 +60,16 @@ const Page: React.FC = () => {
   const [editOpen, setEditOpen] = useState(false)
   const [deletingId, setDeletingId] = useState<string | null>(null)
 
+  const responseData = (questionData as { responseData?: QuestionResponseData } | undefined)?.responseData
+
   const rows: Question[] = useMemo(() => {
-    const r = (questionData as { responseData?: { rows?: Question[] } } | undefined)?.responseData?.rows
-    if (Array.isArray(r)) return r
+    if (Array.isArray(responseData?.rows)) return responseData.rows
     return []
-  }, [questionData])
+  }, [responseData])
+
+  const count = responseData?.count ?? 0
+  const currentPage = responseData?.page ?? page
+  const pageCount = useMemo(() => Math.max(1, Math.ceil(count / pageSize)), [count, pageSize])
 
   const canEdit = true
   const canDelete = true
@@ -122,6 +153,20 @@ const Page: React.FC = () => {
           searchPlaceholder="Tìm kiếm câu hỏi..."
           isLoading={isLoading}
           onRefresh={handleRefresh}
+          manualPagination
+          manualFiltering
+          pageCount={pageCount}
+          pageIndex={currentPage - 1}
+          pageSize={pageSize}
+          onPageChange={(pageIndex) => setPage(pageIndex + 1)}
+          onPageSizeChange={(size) => {
+            setPageSize(size)
+            setPage(1)
+          }}
+          onSearch={(q) => {
+            setSearch(q)
+            setPage(1)
+          }}
         />
       </div>
 

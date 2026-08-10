@@ -32,7 +32,6 @@ import {
 } from "@/api/endpoints/page-config";
 import type { PageConfigMutateLanguage } from "@/api/models/pageConfigMutateLanguage";
 import { ImagePicker, type ImagePickerFile } from "@/components/shared/image-picker";
-import baseConfig from "@/configs/base";
 import { toast } from "sonner";
 import { RichTextEditor } from "@/components/shared/rich-text-editor";
 
@@ -85,7 +84,7 @@ const CertificationItemCard = forwardRef<
 
   const getImageUrl = (path: string) => {
     if (!path) return "";
-    return path.startsWith("http") ? path : `${baseConfig.imgEndpointDomain}${path}`;
+    return path;
   };
 
   return (

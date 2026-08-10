@@ -12,8 +12,9 @@ import { FileUpload } from './components/file-upload'
 import { FileGrid } from './components/file-grid'
 import { FileEdit } from './components/file-edit'
 import { FileDelete } from './components/file-delete'
+
 const buildDocumentFilter = (searchTerm: string) => {
-  const baseFilter = 'is_in_library==true,type==DEFAULT'
+  const baseFilter = 'type==DEFAULT'
   if (!searchTerm) return baseFilter
   return `(title|description|note)@=${encodeURI(searchTerm)},${baseFilter}`
 }

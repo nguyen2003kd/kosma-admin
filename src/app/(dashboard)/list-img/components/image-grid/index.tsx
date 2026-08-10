@@ -3,7 +3,6 @@
 import React from "react";
 import { Edit, Trash2, Download } from "lucide-react";
 import type { ImageFile } from "@/types/list-img";
-import baseConfig from "@configs/base";
 import Can from '@/acl/Can';
 import Image from "next/image";
 export const ImageGrid: React.FC<{
@@ -13,12 +12,7 @@ export const ImageGrid: React.FC<{
   onRefresh: () => void;
 }> = ({ images, onEdit, onDelete }) => {
   const getImageUrl = (image: ImageFile) => {
-    const path =
-      image.compress_info?.mobile ||
-      image.compress_info?.tablet ||
-      image.compress_info?.desktop ||
-      image.path;
-    return baseConfig.imgEndpointDomain + path;
+    return image.path;
   };
 
   const formatFileSize = (bytes: string | number) => {
@@ -45,7 +39,7 @@ export const ImageGrid: React.FC<{
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
-      link.download = image.name;
+      link.download = image.file_name;
       document.body.appendChild(link);
       link.click();
       window.URL.revokeObjectURL(url);
@@ -66,7 +60,7 @@ export const ImageGrid: React.FC<{
           <div className="relative bg-gray-100 aspect-square overflow-hidden">
             <Image
               src={getImageUrl(image)}
-              alt={image.title || image.name}
+              alt={image.title || image.file_name}
               fill
               className="object-contain group-hover:scale-105 transition-transform duration-200"
             />
@@ -108,11 +102,11 @@ export const ImageGrid: React.FC<{
             <div>
               <p
                 className="text-sm font-medium text-gray-900 truncate"
-                title={image.title || image.name}
+                title={image.title || image.file_name}
               >
-                {image.title || image.name}
+                {image.title || image.file_name}
               </p>
-              <p className="text-xs text-gray-500 truncate">{image.name}</p>
+              <p className="text-xs text-gray-500 truncate">{image.file_name}</p>
             </div>
 
             {image.description && (

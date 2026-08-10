@@ -21,7 +21,6 @@ import { ImagePicker, type ImagePickerFile } from "@/components/shared/image-pic
 import { PostContentEditor, type PostContentSection } from "@/components/features/news/PostContentEditor";
 import { RichTextEditor, TagInput, type TagItem } from "@/components/shared";
 import { postApiV10Tags } from "@/api/endpoints/tag";
-import baseConfig from "@configs/base";
 
 export default function CreateNewsPage() {
   const ability = useAbility();
@@ -122,7 +121,7 @@ export default function CreateNewsPage() {
         published_at: publishedAt ? new Date(publishedAt).toISOString() : undefined,
         category_ids: selectedCategories,
         tag_ids: tagIds.length > 0 ? tagIds : undefined,
-        thumbnail_file_id: selectedThumbnail?.id,
+        thumbnail_path: selectedThumbnail?.path,
         post_content:
           apiPostContent.length > 0
             ? apiPostContent
@@ -203,11 +202,10 @@ export default function CreateNewsPage() {
                       <div className="relative inline-block">
                         <div className="w-32 h-32 rounded-lg overflow-hidden border-2 border-gray-200 relative">
                           <Image
-                            src={`${baseConfig.imgEndpointDomain}${selectedThumbnail.path ||
-                              selectedThumbnail.compress_info?.desktop || ""}`}
+                            src={selectedThumbnail.path}
                             alt={
                               selectedThumbnail.title ||
-                              selectedThumbnail.name ||
+                              selectedThumbnail.file_name ||
                               "Ảnh đại diện"
                             }
                             fill

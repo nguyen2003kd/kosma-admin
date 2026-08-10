@@ -18,7 +18,6 @@ import { Label } from '@/components/ui/label';
 import { toast } from '@/components/ui/toaster';
 import { ImagePicker, type ImagePickerFile } from '@/components/shared/image-picker';
 import { postApiV10Product, putApiV10ProductId } from '@/api/endpoints/product';
-import baseConfig from '@/configs/base';
 import type { Product } from '@/types';
 
 interface ProductFormDialogProps {
@@ -31,8 +30,7 @@ interface ProductFormDialogProps {
 interface SelectedImage {
   file_id: string;
   path: string;
-  name: string;
-  compress_info?: ImagePickerFile['compress_info'];
+  file_name: string;
   title?: string;
 }
 
@@ -40,15 +38,13 @@ function fileToSelected(file: ImagePickerFile): SelectedImage {
   return {
     file_id: file.id,
     path: file.path,
-    name: file.name,
-    compress_info: file.compress_info,
+    file_name: file.file_name,
     title: file.title,
   };
 }
 
 function imageSrc(img: SelectedImage): string {
-  const p = img.compress_info?.desktop || img.compress_info?.tablet || img.path || '';
-  return `${baseConfig.imgEndpointDomain}${p}`;
+  return img.path || '';
 }
 
 export function ProductFormDialog({ open, onClose, product, onSuccess }: ProductFormDialogProps) {
@@ -106,8 +102,7 @@ export function ProductFormDialog({ open, onClose, product, onSuccess }: Product
         .map((pi) => ({
           file_id: pi.file_id,
           path: pi.file?.path ?? '',
-          name: pi.file?.name ?? '',
-          compress_info: (pi.file?.compress_info ?? undefined) as SelectedImage['compress_info'],
+          file_name: pi.file?.file_name ?? '',
         }));
       setImages(existing);
     } else {
@@ -233,7 +228,7 @@ export function ProductFormDialog({ open, onClose, product, onSuccess }: Product
                   >
                     <Image
                       src={imageSrc(img)}
-                      alt={img.name || `image-${idx}`}
+                      alt={img.file_name || `image-${idx}`}
                       fill
                       className="object-cover"
                       sizes="120px"

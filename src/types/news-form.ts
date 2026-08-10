@@ -49,12 +49,7 @@ export const NEWS_FORM_DEFAULTS: NewsFormState = {
 export interface NewsImageDisplayFile {
   file_id: string
   file?: {
-    compress_info?: {
-      mobile?: string
-      tablet?: string
-      desktop?: string
-      preload?: string
-    }
+    path?: string
   }
 }
 

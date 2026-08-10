@@ -12,7 +12,7 @@ import type { FileUpdate } from "@/api/models";
 import Image from "next/image";
 import { toast } from '@/components/ui/toaster'
 import { extractErrorMessage } from '@/utils/error'
-import baseConfig from "@configs/base";
+
 export const ImageEdit: React.FC<{
   image: ImageFile;
   onClose: () => void;
@@ -25,7 +25,6 @@ export const ImageEdit: React.FC<{
     title: image.title || "",
     description: image.description || "",
     note: image.note || "",
-    is_in_library: image.is_in_library,
     file: null as File | null,
   });
   const [previewUrl, setPreviewUrl] = useState<string>("");
@@ -96,7 +95,6 @@ export const ImageEdit: React.FC<{
             ? formData.description
             : null,
         note: formData.note && formData.note.trim() ? formData.note : null,
-        is_in_library: formData.is_in_library,
       };
       if (formData.file) {
         updateData.file = formData.file;
@@ -149,14 +147,9 @@ export const ImageEdit: React.FC<{
                 src={
                   previewUrl
                     ? previewUrl
-                    : `${baseConfig.imgEndpointDomain}${
-                        image.compress_info?.desktop ||
-                        image.compress_info?.tablet ||
-                        image.compress_info?.mobile ||
-                        image.path
-                      }`
+                    : image.path
                 }
-                alt={image.title || image.name}
+                alt={image.title || image.file_name}
                 fill
                 className="object-contain"
                 sizes="(max-width: 768px) 100vw, 50vw"
@@ -259,24 +252,6 @@ export const ImageEdit: React.FC<{
               />
             </div>
 
-            <div className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                id="is_in_library"
-                checked={formData.is_in_library}
-                onChange={(e) =>
-                  setFormData({ ...formData, is_in_library: e.target.checked })
-                }
-                className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-2 focus:ring-blue-500"
-                disabled={saving}
-              />
-              <label
-                htmlFor="is_in_library"
-                className="text-sm text-gray-700 font-medium cursor-pointer"
-              >
-                Hiện hình ảnh
-              </label>
-            </div>
           </div>
 
           {/* Image Info */}

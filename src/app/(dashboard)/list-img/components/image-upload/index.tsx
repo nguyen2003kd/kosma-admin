@@ -24,7 +24,6 @@ export const ImageUpload: React.FC<{ onSuccess?: () => void }> = ({
     title: "",
     description: "",
     note: "",
-    is_in_library: true,
   });
 
   const uploading = postMutation.isPending;
@@ -111,8 +110,6 @@ export const ImageUpload: React.FC<{ onSuccess?: () => void }> = ({
         title: formData.title || file.name,
         description: formData.description || undefined,
         note: formData.note || undefined,
-        // is_in_library: formData.is_in_library,
-        is_in_library: true,
       };
       await postMutation.mutateAsync({ data: uploadData });
       await queryClient.invalidateQueries({
@@ -132,19 +129,19 @@ export const ImageUpload: React.FC<{ onSuccess?: () => void }> = ({
     setShowForm(false);
     setFile(null);
     setPreview("");
-    setFormData({ title: "", description: "", note: "", is_in_library: true });
+    setFormData({ title: "", description: "", note: "" });
   };
 
   return (
     <>
       {!showForm ? (
-          <Can I="upload" a="gallery">
-        <button
-          onClick={() => setShowForm(true)}
-          className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium transition"
-        >
-          <Upload className="h-4 w-4" /> Tải ảnh lên
-        </button>
+        <Can I="upload" a="gallery">
+          <button
+            onClick={() => setShowForm(true)}
+            className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium transition"
+          >
+            <Upload className="h-4 w-4" /> Tải ảnh lên
+          </button>
         </Can>
       ) : (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
@@ -152,15 +149,15 @@ export const ImageUpload: React.FC<{ onSuccess?: () => void }> = ({
             {/* Header */}
             <div className="sticky top-0 flex items-center justify-between p-6 border-b bg-white">
               <Can I="upload" a="gallery">
-              <h3 className="text-xl font-bold">Tải ảnh lên</h3>
-              <button
-                onClick={resetForm}
-                disabled={uploading}
-                className="p-1 hover:bg-gray-100 rounded-lg transition disabled:opacity-50"
-              >
-                <X className="h-5 w-5" />
-              </button>
-                </Can>
+                <h3 className="text-xl font-bold">Tải ảnh lên</h3>
+                <button
+                  onClick={resetForm}
+                  disabled={uploading}
+                  className="p-1 hover:bg-gray-100 rounded-lg transition disabled:opacity-50"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              </Can>
             </div>
 
             {/* Content */}
@@ -172,11 +169,10 @@ export const ImageUpload: React.FC<{ onSuccess?: () => void }> = ({
                   onDragLeave={handleDrag}
                   onDragOver={handleDrag}
                   onDrop={handleDrop}
-                  className={`border-2 border-dashed rounded-xl p-12 text-center transition ${
-                    dragActive
-                      ? "border-blue-500 bg-blue-50"
-                      : "border-gray-300 bg-gray-50 hover:border-gray-400"
-                  }`}
+                  className={`border-2 border-dashed rounded-xl p-12 text-center transition ${dragActive
+                    ? "border-blue-500 bg-blue-50"
+                    : "border-gray-300 bg-gray-50 hover:border-gray-400"
+                    }`}
                 >
                   <Upload className="h-12 w-12 mx-auto mb-3 text-gray-400" />
                   <p className="text-lg font-medium text-gray-700 mb-1">
@@ -202,12 +198,16 @@ export const ImageUpload: React.FC<{ onSuccess?: () => void }> = ({
                 <div className="space-y-4">
                   {/* Preview */}
                   <div className="relative bg-gray-100 rounded-lg overflow-hidden aspect-video flex items-center justify-center">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={preview}
-                      alt="Preview"
-                      className="max-w-full max-h-full object-contain"
-                    />
+                    {preview ? (
+                      <>
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={preview}
+                          alt="Preview"
+                          className="max-w-full max-h-full object-contain"
+                        />
+                      </>
+                    ) : null}
                     <button
                       onClick={() => setFile(null)}
                       disabled={uploading}

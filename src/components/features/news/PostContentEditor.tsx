@@ -13,7 +13,6 @@ import { Badge } from '@/components/ui/badge'
 import { ImagePicker, type ImagePickerFile } from '@/components/shared/image-picker'
 import { RichTextEditor } from '@/components/shared/rich-text-editor'
 import { Image as ImageIcon, Type, Plus, X, Upload } from 'lucide-react'
-import baseConfig from "@configs/base";
 import Can from '@/acl/Can';
 export interface PostContentImage {
   position: number
@@ -50,14 +49,14 @@ export const PostContentEditor: React.FC<PostContentEditorProps> = ({
       id: `section-${Date.now()}`,
       type,
       position: sections.length + 1,
-      ...(type === 'text' 
+      ...(type === 'text'
         ? { content: '' }
-        : { 
-            image_columns: 2, 
-            image_rows: 2, 
-            post_content_images: [],
-            caption: ''
-          }
+        : {
+          image_columns: 2,
+          image_rows: 2,
+          post_content_images: [],
+          caption: ''
+        }
       )
     }
     onSectionsChange([...sections, newSection])
@@ -65,7 +64,7 @@ export const PostContentEditor: React.FC<PostContentEditorProps> = ({
 
   const updateSection = useCallback((id: string, updates: Partial<PostContentSection>) => {
     onSectionsChange(
-      sections.map(section => 
+      sections.map(section =>
         section.id === id ? { ...section, ...updates } : section
       )
     )
@@ -97,7 +96,7 @@ export const PostContentEditor: React.FC<PostContentEditorProps> = ({
     const maxRows = section.image_rows || 2
     const maxImages = maxColumns * maxRows
     const currentImages = section.post_content_images || []
-    
+
     if (currentImages.length >= maxImages) {
       toast.warning({ title: 'Giới hạn ảnh', content: `Chỉ có thể thêm tối đa ${maxImages} ảnh (${maxColumns}x${maxRows})` })
       return
@@ -122,7 +121,7 @@ export const PostContentEditor: React.FC<PostContentEditorProps> = ({
 
     const updatedImages = [...(section.post_content_images || []), newImage]
     updateSection(currentImageSection, { post_content_images: updatedImages })
-    
+
     setShowImagePicker(false)
     setCurrentImageSection(null)
     setCurrentImagePosition(0)
@@ -138,7 +137,7 @@ export const PostContentEditor: React.FC<PostContentEditorProps> = ({
       ...img,
       position: index + 1
     }))
-    
+
     updateSection(sectionId, { post_content_images: reorderedImages })
   }
 
@@ -148,14 +147,14 @@ export const PostContentEditor: React.FC<PostContentEditorProps> = ({
 
     const maxImages = columns * rows
     let images = section.post_content_images || []
-    
+
     // If reducing grid size, trim excess images
     if (images.length > maxImages) {
       images = images.slice(0, maxImages)
     }
 
-    updateSection(sectionId, { 
-      image_columns: columns, 
+    updateSection(sectionId, {
+      image_columns: columns,
       image_rows: rows,
       post_content_images: images
     })
@@ -172,24 +171,24 @@ export const PostContentEditor: React.FC<PostContentEditorProps> = ({
           <p className="text-gray-500 mb-4">Chưa có nội dung nào</p>
           <div className="flex justify-center gap-2">
             <Can I="add_text_section" a="news">
-            <Button 
-              type="button" 
-              variant="outline" 
-              onClick={() => addSection('text')}
-            >
-              <Type className="h-4 w-4 mr-2" />
-              Thêm văn bản
-            </Button>
-              </Can>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => addSection('text')}
+              >
+                <Type className="h-4 w-4 mr-2" />
+                Thêm văn bản
+              </Button>
+            </Can>
             <Can I="add_image_section" a="news">
-            <Button 
-              type="button" 
-              variant="outline" 
-              onClick={() => addSection('image')}
-            >
-              <ImageIcon className="h-4 w-4 mr-2" />
-              Thêm hình ảnh
-            </Button>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => addSection('image')}
+              >
+                <ImageIcon className="h-4 w-4 mr-2" />
+                Thêm hình ảnh
+              </Button>
             </Can>
           </div>
         </div>
@@ -223,7 +222,7 @@ export const PostContentEditor: React.FC<PostContentEditorProps> = ({
               </Button>
             </div>
           </CardHeader>
-          
+
           <CardContent className="space-y-4">
             {section.type === 'text' ? (
               <div className="space-y-2">
@@ -241,7 +240,7 @@ export const PostContentEditor: React.FC<PostContentEditorProps> = ({
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label>Số cột ảnh</Label>
-                    <Select 
+                    <Select
                       value={String(section.image_columns || 2)}
                       onValueChange={(value) => updateImageGrid(section.id, parseInt(value), section.image_rows || 2)}
                     >
@@ -258,7 +257,7 @@ export const PostContentEditor: React.FC<PostContentEditorProps> = ({
                   </div>
                   <div className="space-y-2">
                     <Label>Số hàng ảnh</Label>
-                    <Select 
+                    <Select
                       value={String(section.image_rows || 2)}
                       onValueChange={(value) => updateImageGrid(section.id, section.image_columns || 2, parseInt(value))}
                     >
@@ -300,8 +299,8 @@ export const PostContentEditor: React.FC<PostContentEditorProps> = ({
                       Thêm ảnh
                     </Button>
                   </div>
-                  
-                  <div 
+
+                  <div
                     className="grid gap-2 border rounded-lg p-4 bg-gray-50"
                     style={{
                       gridTemplateColumns: `repeat(${section.image_columns || 2}, 1fr)`,
@@ -325,7 +324,7 @@ export const PostContentEditor: React.FC<PostContentEditorProps> = ({
                           {image?.file ? (
                             <div className="relative w-full h-full">
                               <Image
-                                src={`${baseConfig.imgEndpointDomain}${image.file.path || image.file.compress_info?.desktop || ''}`}
+                                src={image.file.path || ''}
                                 alt={`Ảnh ${index + 1}`}
                                 fill
                                 className="object-cover rounded-lg"
@@ -366,30 +365,30 @@ export const PostContentEditor: React.FC<PostContentEditorProps> = ({
         onSelect={handleImageSelect}
         type="image"
       />
-        <div className="flex gap-2 items-center justify-center">
-          <Can I="add_text_section" a="news">
-            <Button 
-              type="button" 
-              variant="outline" 
-              size="sm"
-              onClick={() => addSection('text')}
-            >
-              <Type className="h-4 w-4 mr-2" />
-              Thêm Section Văn bản
-            </Button>
-          </Can>
-          <Can I="add_image_section" a="news">
-            <Button 
-              type="button" 
-              variant="outline" 
-              size="sm"
-              onClick={() => addSection('image')}
-            >
-              <ImageIcon className="h-4 w-4 mr-2" />
-              Thêm Section Hình ảnh
-            </Button>
-          </Can>
-        </div>
+      <div className="flex gap-2 items-center justify-center">
+        <Can I="add_text_section" a="news">
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => addSection('text')}
+          >
+            <Type className="h-4 w-4 mr-2" />
+            Thêm Section Văn bản
+          </Button>
+        </Can>
+        <Can I="add_image_section" a="news">
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => addSection('image')}
+          >
+            <ImageIcon className="h-4 w-4 mr-2" />
+            Thêm Section Hình ảnh
+          </Button>
+        </Can>
+      </div>
     </div>
   )
 }

@@ -8,7 +8,6 @@ import type { LibraryFile } from '@/types/library-file'
 import { Upload, X } from 'lucide-react'
 import { toast } from '@/components/ui/toaster'
 import { extractErrorMessage } from '@/utils/error'
-import baseConfig from '@configs/base'
 
 const VIDEO_EXTENSIONS = ['mp4', 'mov', 'mkv', 'webm', 'avi', 'ogg', 'm4v']
 
@@ -43,7 +42,6 @@ export const VideoEdit: React.FC<{
     title: video.title || '',
     description: video.description || '',
     note: video.note || '',
-    is_in_library: video.is_in_library,
     file: null as File | null,
   })
   const [previewUrl, setPreviewUrl] = useState('')
@@ -58,7 +56,7 @@ export const VideoEdit: React.FC<{
     }
   }, [previewUrl])
 
-  const getVideoUrl = (path: string) => `${baseConfig.imgEndpointDomain}${path}`
+  const getVideoUrl = (path: string) => path
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0]
@@ -98,7 +96,6 @@ export const VideoEdit: React.FC<{
         title: formData.title && formData.title.trim() ? formData.title : null,
         description: formData.description && formData.description.trim() ? formData.description : null,
         note: formData.note && formData.note.trim() ? formData.note : null,
-        is_in_library: formData.is_in_library,
       }
 
       if (formData.file) {
@@ -222,19 +219,6 @@ export const VideoEdit: React.FC<{
               />
             </div>
 
-            <div className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                id="is_in_library_video"
-                checked={formData.is_in_library}
-                onChange={(e) => setFormData({ ...formData, is_in_library: e.target.checked })}
-                className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-2 focus:ring-blue-500"
-                disabled={saving}
-              />
-              <label htmlFor="is_in_library_video" className="text-sm text-gray-700 font-medium cursor-pointer">
-                Hiện video
-              </label>
-            </div>
           </div>
         </div>
 

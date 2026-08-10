@@ -7,7 +7,7 @@ import { useGetApiV10QuotationStatus } from "@/api/endpoints/quotation-status";
 import { useGetApiV10Calibration } from "@/api/endpoints/calibration";
 import { useGetApiV10ReceiveMethod } from "@/api/endpoints/receive-method";
 import { toast } from "@components/ui/toaster";
-import baseConfig from "@/configs/base";
+
 type QuotationDetailSidebarProps = {
   isOpen: boolean;
   onClose: () => void;
@@ -148,8 +148,8 @@ export default function QuotationDetailSidebar({
           <div className="flex items-center gap-2">
             <span
               className={`px-2.5 py-1 rounded-full text-xs font-medium ${isDisabled
-                  ? "bg-green-100 text-green-700"
-                  : "bg-amber-100 text-amber-700"
+                ? "bg-green-100 text-green-700"
+                : "bg-amber-100 text-amber-700"
                 }`}
             >
               {getString(
@@ -378,12 +378,12 @@ export default function QuotationDetailSidebar({
                   const ff = f as Record<string, unknown>;
                   const fid = getString(ff, "id");
                   const fpath = getString(ff, "path");
-                  const fname = getString(ff, "name");
+                  const fname = getString(ff, "file_name");
                   const fsize = getString(ff, "size");
 
                   const handleDownload = async () => {
                     try {
-                      const fileUrl = baseConfig.imgEndpointDomain + fpath;
+                      const fileUrl = fpath;
                       const response = await fetch(fileUrl);
                       const blob = await response.blob();
                       const url = window.URL.createObjectURL(blob);

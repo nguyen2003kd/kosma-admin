@@ -21,7 +21,6 @@ import {
 import { RichTextEditor } from "@/components/shared/rich-text-editor";
 import { ImagePicker, type ImagePickerFile } from "@/components/shared/image-picker";
 import { LucideIconPicker, DynamicIcon } from "@/components/shared/lucide-icon-picker";
-import baseConfig from "@/configs/base";
 import { toast } from "sonner";
 
 // ─── Block type union ─────────────────────────────────────────────────────────
@@ -289,7 +288,7 @@ function BlockPreview({ block }: { block: PageBlock }) {
     case "image": {
       const b = block as ImageBlock;
       if (!b.src) return <div className="border-2 border-dashed border-white/20 rounded-lg h-32 flex items-center justify-center text-white/40 text-sm">Chưa có hình</div>;
-      const url = b.src.startsWith("http") ? b.src : `${baseConfig.imgEndpointDomain}${b.src}`;
+      const url = b.src;
       return (
         <div className="space-y-1">
           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -419,20 +418,10 @@ function BadgeEditor({ block, onChange }: { block: BadgeBlock; onChange: (b: Bad
 function ImageEditor({ block, onChange }: { block: ImageBlock; onChange: (b: ImageBlock) => void }) {
   const [pickerOpen, setPickerOpen] = useState(false);
   const handleSelect = (f: ImagePickerFile) => {
-    // ưu tiên compress_info.desktop, fallback về path gốc
-    const bestPath =
-      f.compress_info?.desktop ||
-      f.compress_info?.tablet ||
-      f.compress_info?.mobile ||
-      f.path;
-    onChange({ ...block, src: bestPath, alt: f.title || f.name || block.alt });
+    onChange({ ...block, src: f.path, alt: f.title || f.file_name || block.alt });
     setPickerOpen(false);
   };
-  const preview = block.src
-    ? block.src.startsWith("http")
-      ? block.src
-      : `${baseConfig.imgEndpointDomain}${block.src}`
-    : null;
+  const preview = block.src || null;
   return (
     <div className="space-y-3">
       <div className="flex gap-3 items-start">

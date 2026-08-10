@@ -7,7 +7,6 @@ import { X, Search, Image as ImageIcon, Video, FileText, Loader2 } from "lucide-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import baseConfig from "@configs/base";
 import {
   getGetApiV10FileQueryKey,
   getApiV10File,
@@ -24,15 +23,9 @@ export type ImagePickerType = "image" | "video" | "file";
 export interface ImagePickerFile {
   id: string;
   path: string;
-  name: string;
+  file_name: string;
   mime: string;
   size: string;
-  compress_info?: {
-    mobile: string;
-    tablet: string;
-    desktop: string;
-    preload: string;
-  };
   title?: string;
   description?: string;
 }
@@ -75,16 +68,7 @@ function isCorrectMime(
 }
 
 function getFileSrc(file: ImagePickerFile, type: ImagePickerType): string {
-  const base = baseConfig.imgEndpointDomain;
-  if (type === "image") {
-    const p =
-      file.compress_info?.desktop ||
-      file.compress_info?.tablet ||
-      file.path ||
-      "";
-    return `${base}${p}`;
-  }
-  return `${base}${file.path}`;
+  return file.path;
 }
 
 
@@ -127,7 +111,6 @@ export const ImagePicker: React.FC<ImagePickerProps> = ({
     else if (type === "video") parts.push(`type==VIDEO`);
     else if (type === "file")
       parts.push(`type==DEFAULT`);
-    parts.push("is_in_library==true");
     if (searchTerm.trim()) {
       parts.push(`(title|description|note)@=${searchTerm.trim()}`);
     }
@@ -150,12 +133,9 @@ export const ImagePicker: React.FC<ImagePickerProps> = ({
         const mapped: ImagePickerFile[] = rows.map((obj) => ({
           id: String(obj.id ?? ""),
           path: String(obj.path ?? ""),
-          name: String(obj.name ?? ""),
+          file_name: String(obj.file_name ?? ""),
           mime: String(obj.mime ?? ""),
           size: String(obj.size ?? ""),
-          compress_info:
-            (obj.compress_info as ImagePickerFile["compress_info"]) ??
-            undefined,
           title:
             typeof obj.title === "string" ? obj.title : undefined,
           description:
@@ -177,7 +157,7 @@ export const ImagePicker: React.FC<ImagePickerProps> = ({
         // Auto-generate thumbnails for videos that don't have one
         if (type === "video" && reset) {
           filtered.forEach((f) => {
-            if (!f.compress_info?.preload && !thumbCache[f.path]) {
+            if (!thumbCache[f.path]) {
               generateThumbnail(f);
             }
           });
@@ -232,7 +212,7 @@ export const ImagePicker: React.FC<ImagePickerProps> = ({
   // ── Video thumbnail generation ────────────────────────────────────────────
   const generateThumbnail = useCallback(
     async (file: ImagePickerFile) => {
-      const fullUrl = `${baseConfig.imgEndpointDomain}${file.path}`;
+      const fullUrl = file.path;
       setGeneratingIds((prev) => new Set(prev).add(file.id));
       try {
         const thumb = await extractVideoThumbnail(fullUrl, 0.8, 0.8);
@@ -265,7 +245,7 @@ export const ImagePicker: React.FC<ImagePickerProps> = ({
     const term = searchTerm.toLowerCase();
     return items.filter(
       (f) =>
-        f.name?.toLowerCase().includes(term) ||
+        f.file_name?.toLowerCase().includes(term) ||
         (f.title ?? "").toLowerCase().includes(term)
     );
   }, [items, searchTerm]);
@@ -288,6 +268,8 @@ export const ImagePicker: React.FC<ImagePickerProps> = ({
             "data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%]"
           )}
         >
+          <DialogPrimitive.Title className="sr-only">{TYPE_LABELS[type]}</DialogPrimitive.Title>
+          <DialogPrimitive.Description className="sr-only">Chọn tệp từ thư viện</DialogPrimitive.Description>
           {/* Header */}
           <div className="flex items-center justify-between p-6 border-b">
             <div className="flex items-center gap-2">
@@ -349,17 +331,16 @@ export const ImagePicker: React.FC<ImagePickerProps> = ({
                     {visibleItems.map((file) => (
                       <div
                         key={file.id}
-                        className={`relative group cursor-pointer rounded-lg border-2 overflow-hidden transition-all ${
-                          selectedFileId === file.id
-                            ? "border-blue-500 ring-2 ring-blue-200"
-                            : "border-gray-200 hover:border-blue-300"
-                        }`}
+                        className={`relative group cursor-pointer rounded-lg border-2 overflow-hidden transition-all ${selectedFileId === file.id
+                          ? "border-blue-500 ring-2 ring-blue-200"
+                          : "border-gray-200 hover:border-blue-300"
+                          }`}
                         onClick={() => onSelect(file)}
                       >
                         <div className="aspect-square bg-gray-100 flex items-center justify-center relative">
                           <Image
                             src={getFileSrc(file, type)}
-                            alt={file.title || file.name || "Hình ảnh"}
+                            alt={file.title || file.file_name || "Hình ảnh"}
                             fill
                             className="object-contain"
                             sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
@@ -374,7 +355,7 @@ export const ImagePicker: React.FC<ImagePickerProps> = ({
                         </div>
                         <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-2">
                           <p className="text-white text-xs truncate">
-                            {file.title || file.name}
+                            {file.title || file.file_name}
                           </p>
                         </div>
                       </div>
@@ -383,18 +364,16 @@ export const ImagePicker: React.FC<ImagePickerProps> = ({
                 ) : (
                   <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                     {visibleItems.map((file) => {
-                      const serverThumb = file.compress_info?.preload || file.compress_info?.desktop || file.compress_info?.tablet;
                       const localThumb = thumbCache[file.path];
                       const isGenerating = generatingIds.has(file.id);
 
                       return (
                         <div
                           key={file.id}
-                          className={`relative group cursor-pointer rounded-lg border-2 overflow-hidden transition-all ${
-                            selectedFileId === file.id
-                              ? "border-blue-500 ring-2 ring-blue-200"
-                              : "border-gray-200 hover:border-blue-300"
-                          }`}
+                          className={`relative group cursor-pointer rounded-lg border-2 overflow-hidden transition-all ${selectedFileId === file.id
+                            ? "border-blue-500 ring-2 ring-blue-200"
+                            : "border-gray-200 hover:border-blue-300"
+                            }`}
                           onClick={() => onSelect(file)}
                         >
                           <div className="aspect-square bg-gray-100 flex items-center justify-center relative">
@@ -403,10 +382,10 @@ export const ImagePicker: React.FC<ImagePickerProps> = ({
                                 <Loader2 className="h-8 w-8 animate-spin" />
                                 <span className="text-[10px]">Tạo thumbnail...</span>
                               </div>
-                            ) : type === "video" && (localThumb || serverThumb) ? (
+                            ) : type === "video" && localThumb ? (
                               <Image
-                                src={localThumb || `${baseConfig.imgEndpointDomain}${serverThumb}`}
-                                alt={file.title || file.name}
+                                src={localThumb}
+                                alt={file.title || file.file_name}
                                 fill
                                 className="object-contain"
                                 sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
@@ -415,18 +394,14 @@ export const ImagePicker: React.FC<ImagePickerProps> = ({
                               <div className="flex flex-col items-center justify-center">
                                 <Video className="h-12 w-12 text-blue-400" />
                               </div>
-                            ) : serverThumb ? (
+                            ) : (
                               <Image
-                                src={`${baseConfig.imgEndpointDomain}${serverThumb}`}
-                                alt={file.title || file.name}
+                                src={file.path}
+                                alt={file.title || file.file_name}
                                 fill
                                 className="object-contain"
                                 sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
                               />
-                            ) : (
-                              <div className="flex flex-col items-center justify-center">
-                                <FileText className="h-12 w-12 text-orange-400" />
-                              </div>
                             )}
 
                             {type === "video" && (
@@ -438,11 +413,10 @@ export const ImagePicker: React.FC<ImagePickerProps> = ({
                             )}
 
                             <div className="absolute top-2 right-2">
-                              <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
-                                type === "video"
-                                  ? "bg-blue-100 text-blue-700"
-                                  : "bg-orange-100 text-orange-700"
-                              }`}>
+                              <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${type === "video"
+                                ? "bg-blue-100 text-blue-700"
+                                : "bg-orange-100 text-orange-700"
+                                }`}>
                                 {type === "video" ? "Video" : "File"}
                               </span>
                             </div>
@@ -458,7 +432,7 @@ export const ImagePicker: React.FC<ImagePickerProps> = ({
 
                           <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-2">
                             <p className="text-white text-xs truncate">
-                              {file.title || file.name}
+                              {file.title || file.file_name}
                             </p>
                             <p className="text-white/60 text-[10px] truncate">
                               {file.mime} &bull; {formatSize(file.size)}

@@ -27,6 +27,11 @@ const nextConfig = {
         hostname: 'localhost',
         pathname: '/api/**',
       },
+      {
+        protocol: 'https',
+        hostname: 's3-hcm5-r1.longvan.net',
+        pathname: '/**',
+      },
     ],
   },
 };
