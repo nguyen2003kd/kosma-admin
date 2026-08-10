@@ -10,10 +10,15 @@ export * from './work-schedule'
 // Contact Type
 export interface Contact {
   id: string
-  name: string
-  email: string
-  phone_number?: string
-  content?: string
+  first_name: string
+  last_name: string
+  email?: string | null
+  phone_number?: string | null
+  content?: string | null
+  address?: string | null
+  content_type?: string | null
+  preferred_date?: string | null
+  preferred_time?: string | null
   created_at?: string
 }
 

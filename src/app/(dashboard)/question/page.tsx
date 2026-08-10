@@ -60,7 +60,7 @@ const Page: React.FC = () => {
     async (id: string) => {
       const confirmed = await confirm({
         title: "Xác nhận xóa",
-        description: "Bạn có chắc chắn muốn xóa liên hệ này? Hành động này không thể hoàn tác.",
+        description: "Bạn có chắc chắn muốn xóa câu hỏi này? Hành động này không thể hoàn tác.",
         confirmText: "Xóa",
         cancelText: "Hủy bỏ",
         variant: "destructive",
@@ -70,7 +70,7 @@ const Page: React.FC = () => {
       setDeletingId(id)
       try {
         await deleteMutation.mutateAsync({ id })
-        toast.success({ title: "Thành công", content: "Đã xóa liên hệ thành công" })
+        toast.success({ title: "Thành công", content: "Đã xóa câu hỏi thành công" })
         queryClient.invalidateQueries({ queryKey: getGetApiV10QuestionQueryKey() })
       } catch (error) {
         const msg = extractErrorMessage(error)
@@ -85,7 +85,7 @@ const Page: React.FC = () => {
   const handleUpdate = async (id: string, data: QuestionMutate) => {
     try {
       await updateMutation.mutateAsync({ id, data })
-      toast.success({ title: "Thành công", content: "Đã cập nhật liên hệ thành công" })
+      toast.success({ title: "Thành công", content: "Đã cập nhật câu hỏi thành công" })
       queryClient.invalidateQueries({ queryKey: getGetApiV10QuestionQueryKey() })
     } catch (error) {
       const msg = extractErrorMessage(error)
@@ -109,17 +109,17 @@ const Page: React.FC = () => {
 
   return (
     <>
-      <Header title="Liên hệ" />
+      <Header title="Câu hỏi" />
       <div className="container mx-auto p-4 md:p-6 space-y-6">
         <div>
-          <h2 className="text-3xl font-bold tracking-tight">Quản lý Liên hệ</h2>
+          <h2 className="text-3xl font-bold tracking-tight">Quản lý Câu hỏi</h2>
           <p className="text-muted-foreground">Danh sách câu hỏi từ người dùng</p>
         </div>
 
         <DataTable
           columns={columns}
           data={rows}
-          searchPlaceholder="Tìm kiếm liên hệ..."
+          searchPlaceholder="Tìm kiếm câu hỏi..."
           isLoading={isLoading}
           onRefresh={handleRefresh}
         />

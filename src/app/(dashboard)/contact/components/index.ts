@@ -1,3 +1,3 @@
-export { useContactColumns } from './contact-columns'
-export { ContactEditDialog } from './contact-edit-dialog'
-export { ContactViewDialog } from './contact-view-dialog'
+export { createContactColumns } from './contact-columns'
+export { ContactDetail } from './contact-detail'
+export { ContactEdit } from './contact-edit'

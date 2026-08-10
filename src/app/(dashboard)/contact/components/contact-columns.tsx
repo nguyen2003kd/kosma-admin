@@ -1,152 +1,128 @@
-"use client";
+"use client"
 
-import React from "react";
-import { ColumnDef } from "@tanstack/react-table";
-import { Button } from "@/components/ui/button";
+import { ColumnDef } from "@tanstack/react-table"
+import type { Contact } from "@/api/models/contact"
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import { Edit, Trash2, Mail, Phone, User, Calendar, Eye } from "lucide-react";
-import { useAbility } from "@/hooks/use-ability";
-import type { Contact } from "@/types";
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { Button } from "@/components/ui/button"
+import { MoreHorizontal, Edit, Trash, Eye } from "lucide-react"
 
-interface UseContactColumnsProps {
-  onView: (contact: Contact) => void;
-  onEdit: (contact: Contact) => void;
-  onDelete: (id: string) => void;
+interface ContactColumnsProps {
+  onView: (item: Contact) => void
+  onEdit: (item: Contact) => void
+  onDelete: (id: string) => void
+  deletingId: string | null
+  canDelete: boolean
+  canEdit: boolean
 }
 
-export function useContactColumns({
+export const createContactColumns = ({
   onView,
   onEdit,
   onDelete,
-}: UseContactColumnsProps): ColumnDef<Contact>[] {
-  const ability = useAbility();
-  
-  return React.useMemo(
-    () => [
-      {
-        accessorKey: "name",
-        header: "Tên",
-        cell: ({ row }) => (
-          <div className="flex items-center gap-2">
-            <User className="h-4 w-4 text-muted-foreground" />
-            <span className="font-medium">{row.original.name}</span>
-          </div>
-        ),
+  deletingId,
+  canDelete,
+  canEdit,
+}: ContactColumnsProps): ColumnDef<Contact>[] => [
+    {
+      id: "fullName",
+      header: "Họ và tên",
+      cell: ({ row }) => {
+        const first = row.original.first_name ?? "";
+        const last = row.original.last_name ?? "";
+        const full = `${last} ${first}`.trim();
+        return (
+          <div className="font-medium text-gray-900">{full || "—"}</div>
+        );
       },
-      {
-        accessorKey: "email",
-        header: "Email",
-        cell: ({ row }) => (
-          <div className="flex items-center gap-2">
-            <Mail className="h-4 w-4 text-muted-foreground" />
-            <span>{row.original.email}</span>
-          </div>
-        ),
-      },
-      {
-        accessorKey: "phone_number",
-        header: "Điện thoại",
-        cell: ({ row }) =>
-          row.original.phone_number ? (
-            <div className="flex items-center gap-2">
-              <Phone className="h-4 w-4 text-muted-foreground" />
-              <span>{row.original.phone_number}</span>
-            </div>
-          ) : (
-            <span className="text-muted-foreground">--</span>
-          ),
-      },
-      {
-        accessorKey: "content",
-        header: "Nội dung",
-        cell: ({ row }) => (
-          <div className="max-w-[200px] truncate">
-            {row.original.content ? (
-              <span title={row.original.content}>{row.original.content}</span>
-            ) : (
-              <span className="text-muted-foreground">--</span>
-            )}
-          </div>
-        ),
-      },
-      {
-        accessorKey: "created_at",
-        header: "Ngày tạo",
-        cell: ({ row }) => (
-          <div className="flex items-center gap-2">
-            <Calendar className="h-4 w-4 text-muted-foreground" />
-            <span>
-              {row.original.created_at
-                ? new Date(row.original.created_at).toLocaleDateString("vi-VN")
-                : "--"}
+    },
+    {
+      accessorKey: "phone_number",
+      header: "Số điện thoại",
+      cell: ({ row }) => (
+        <span className="text-gray-600">{row.original.phone_number ?? "—"}</span>
+      ),
+    },
+    {
+      accessorKey: "email",
+      header: "Email",
+      cell: ({ row }) => (
+        <span className="text-gray-600">{row.original.email ?? "—"}</span>
+      ),
+    },
+    {
+      accessorKey: "content",
+      header: "Nội dung",
+      cell: ({ row }) => (
+        <div className="max-w-[200px] truncate">
+          {row.original.content ? (
+            <span title={row.original.content} className="text-gray-600">
+              {row.original.content}
             </span>
-          </div>
-        ),
+          ) : (
+            <span className="text-gray-400">—</span>
+          )}
+        </div>
+      ),
+    },
+    {
+      accessorKey: "created_at",
+      header: "Ngày tạo",
+      cell: ({ row }) => {
+        const date = row.original.created_at
+        if (!date) return <span className="text-gray-400">—</span>
+        return (
+          <span className="text-gray-600">
+            {new Date(date).toLocaleString("vi-VN", {
+              day: "2-digit",
+              month: "2-digit",
+              year: "numeric",
+              hour: "2-digit",
+              minute: "2-digit",
+            })}
+          </span>
+        )
       },
-      {
-        id: "actions",
-        header: "Hành động",
-        cell: ({ row }) => (
-          <div className="flex items-center gap-2">
-            {ability.can('view_detail', 'contact') && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => onView(row.original)}
+    },
+    {
+      id: "actions",
+      header: "Thao tác",
+      cell: ({ row }) => (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="h-8 w-8 p-0 hover:bg-gray-100">
+              <MoreHorizontal className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem onClick={() => onView(row.original)} className="cursor-pointer">
+              <Eye className="mr-2 h-4 w-4" />
+              Xem chi tiết
+            </DropdownMenuItem>
+
+            {canEdit && (
+              <DropdownMenuItem onClick={() => onEdit(row.original)} className="cursor-pointer">
+                <Edit className="mr-2 h-4 w-4" />
+                Chỉnh sửa
+              </DropdownMenuItem>
+            )}
+
+            {canDelete && (
+              <DropdownMenuItem
+                onClick={() => onDelete(row.original.id!)}
+                className="cursor-pointer text-red-600 hover:text-red-700 hover:bg-red-50"
+                disabled={deletingId === row.original.id}
               >
-                <Eye className="h-4 w-4" />
-              </Button>
+                <Trash className="mr-2 h-4 w-4" />
+                {deletingId === row.original.id ? "Đang xóa..." : "Xóa"}
+              </DropdownMenuItem>
             )}
-            {ability.can('update', 'contact') && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => onEdit(row.original)}
-              >
-                <Edit className="h-4 w-4" />
-              </Button>
-            )}
-            {ability.can('delete', 'contact') && (
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  <Button variant="ghost" size="sm" className="text-destructive">
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>Xác nhận xóa</AlertDialogTitle>
-                    <AlertDialogDescription>
-                      Bạn có chắc chắn muốn xóa liên hệ &ldquo;{row.original.name}
-                      &rdquo;? Hành động này không thể hoàn tác.
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>Hủy</AlertDialogCancel>
-                    <AlertDialogAction
-                      onClick={() => onDelete(row.original.id)}
-                      className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                    >
-                      Xóa
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
-            )}
-          </div>
-        ),
-      },
-    ],
-    [onView, onEdit, onDelete, ability]
-  );
-}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      ),
+    },
+  ]
