@@ -3,8 +3,9 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { QueryProvider } from "@/components/providers/query-provider";
 import baseConfig from "@configs/base";
-import Thumnail from "@/assets/images/case-smeg-thumb.png"
-import Facion from "@/assets/images/logo-facion.ico"
+import thumbnail from "@/assets/images/kosmo-thumb.png"
+import favicon from "@/assets/images/logo-favicon.ico"
+
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
@@ -18,34 +19,19 @@ const geistMono = localFont({
 
 export const metadata: Metadata = {
   icons: {
-    icon: `${Facion.src}`,
-    shortcut: `${Facion.src}`,
+    icon: `${favicon.src}`,
+    shortcut: `${favicon.src}`,
   },
 
   title: {
     default:
-      'Kosmo - Admin',
+      'Kosmo DNC - Admin',
     template:
-      '%s | Kosmo - Admin',
+      '%s | Kosmo DNC - Admin',
   },
 
   description:
-    'Kosmo - Admin',
-
-  keywords: [
-    'tiêu chuẩn đo lường chất lượng',
-    'kiểm định',
-    'hiệu chuẩn',
-    'thử nghiệm',
-    'chuẩn đo lường',
-    'kiểm định thiết bị y tế',
-    'đo lường',
-    'chất lượng sản phẩm',
-    'quy chuẩn kỹ thuật',
-    'dịch vụ khoa học công nghệ',
-    'Sở Khoa học và Công nghệ TP.HCM',
-    'kiểm định an toàn thiết bị y tế',
-  ],
+    'Kosmo DNC - Admin',
 
   robots: {
     index: false,
@@ -59,15 +45,15 @@ export const metadata: Metadata = {
 
   openGraph: {
     title:
-      'Kosmo - Admin',
+      'Kosmo DNC - Admin',
     description:
-      'Kosmo - Admin',
+      'Kosmo DNC - Admin',
     url: baseConfig.frontendDomain,
     siteName:
-      'Kosmo - Admin',
+      'Kosmo DNC - Admin',
     images: [
       {
-        url: `${baseConfig.frontendDomain}/${Thumnail.src}`,
+        url: `${baseConfig.frontendDomain}/${thumbnail.src}`,
         width: 1200,
         height: 630,
         alt:
@@ -81,10 +67,10 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title:
-      'Kosmo - Admin',
+      'Kosmo DNC - Admin',
     description:
-      'Kosmo - Admin',
-    images: [`${baseConfig.frontendDomain}/${Thumnail.src}`],
+      'Kosmo DNC - Admin',
+    images: [`${baseConfig.frontendDomain}/${thumbnail.src}`],
   },
 }
 
@@ -95,9 +81,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <QueryProvider>{children}</QueryProvider>
       </body>
     </html>
