@@ -20,7 +20,7 @@ import { Eye, EyeOff } from "lucide-react";
 // import Image from 'next/image';
 import useSignInHandler from "@/hooks/use-sign-handler";
 import { extractErrorMessage } from "@/utils/error";
-import vector from "@/assets/images/vector.png";
+import thumbnail from "@/assets/images/thumbnail.png";
 import cryptoJS from "crypto-js";
 const loginSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -66,11 +66,11 @@ export default function LoginPage() {
         {/* Left illustration */}
         <div
           className="hidden md:flex p-10 items-center justify-center bg-center"
-          style={{ backgroundImage: `url(${vector.src})` }}
+          style={{ backgroundImage: `url(${thumbnail.src})` }}
         >
           <div className="w-full max-w-2xl">
             {/* <div className="w-full h-56 md:h-72 lg:h-500 rounded-xl overflow-hidden relative shadow-sm">
-              <Image src={vector} alt="Login illustration" fill className="object-cover" priority />
+              <Image src={thumbnail} alt="Login illustration" fill className="object-cover" priority />
             </div> */}
           </div>
         </div>
