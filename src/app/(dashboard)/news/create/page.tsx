@@ -41,11 +41,6 @@ export default function CreateNewsPage() {
   const router = useRouter();
   const createPostMutation = usePostApiV10Post();
   const { data: categoriesData } = useGetApiV10Category();
-  const canApproveL2 = ability.can("approve_post", "post-approval-2");
-  const canApproveL1 = ability.can("approve_post", "post-approval-1");
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const categories = categoriesData?.responseData || [];
 
   const handleImageSelect = (file: ImagePickerFile) => {
     setSelectedThumbnail(file);
@@ -112,11 +107,7 @@ export default function CreateNewsPage() {
         position,
         is_hidden: isHidden,
         is_service: false,
-        status: canApproveL2
-          ? PostMutateStatus.PUBLISHED
-          : canApproveL1
-            ? PostMutateStatus.PENDING_L2
-            : undefined,
+        status: "PUBLISHED",
         expired_at: expiredAt ? new Date(expiredAt).toISOString() : undefined,
         published_at: publishedAt ? new Date(publishedAt).toISOString() : undefined,
         category_ids: selectedCategories,

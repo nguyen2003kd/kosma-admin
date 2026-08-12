@@ -101,8 +101,6 @@ export const ACTION_LABELS: Record<string, string> = {
   hidden_session: "Ẩn/Hiện session",
   add_session: "Thêm session",
   delete_session: "Xóa session",
-
-
 };
 
 /**
@@ -116,35 +114,67 @@ export function getActionLabel(action: string): string {
  * Định nghĩa module (resource) với tên hiển thị
  */
 export const MODULE_DEFINITIONS = [
-  { id: "dashboard", name: "Dashboard", description: "Trang tổng quan" },
-  { id: "news", name: "Tin tức", description: "Quản lý bài viết và tin tức" },
+  {
+    id: "dashboard",
+    name: "Dashboard",
+    description: "Trang tổng quan"
+  },
+  {
+    id: "news",
+    name: "Tin tức",
+    description: "Quản lý bài viết và tin tức"
+  },
   {
     id: "category",
     name: "Danh mục",
     description: "Quản lý danh mục sản phẩm",
   },
-  { id: "gallery", name: "Kho ảnh", description: "Quản lý hình ảnh" },
-  { id: "gallery_video", name: "Kho video", description: "Quản lý video" },
+  {
+    id: "gallery",
+    name: "Kho ảnh",
+    description: "Quản lý hình ảnh"
+  },
+  {
+    id: "gallery_video",
+    name: "Kho video",
+    description: "Quản lý video"
+  },
   {
     id: "gallery_document",
     name: "Kho tài liệu",
     description: "Quản lý tài liệu",
   },
-  { id: "quotation", name: "Báo giá", description: "Quản lý yêu cầu báo giá" },
+  {
+    id: "quotation",
+    name: "Báo giá",
+    description: "Quản lý yêu cầu báo giá"
+  },
   {
     id: "users",
     name: "Tài khoản",
     description: "Quản lý tài khoản người dùng",
   },
-  { id: "settings", name: "Cài đặt", description: "Cấu hình banner, logo" },
+  {
+    id: "settings",
+    name: "Cài đặt",
+    description: "Cấu hình banner, logo"
+  },
   { id: "contact", name: "Liên hệ", description: "Quản lý thông tin liên hệ" },
   {
     id: "template_type",
     name: "Loại mẫu",
     description: "Quản lý loại mẫu báo giá",
   },
-  { id: "footer", name: "Footer", description: "Quản lý nội dung footer" },
-  { id: "role", name: "Vai trò", description: "Quản lý vai trò phân quyền" },
+  {
+    id: "footer",
+    name: "Footer",
+    description: "Quản lý nội dung footer"
+  },
+  {
+    id: "role",
+    name: "Vai trò",
+    description: "Quản lý vai trò phân quyền"
+  },
   {
     id: "user_role",
     name: "Gán vai trò",
