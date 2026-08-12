@@ -74,16 +74,16 @@ export const APP_ROUTES: AppRouteConfig[] = [
     path: '/news/[id]/edit',
     access: { resources: ['news'], requiredActions: ['update'] },
   },
-  {
-    path: '/post-approval-l1',
-    access: { resources: ['post-approval-1'] },
-    sidebar: { label: 'Duyệt bài cấp 1', icon: 'news' },
-  },
-  {
-    path: '/post-approval-l2',
-    access: { resources: ['post-approval-2'] },
-    sidebar: { label: 'Duyệt bài cấp 2', icon: 'news' },
-  },
+  // {
+  //   path: '/post-approval-l1',
+  //   access: { resources: ['post-approval-1'] },
+  //   sidebar: { label: 'Duyệt bài cấp 1', icon: 'news' },
+  // },
+  // {
+  //   path: '/post-approval-l2',
+  //   access: { resources: ['post-approval-2'] },
+  //   sidebar: { label: 'Duyệt bài cấp 2', icon: 'news' },
+  // },
   {
     path: '/category',
     access: { resources: ['category'] },
